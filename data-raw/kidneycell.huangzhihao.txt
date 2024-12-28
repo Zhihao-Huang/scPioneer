@@ -1,0 +1,18 @@
+celltypes	up_layers	layers	markers	specific_markers	species	references
+Proximal tubule	Endothelial_cells	2	SLC13A3		Homosapiens	"DOI: 10.1073/pnas.2234604100, DOI: 10.1371/journal.pone.0116125,DOI: 10.1126/science.aat1699"
+Proximal tubule	Endothelial_cells	2	SLC34A1		Homosapiens	"DOI: 10.1073/pnas.2234604100, DOI: 10.1371/journal.pone.0116125,DOI: 10.1126/science.aat1699"
+Proximal tubule	Endothelial_cells	2	GPX3		Homosapiens	DOI: 10.1681/asn.2014111067
+Proximal tubule	Endothelial_cells	2	DCXR		Homosapiens	DOI: 10.1074/jbc.M110703200
+Proximal convoluted tubule	Endothelial_cells	2	SLC22A8		Homosapiens	"DOI: 10.1073/pnas.2234604100, DOI: 10.1371/journal.pone.0116125,DOI: 10.1126/science.aat1699"
+Proximal straight tubule	Endothelial_cells	2	SLC22A7		Homosapiens	"DOI: 10.1073/pnas.2234604100, DOI: 10.1371/journal.pone.0116125,DOI: 10.1126/science.aat1699"
+Glomerular parietal epithelial cells	Epithelial_cells	2	KRT8		Homosapiens	DOI: 10.1038/nrneph.2014.1
+Glomerular parietal epithelial cells	Epithelial_cells	2	KRT18		Homosapiens	DOI: 10.1038/nrneph.2014.1
+Glomerular parietal epithelial cells	Epithelial_cells	2	CD24		Homosapiens	DOI: 10.1038/nrneph.2014.1
+Glomerular parietal epithelial cells	Epithelial_cells	2	VCAM1		Homosapiens	DOI: 10.1038/nrneph.2014.1
+Distal tubule	Endothelial_cells	2	UMOD		Homosapiens	DOI: 10.1371/journal.pone.0116125 
+"Distal tubule, Collecting duct"	Endothelial_cells	2	DEFB1		Homosapiens	DOI: 10.1002/(sici)1096-9896(199809)186:1<99::aid-path133>3.0.co;2-#
+Collecting duct	Endothelial_cells	2	CLDN8		Homosapiens	"DOI: 10.1073/pnas.2234604100, DOI: 10.1681/asn.2014111067, DOI: 10.1371/journal.pone.0116125,DOI: 10.1126/science.aat1699"
+Collecting duct principal cells	Endothelial_cells	2	AQP2		Homosapiens	"DOI: 10.1126/science.aar2131,DOI: 10.1073/pnas.2234604100,DOI: 10.1371/journal.pone.0116125,DOI: 10.1126/science.aat1699"
+Collecting duct intercalated cells	Endothelial_cells	2	ATP6V1G3		Homosapiens	DOI: 10.1126/science.aar2131 
+Collecting duct intercalated cells	Endothelial_cells	2	ATP6V0D2		Homosapiens	"DOI: 10.1371/journal.pone.0116125,DOI: 10.1126/science.aat1699"
+Collecting duct intercalated cells	Endothelial_cells	2	TMEM213		Homosapiens	DOI: 10.1371/journal.pone.0116125 

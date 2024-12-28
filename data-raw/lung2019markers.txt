@@ -1,0 +1,40 @@
+CD4-c1-CCR7	"CD3D, CD3E, CD3G, CCR7, LEF1, SELL, TCF7, S1PR1"	na?ve T cells
+CD4-c2-ANXA1	"CD3D, CD3E, CD3G, CCR7, SELL, ANXA1, ANXA2, S1PR1"	central memory T cells
+CD4-c3-IL7R	"CD3D, CD3E, CD3G, IL7R, CD74, TYROBP"	central memory T cells
+CD4-c4-TCF7	"CD3D, CD3E, CD3G, CCR7, LEF1, SELL, TCF7, S1PR1"	na?ve T cells
+CD4-c5-CXCL13	"CD3D, CD3E, CD3G, CD4, HAVCR2, PDCD1, GZMB, ITGAE, CXCL13"	exhausted T cells
+CD4-c6-FOXP3	"CD3D, CD3E, CD3G, FOXP3, CTLA4, IL2RA"	regulatory T cells
+CD8-c1-MKI67	"CD3D, CD3E, CD3G, MKI67, STMN1, CMC1"	proliferative T cells
+CD8-c2-IL7R	"CD3D, CD3E, CD3G, CD8, IL7R, CD74, TYROBP"	central memory T cells
+CD8-c3-CX3CR1	"CD3D, CD3E, CD3G, CX3CR1, KLRG1, FCGR3A, FGFBP2, S1PR1, GZMH"	effector T cells
+CD8-c4-SELL	"CD3D, CD3E, CD3G, CCR7, SELL, ANXA1, ANXA2, S1PR1"	central memory T cells
+CD8-c5-GZMK	"CD3D, CD3E, CD3G, GZMK, CCL4, CCL5, NKG7"	effector memory T cells
+CD8-c6-KLRD1	"CD3D, CD3E, CD3G, KLRD1, KLRF1, GNLY, IL32"	tissue resident memory T cells
+CD8-c7-PDCD1	"CD3D, CD3E, CD3G, HAVCR2, PDCD1, GZMB, ITGAE"	exhausted T cells
+CD8-c8-SLC4A10	"CD3D, CD3E, CD3G, SLC4A10, KLRB1, ZBTB16, NCR3"	MAIT
+NK-c1-FCGR3A	"NKG7, FCGR3A, FGFBP2, CX3CR1, TYROBP, GNLY"	circulating NK cells - blood
+NK-c2-SELL	"NKG7, SELL, NCAM1, KLRD1, GNLY, CCL3"	CD56 high NK cells - blood
+NK-c3-IFNG	"NKG7, FCGR3A, IFNG, GNLY, GZMB, CD69"	circulating NK cells - tissue
+NK-c4-IFNG-HSPA1A	"NKG7, FCGR3A, IFNG, GNLY, GZMB, CD69, HSPA1A"	circulating NK cells - tumor
+NK-c5-CD69	"NKG7, CD69, XCL1"	CD56 int NK cells - tissue
+NK-c6-IL7R	"NKG7, IL7R, AREG, CCL3, CCL5"	CD56 high NK cells - tissue
+NK-c7-CD160	"NKG7, CD160, TIGIT, CCL4, CCL3,IL32, CXCR4, ZNF331"	tissue-resident NK cells - tissue
+NK-c8-CD160-HSPA1A	"NKG7, CD160, HSPA1A, DNAJB1, HSPA1B, HSPA6"	tissue-resident NK cells - tumor
+NK-c9-MKI67	"NKG7, MKI67, TUBB, STMN"	proliferative NK cells
+Mono-c1-CD14	"CST3, LYZ, CD14, VCAN, S100A9, RNASE2, S100A12"	classical monocytes
+Mono-c2-FCGR3A	"CST3, LYZ, FCGR3A, FCER1G, LST1, AIF1, IFITM3"	non-classical monocytes
+DC-c1-CD1C	"CST3, LYZ, CD1C, FCER1A,CLEC10A, VEGFA, IRF4"	CD1C DCs - tissue
+DC-c2-RGS2	"CST3, LYZ, CD1C, RGS2, FCER1A, CLEC10A, IRF4"	CD1C DCs - ascites
+DC-c3-CLEC9A	"CST3, LYZ, CLEC9A, IRF8, IDO1, CLNK, XCR1"	CD141 DCs
+DC-c4-LAMP3	"CST3, LYZ, LAMP3, IDO1, CD274, LTB, CCL19, CCL21"	LAMP3+ DCs
+M¦Õ-c1-THBS1	"CST3, LYZ, CD68, THBS1, S100A8, S100A9"	MDSC-like macrophage
+M¦Õ-c2-C1QA	"CST3, LYZ, CD68, CD163, CD169, C1QA, SLC40A1, GPNMB"	TAM-like macrophage
+M¦Õ-c3-APOE	"CST3, LYZ, CD68, CD163, CD169, APOE"	macrophages - tissue
+M¦Õ-c4-GPX3	"CST3, LYZ, CD68, FCGR3A, SAT1, LST1, HLA-DQB1"	macrophages - tissue
+M¦Õ-c5-VCAN	"CST3, LYZ, CD68, S100A4, HLA-DRA, HLA-DQA1"	macrophages - ascites
+M¦Õ-C6-MARCO	"CST3, LYZ, CD68, MARCO, S100A9, CD163"	macrophages - ascites
+Mast-c1-IL7R	"CST3, S100A9, AIF1, CD79A, IL7R"	mast cells
+Mast-c2-CPA3	"CST3, S100A9, AIF1, CD79A, CPA3"	mast cells
+ILC	"KIT, KLRF1, KLRB1, KLRD1, GZMK, GZMH"	type 3 innate lymphoid cells
+B cell	"CD19, CD79A, MS4A1, CD22"	B cells
+plasma B cell	"CD19, CD79A"	plasma B cells

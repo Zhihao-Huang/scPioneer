@@ -1,0 +1,135 @@
+cellName	geneSymbol
+Acinar cells	Acinar cells	Ctrb1,Klk1b1,Rbpjl,Ptf1a,Cela3a,Spink1,Zg16,Cel,Cela2a,Cpb1,Cela1,Rnase1,Cpa2,Cpa1,Pnlip,Pla2g1b,Clps,Sycn,Pnliprp1,Ctrc,Gm20547,Gdf15,Muc1,Duoxa2,Olfm4,Lgals2,Pdzk1ip1,Rarres2,Cxcl17,Ubd,Anpep,Angptl4,Aldob
+Adipocyte progenitor cells	Adipocyte progenitor cells	Cebpa,Egfr,Fgf10,Gsc,Mmp3,Pparg,Twist2,Gata3,Gli1,Smo,Stab1,Wt1,Scara5,Hoxc8,Tcf7l1,Hoxc9,Hoxc6,Hoxc4,Sult1e1,Ebf2,Nrg4
+Adipocytes	Adipocytes	Slc36a2,P2rx5,Lep,Ucp1,Cidea,Prdm16,Lhx8,Epsti1,Mc2r,Ffar2,Pikfyve,Tlr2,Tlr4,Adrb1,Adrb2,Adrb3,Fabp4,Tnfrsf9,Tbx1,Tmem26,Tcf21,Adipoq,Cfd,Acvr1c,Slc2a4,Lpin1,Plin1,Pck1,Retn,Mest,Adm2,Stat6,Tfe3,Cpped1,Appl2,Apol6,Pxmp2,Agt,Slc1a5,Acsl1,Bcat2,Pnpla2,Cidec,Cdo1,Apoc1,Mmp2,Postn,Lox,Col6a2,Zbtb16,Gulp1,Fzd4,Trip10,Fgf7,Maob,Socs1,Arnt,Sult3a2,Nnmt,Aoc3,H6pd,Cyp27a1,Ifi204,Hsd11b1,Ar,Gdf10,Cyp1b1,Col5a3,Steap4,Ccl11,Nr1h3,Deptor,Cyth3,Fmo1,Acadsb,Xdh,Rspo3,Ptges,Creb3l1,Angptl2,Adam12,Lbp,Nmb,Fst,Cpxm1,C3,Adamts5,Timp1,Metrn,Metrnl,Myo1c,Nqo1,Syap1,Aqp5,Tspo,Azgp1,Lrp1,Pde3b,Lgals12,Serpinf1,Cpt1b,Elovl3,Ppargc1a,Mpzl1,Cited1,Dpt,Esm1
+Adrenergic neurons	Adrenergic neurons	Th,Ddc,Dbh,Pnmt,Slc18a2,Npff,Slc12a7,Syt1
+Airway epithelial cells	Airway epithelial cells	Aqp1,Adh7,Cdh1,Sec14l3
+Airway goblet cells	Airway goblet cells	Muc5b,Muc16,Ltf,Scgb3a1,Dmbt1,Lipf,Msln,Agr2,Gp2,Pigr,Tff2,Qsox1,Fxyd3,Sec23b,Ceacam10,Golph3,Ggh,Galnt5,Galnt6,Muc5ac,Muc4,Muc20,Spdef,Dusp4
+Airway smooth muscle cells	Airway smooth muscle cells	Nog,Acta2,Foxf1,Gata5
+Alpha cells	Alpha cells	Gcg,Ttr,Glp1r,Arx,Pou3f4,Nkx2-2,Resp18,Pyy,Pcsk2,Slc38a5,Tm4sf4,Cryba2,Nkx6-1,Kcnk16,Pcsk1,Prrg2,Irx2,Aldh1a1,Pemt,Chga,Smim24,F10,Scgn,Slc30a8,Sh3gl2,Fap,Dpp4,Gpr119,Mafb,Pax6,Neurod1,Loxl4,Plce1,Gc,Klhl41,Fev,Ptger3,Rfx6,Smarca1,Pgr,Ldb2,Irx1,Ucp2,Rgs4,Gls
+Alveolar macrophages	Alveolar macrophages	Plet1,Il1b,Ccl3,G0s2,Mcemp1,Klhdc4,Gda,Clec7a,Itgax,Tnfaip2,Cd36,Gal,Gpnmb,Mrc1,Marco,Csf2rb2,Mpp1,Trim25,Olr1,S100a4,Gngt2
+Anterior pituitary gland cells	Anterior pituitary gland cells	Aga,Angpt1,Cpeb4,Igsf1,Nktr,Nucb2,Pou1f1,Prl3d1,Rab27a,Rcn3,Sez6l2,Six6,Tbrg1,Tmem130,Pomc,Gmppa,Gnb3,Hepacam2,Asb4,Rax,Nkx2-1,Fshb,Gnrhr,Pitx1,Tshb,Pax7
+Astrocytes	Astrocytes	S100b,Slc1a2,Gfap,Bysl,Aldh1l1,Cd40,Slc1a3,Fgfr3,Gjb6,Aqp4,Htra1,S100a8,Cldn10,Itih3,Nkain4,Acsl6,Acsbg1,Tril,Gpr37l1,Slc4a4,Ntsr2,Slc6a11,Hspa2,Slc16a2,Syne1,Dio2,Slc7a10,Entpd2,Hspb6,Plxnb1,Lcat,Pla2g7,Cmtm5,S1pr1,Slc39a12,Luzp2,Slc25a28,Slc25a46,Wnt3,Fzd2,Tead1,Rlbp1,Aldoc,Gja1,Apoe,Lcn2,Sox9,Vim,Ccr7,Aanat,Fabp7,Socs3,Synm,Hmg20a,Nfatc3,Srr,Slc1a6,Ets1,Slit1,Snph,Il23a
+B cells	B cells	Cd2,Cd5,Ms4a1,Cr2,Cd22,Cd69,Cd70,Cd79a,Cd79b,Cd80,Cd86,Sdc1,Tnfsf4,Tnfrsf13b,Tnfrsf13c,Pdcd1,Ighm,Rasgrp3,Ltb,Fli1,Cd14,Sema6d,Lair1,Ifit3b,Iglc3,Dntt,Mme,Spn,Cd19,Cd27,B3gat1,Cd72,Pax5,Jchain,Mzb1,Ly6d,Fcmr,Bank1,Edem1,Vpreb3,Pou2af1,Creld2,Derl3,Ralgps2,Fchsd2,Pold4,Tnfrsf17,Hvcn1,Fcrla,Edem2,Blnk,Txndc11,Btla,Smap2,Fkbp11,Sec61a1,Arxes2,Spib,Eaf2,Cxcr4,Birc3,Il21r,Igkc,Vpreb1,Lrmp,Klhl6,Slamf6,Bst1,Msh5,Dok3,Bach2,Pxk,Cd38,Ptprc,Ebf1,Bcl11a,Cd55b,Cd74,Cd52,Tlr9,Swap70,Hmga1b
+B cells memory	B cells memory	Cd84,Nt5e
+Basophils	Basophils	Osbpl5,Otub2,P2ry1,Pdk3,Pdzd4,Perp,Plekhg5,Plg,Rnf39,Slc26a3,Slc26a8,Sncaip,St6galnac5,Tulp3,Tec,Unc93a,Wrn,Id1
+Bergmann glia	Bergmann glia	Gria4,Grm3,A2m,Ptch1,Cdc42ep4,Btbd17,Hopx,Ttc21b,Hepacam,Zeb2,Ufl1,Nrxn3,Atp7a,Bicd2,P2rx7,Gria1,Grin2b,Grin3a,Dao,Itgb1,Kif1bp
+Beta cells	Beta cells	Gcgr,Jph3,Hamp2,Ezh1,Ntrk1,Pdx1,Slc2a2,Nkx6-2,Fxyd2,Npy,Rims1,Mafa,Efna5,Lmx1a,Pax4,Iapp,G6pc2,Gjd2,Igf2,Syt13,Nptx2,Gm29427,Edaradd,Adcyap1,Casr,Isl1,Tgfbr3,Six3,Six2,Bmp5,Pir,Stxbp5,Dlk1,Rgs16
+Cajal-Retzius cells	Cajal-Retzius cells	Reln,Diablo,St3gal5,Isoc1,Smoc2,Dync1i1,Nhlh2,Clstn2,Tmem163,Cacna2d2,Cib2,Ndnf,Lingo1,Lnpk,Rnf138rt1,Tmem170b,Abcc5,Cnrip1,Ebf3,Fut9,Pabpn1,Gnl3l,Nudt2,Nsmce3,Dach1,Homer2,Map9,Dnm3,Lztfl1,Fsd1,Tceal1,Rab11fip2,Barhl2,Trim44,Slc17a6,B3galt1,Slitrk5,Erc2,Nbea,Slc25a36,Zdbf2,Mapk8,Gdf5,Ache,Ccm2,Wrap73,Nrg1,Atp13a2,Cntnap2,Pnoc,Lhx1,Lingo2,Fat3,Srgap3,Cdh4,Flrt3,Edil3,Zcchc12,Smad9,Tbr1,Kcnh7,Lhx5,Calb2,Emx2,Zic2,Wnt7b,Aatf,Nanos1,Tbck,Rgmb,Dact1,Eomes,Cnr1
+Cardiac stem and precursor cells	Cardiac stem and precursor cells	Myh6,Tbx18,Fut4,Nkx2-5,Gata4,Etv2,Kit,Abcg3,Mesp1,Bmp4,Adgrl2,Tbx3,Tbx4,Wnt5a,Ankrd1
+Cardiomyocytes	Cardiomyocytes	Tnnc1,Adm,Nppa,Fgf2,Nppb,Tnni3,Tnnt2,Nppc,Des,Hand2,Hand1,Gata6,Myl2,Acta1,Rbm20,Vldlr,Alpk3,Rbm24,Ckmt2,Speg,Myh7b,Myom2,Myom1,Pdlim5,Myh7,Pln,Tcap,Sorbs2,Ryr2,Obscn,Actc1,Myl3,Coro6,Pde4d,Nexn,Fhl2,Mybpc3,Ttn,Gpihbp1,Dmd,Mfn2,Asb2,Art3,Rrad,Adprhl1,Jph2,Pygm,Hspb7,Myoz2,Eno3,Trdn,Actn2,Tnni1,Smpx,Myl7,Tbx20,Trim63,Mb,Myl4,Ctnnb1,Cpt1a,Sox18,Notch1,Csrp3,Txlnb,Atp2a2,Ckm,Ckb,Mitf,Zfpm2,Bdnf,Gja5,Fmod,Mttp,Slc5a1,Trpv1,Sgpl1,Hmgb2,Stc1,Fgf23,Strn,Hey2,Adipor1,Adipor2,Pde1a,Casq2,Tpm3
+Cholangiocytes	Cholangiocytes	Sstr2,Slc4a2,Sctr,Krt7,Kcnn2,Itgb4,Ggt6,Cftr,Cckbr,Ggt1,Jag1,Gpbar1,Ggt7,Krt19,Onecut2,Alpl,Hnf1b,Alb,Tff3,Tff1,Epcam,Cldn13,Mmp7,Tacstd2,Elf3,Spp1,Lgals4
+Cholinergic neurons	Cholinergic neurons	Chat,Slc18a3,Slc5a7,Tac1,Brca1,Acly
+Chondrocytes	Chondrocytes	Prg4,Tnc,Crtac1,Creb3l2,Runx2,Acan,Col2a1,Comp,Matn3,Runx3,Sox6,Bmp2,Fgf18,Gli3,Pbx3,Pthlh,Stat1,Mmp13,Vegfa,Matn1,Col9a1,Gm21983,Sdc3,Emp1,Col6a1,Cytl1,Lum,Gadd45b,Scrg1,Hapln1,Col11a1,S100a9,Chad,Chodl,Atf4,Mgp,Tcf4,Vdr,Atrx,Ager,Il10ra
+Choroid plexus cells	Choroid plexus cells	Kl,Sostdc1,Clic6,Slc4a10,Htr2c,Slc4a5,Slc31a1,Cldn2,Slc13a4,Slc29a4,Gm21973,Cldn1,Slc2a12,Wfikkn2,Slc23a2,Slc26a11,Chmp1a
+Chromaffin cells	Chromaffin cells	Slc26a4,Agrp,Snap25,Snapin,Rapgef2,Serpine1,Cacna1d,Pik3c2a,Ncs1,Pld1,Pld2,Doc2b,Unc13a,Slc18a1,Stx1a,Slc12a2,Plat
+Ciliated cells	Ciliated cells	Ccdc153,Fam161a,Tmem212,Ccdc181,Foxj1,Ccdc17,Ccdc39,Odf3b,Cyp2s1,Lrrc23,Scgb1a1,Tubb4b
+Clara cells	Clara cells	Syt2,Cyp2e1,Foxm1,Ctse,Scgb3a2,Sftpc,Cyp4b1,Bpifa1,Ahr,Mmp28,Lepr,Ern1,Sftpa1,Carm1,Rab3d,Sftpd
+Crypt cells	Crypt cells	Kcne3,Kcnq1,Prom1,Lgr5,Ephb2,Ascl2,Bmi1,Lrig1,Tert,Msi1,Tnfrsf19,Axin2
+Decidual cells	Decidual cells	Xcl1,Igfbp1,Ctsw,Trdc,4922502D21Rik,Cst7,Areg
+Delta cells	Delta cells	Ffar4,Sst,Pcsk9,Rbp4,Baiap3,Bche,Gabrb3,Unc5b,Edn3,Ghsr,Frzb,Gabrg2,Pou3f1,Bhlhe41,Ehf,Lcorl,Etv1
+Dendritic cells	Dendritic cells	Il6,Cd83,Trem2,Arg1,Mgl2,Dnase1l3,Clec9a,Etv6,Cd163,Vsig4,Nr4a3,Traf1,Relb,Batf3,Ccl22,Slamf7,Xcr1,Cxcl16,Scimp,Fcgr3,Fgd2,Rab7b,Naaa,Hck,Cd180,Hfe,Ccr2,Ryr1,Itgae,Sema4a,Slamf8,Cxcr3,Flt3,Tlr3,Ap1s3,Ass1,Adgrg5,Gpr68,Kmo,P2ry10,Rab30,Zbtb46,Aif1,Lst1,Ctss,Irf8,Adgre1,Ccl17,Cd207,Cd8a,Cx3cr1,Gm49368,Ly75,Pdcd1lg2,Gm9733,Axl,Ppp1r14a,Dab2,Vcan,Anxa1,Fcer1a,Cadm1,Lgals3,Napsa,Plbd1,Rnase6,Plac8,H2afy,Slc11a1,Pdpn,Cd28,Ppl,Slurp1,Serpinb9
+Distal tubule cells	Distal tubule cells	Cldn8,Slc12a3,Umod,Calb1,Pvalb,Pgam2,Wnk4,Sgms2,Slc16a7,Abca13,Emx1,Trpm6,Cwh43,Trpm7,Uroc1,Tfrc,Tsc22d2,Larp1b,Clcnka,Klhl3,Kcnj1,Hoxd8,Egf,Tmem213,Tmem52b,Trhde,Kcnj16,Rhcg,Scnn1a,Wnk1,Slc8a1,Aqp2,Avpr2
+Dopaminergic neurons	Dopaminergic neurons	Slc6a3,Foxa2,Kcnj6,Nr4a2,Lmx1b,Cadps2,Chrna6,Mapk8ip2,Ntn1,Prkcg,Tenm1,Neurod6,Smad3,AW822073
+Ductal cells	Ductal cells	Krt20,Onecut1,Ambp,Anxa4,Serping1,Tspan8,Slpi,Serpina5,Pdlim3,Wfdc2,Slc3a1,Aldh1a3,Vtcn1,Lamb3,Ccl2,Ctsh,S100a10
+Embryonic stem cells	Embryonic stem cells	Bmyc,Foxd3,Pou5f1,Itga4,Podxl,Zic1,Prdm5,Ano6,Cdk8,Slc46a2,Zscan10,Kcnip3,Pcgf2,Nanog,Bcl3,Sall4,Tdgf1,Hoxb5,Sumo2,Bnip3,Gjc1,Trim6,Pum2,Gjb4,Sox15,Gm45902,Gjb1,Lmna,Fbxo15,Pml,Thy1,Cd9,Pecam1,Itga6,Fzd1,Sox2,Klf4,Zfp42,Taf8,Gm15262,Nacc1,Nr6a1,Stat3,Lef1,L1td1,Gdf3,Dppa4,Dppa2,Dppa3,Smad5,Smad4,Smad2,Hes1,Esrrb,Dnmt3c,Trim28,Piwil1,Piwil2,Piwil4,Lifr,Il6st
+Endothelial cells	Endothelial cells	Icam1,Itgb3,Sele,Vcam1,Mcam,Procr,Tek,Flt4,Apln,Vwf,Nos3,Thbd,Plvap,Ackr1,Slco1c1,Tmem100,Adgrf5,Nostrin,Mfsd2a,Acvrl1,Mylk,Rasip1,Tie1,Aplnr,Nrp2,Adamts1,Rprm,Adora2a,Arap3,Arhgef15,Card10,Clec14a,Dll4,Gimap5,Gja4,Mmrn2,Npr1,Prkch,Robo4,Scarf1,Sox7,Spns2,Thsd1,Apold1,Hyal2,Clec4g,Gpr182,F8,Rbp7,Calcrl,Aqp7,Tcf15,Cd300lg,Btnl9,Meox2,Erg,Hexim1,Mmrn1,C7,Ramp3,Vegfc,Hey1,Rnd1,Bdp1,Cd46,Meox1,Ccl19,Madcam1,Irx3,Birc2,Lyve1,Sema3d,Emcn,Wfdc1,Adgrl4,Vwa1,Ece1,Ptprb,Cldn5,Sema7a,Foxf2,Pdgfb,Ecscr,Elk3,Cdh5,Plec,Tgfbr2,Cd93,Rgs5,Slc7a5,Eng,Kdr,Slc2a1,Egfl7,Flt1,Epas1,Ednrb,Kcnj8,Cd82,Chst1,Cd34,Prox1,Ehd3,Srgn,Clic4,Ushbp1,Myf6,Oit3,Il1a,C1qtnf1,Pcdh12,Igfbp7,Palmd,Bmx,Sparc,Mgll,Slc9a3r2,Rgcc,Icam2,Sparcl1,Tm4sf1,Srpx,Id3,Cav1,Gng11,Hspg2,Clec1b,S100a13,Crhbp,Sgk1,Cdkn1c,Inmt,Ptgds,Timp3,Gpm6a,Fam167b,Ltc4s,Stab2
+Endothelial cells (aorta)	Endothelial cells (aorta)	Itga5,Tmtc2,Nr1d1,Pkn3,Tmtc1,She,Itgbl1,Grasp,Enpp4,Tmem184b,Foxc2,Dhh,Dennd5b,Kazald1,Fgd5,Fas,Emilin1,Mical2,Nkx2-3,Stxbp6,Synpo,Atp2a3,Gimap4,Cmklr1,Itga9,Smad6,Efnb2,Arl4d,Fkbp7,Nxn,Pdia5,Aph1b,Wbp1l,Lamb2,Chst12,P3h3,Klk10,Mall,Clec1a,Marveld1,Tns2,Atl2,Ackr3,Col4a4,Col4a3,Per3,Ephx2,Klk8,Bace2,Bmp6,Sulf1,Cpq,Pi16,Amigo2,Ptprj,Trim47,Lmcd1,Pde3a,Smoc1,Cracr2b,Sod3,Pcolce2,Ptgis,Ace,Gxylt2
+Endothelial cells (blood brain barrier)	Endothelial cells (blood brain barrier)	Slc19a1,Slc38a3,Tnfrsf21,Foxl2,Foxq1,Ppard,Zic3,Alcam
+Enteric glia cells	Enteric glia cells	Gfra3,Mpz,Lgi4,L1cam,Cxcl14,Dkk3,Ints6,Dhrs3,Sox10,Nos2
+Enteric neurons	Enteric neurons	Hivep3,Plekha5,Igf2bp3,Arhgap26,Ttbk2,Astn1,Cacna1e,Tub,Filip1,Gcnt2,Vezt,Ret,Ahdc1,Map6,Fbxo7,Ppp2r5b
+Erythroid-like and erythroid precursor cells	Erythroid-like and erythroid precursor cells	Hexa,Ccna2,Pklr,Gypa,Thbs1,Fech,Epor,Bpgm,Dcaf12,Hemgn,Hmbs,Ncoa4,Rbm38,Ubb,Tmcc2,Slc4a1,Slc25a39,Slc25a37,Fosb,Htatsf1,Epb41,Rsad2,Cox6b2,Apoa1,Asns,Alad,Ahsg,Ermap,Kcnn4,Pan3,Pfas,Vamp5,Pnpo
+Fibroblasts	Fibroblasts	Col1a1,Nox4,Serpinh1,Cd44,Pdgfra,En1,Dcn,Cebpb,Egr1,Fosl2,Hif1a,Klf2,Klf6,Klf9,Nfat5,Nfatc1,Nfkb1,Nr4a1,Pbx1,Runx1,Lamc1,Medag,Lamb1,Mdk,Gstm7,Ngf,P4htm,Ckap4
+Follicular cells	Follicular cells	Ttf1,Slc6a4,Tshr,Tg,Iyd,Asgr1,Tpo,Dio1,Slc26a7,Cdh16,Slc16a11,Foxe1
+Foveolar cells	Foveolar cells	Anxa10,Sult1c2,Ptgr1,Pgc,Psca,Gkn2,Gkn1,Cldn18,Akr1b8,Il33
+GABAergic neurons	GABAergic neurons	Slc6a1,Gabbr2,Gad1,Pax2,Slc32a1,Gad2,Vip,Tnfaip8l3,Sema3c,Mybpc1,Parm1,Dlx1
+Gamma (PP) cells	Gamma (PP) cells	Ppy,Cmtm8,Sertm1,Slitrk6,Sema3e,Apobec2,Abcc9,Cartpt,Thsd7a,Aqp3,Ptgfr,Chn2,Egr3,Lmo3,Meis1,Fgb
+Gamma delta T cells	Gamma delta T cells	Gzmc,Nkg7,Prf1,Klrd1,Spon2,Ifitm7,Gzma,Cd247,Clic3,Cd7,Adgrg1,Ccl5,Stmn1,Tyms,Mki67,Ube2c,Tuba1b,Aspm,Cenpa,Top2a,Pcna,Aurkb,Birc5,Nusap1,Troap,H2afx,Cenpf,Ccnb1,Tcrg-C4,Trdv5
+Gastric chief cells	Gastric chief cells	Bhlha15,Prkcz,Chrm3
+Germ cells	Germ cells	Tfap2c,Dazl,Ddx4,Zar1,Tex101,Tnp2,Fabp9,Odf2,Crisp2,Tcp11,Phf7,Creb5,Slfnl1,Cox7b2,Kif2b,Ccdc30,Lrrc57,Bcl2l14,Aqp11,Tex35,Spink2,Tssk3,Creb3l4,Tsacc,Spata46,Tekt1,Morn5,Tsks,H2afb2,Atl3,Dmrtb1,Tmco2,Fhl5,Ms4a5,Cst8,Tmem247,Galntl5,Osbp2,March11,Tex33,Spata20,Cdrt4,Spata18,Lrrc18,Scp2d1,Iqcf1,Pgk2,Tulp2,Ccdc54,Akap4,Gtsf1,Ppp3r2,Tppp2,Gstt4,Lelp1,Spert,Catsperz,Mael,Tmem53,Actrt2,Ropn1,Rnf151,Cabs1,Ccdc91,Spata3,Lrrc46,Pdcl2,H1fnt,Tssk6,Cox8b,Cetn1,Spata19,Tssk2,Znrf4,Spata24,Spata4,Fam71e1,Fam229a,Gapdhs,Hspb9,Spata33,Spz1,Prm3,Hmgb4,Ropn1l,Gsg1,Tnp1,Ldhc,Prm2,Dnaaf1,Acyp1,Sord,Dkkl1,Rsph1,Mlf1,Spa17,Meig1,Fkbp6,Taf7l2,Sycp1,Sohlh1,Slc25a31,Phf13,Egr4,Smc1b,Tex15,Mov10l1,Wdr5,Dmrt1,Stra8,Zmynd19,Mdn1,Rsbn1l,Dynlt1b,Parn,Chek1,Dmc1,Mrpl14,Mlh3,Spag6l,Zpbp2,Dnah6,Camk4,Crem,Myo1d,Hook1
+Glomus cells	Glomus cells	Drd2,Nos1,Phox2b,Hmox2,Ndufa4l2,Cox4i2,Il1r1,Tnfrsf1a,Cth,Cbs,Kcnk3,Asic1,Asic3,Cald1,Col4a1,Gfra1,Gfra2,Gap43,Mmp9,Kcnj11,Abcc8,Kcnk9
+Glutaminergic neurons	Glutaminergic neurons	Slc17a7,Grin1,Meis2,Slc17a8,Slc1a1
+Glycinergic neurons	Glycinergic neurons	Slc6a9
+Goblet cells	Goblet cells	Nlrp6,Slc9a8,Otogl,Itln1,Cdon,Tmem207,Cdx2,Guca2a,Muc13,Clca1,Tpsg1,Galnt12,Atoh1,Rep15,Pla2g10,Lrrc26,Manf,Spink4
+Granulosa cells	Granulosa cells	Amh,Bok,Fhl1,Inha,Gm10681,Gm15294,Hsd17b1,Hjurp,Fshr,Cyp19a1
+Hemangioblasts	Hemangioblasts	Tal1
+Hematopoietic stem cells	Hematopoietic stem cells	Mpl,Slamf1,Baalc,Cdcp1,Tgfb2,Ptpre,Taf7,Gata2,Gpr171,Nfe2,Lyl1,Elf1,Hlf,Rgs18,Myct1,Mycs,Arid3a,Itga2b,Txnip,Ptprs,Gfi1,Cd48,Hmgb3,Apc,Gnl3,Mgst1,Prnp,Siglecf,Hlx,Nkx3-1,Ncor2,Mecom,Ctnnal1,Pbx2,Neo1,Maff,Cdh2,Gfi1b,Notch2,Plxdc2,Esam,Trpc6,Tet2
+Hepatic stellate cells	Hepatic stellate cells	Adamts13,Cygb,Ppara,Nr1h4,Pnpla3,Ngfr,Myb,Syp,Vcl,Tagln,Col1a2,Col3a1,Rbp1,Myl9,Tpm2,Bgn,Igfbp3,Olfml3,Igfbp6,Colec11,Hgf
+Hepatoblasts	Hepatoblasts	Afp,Krt14,Hnf4a,Map2k4,Krt18,Krt8,Met
+Hepatocytes	Hepatocytes	Fosl1,Eppk1,Gck,Lrp5,Slc10a1,Atp7b,Gjb2,Fgfr4,Crp,Tfr2,Kif13b,Lipc,G6pc,Otc,Ugt1a1,Zhx2,Foxa3,Foxa1,Cyp7a1,Cyp1a2,Gpc3,Cyp1a1,Nr1i3,Cps1,Gls2,Tat,Prrg4,Apoh,Abcc3,Plscr1,Fga,Apob,Ang5,Sat2,Sfrp5,A1cf,Fgl1,Pah,Serpina6,Apoa2,Fgg,Apoc3,Orm3,Hal,Hmgcs1,Acss2,Tm7sf2,Sec16b,Slbp,Rnd3,Ghr,Aldh6a1,Masp2,Glul,Asl,Tmem97,Cp,Acat3,Tm4sf5,Msmo1,Rcan1,Rpp25l,Apom,Tkfc,Pon3,Ttc36,Golt1a,Mcc,Aqp9,Nnt,Saa4,Mrps18c,Ociad1,Apoa5,Entpd5,C4b,Eid2,Atic,Samd5,Grb14,Abcd3,Rhob,Epb41l4b,Gpat4,Sptbn1,Sdc2,Phlda1,Wtap,Acadm
+Immature neurons	Immature neurons	Pclo,Cux2,Slc12a5,Stim2,Cul5,Hivep2,Ntrk3,Rnd2,Fezf2,Sox5,Robo1,Epha7,Epha3,Notch3,Lhx6,Nes,Rbfox3,Creb1,Ascl1,Syn1,Nf1,Bcl2,Slc6a5,Foxd2,Icam5,Neurog2
+Intercalated cells	Intercalated cells	Foxi1,Atp6v1b1,Slc4a8,Aqp6,Atp6v1c2,Atp6v1g3,Atp6v0d2,Oxgr1,Avpr1a,Rhbg,Dmrt2,P2ry14,Insrr
+Interneurons	Interneurons	Cck,Vsx2,Evx1,Lhx3,Grm1,Oprm1,Grin2d,Tacr1,Crhr1,Pacsin1,Fgf12,Nxph1,Syt7,Ptpro,Dlgap1,Gng4,Hap1,Shisa8,Pcbp3,Abat,Pcp4l1,Synpr,Trh,Adcy8,Eml5,Tmem132d,Bace1,Cacng2,AK157302,Lpgat1,Nat14,Slc22a15,Pde4a,Cacna1i,Fryl,Surf1,Trim9,Kcnc1,Rab3b,Cdk17,Rgs17,Rab26,Cacng7,Inafm1,Brinp1,Pianp,Cplx1,Shisa6,Nrsn2,Cdhr1,Abr,Nrn1,Nxph4,Shisa9,Ly6g6e,Caln1,Cask,Fam81a,Camkv,Arhgap21,Ddn,Sv2b,Frrs1l,Acsl4,Nptxr,Hpcal4,Lypd1,Chn1,Nrgn,Camk2a,Prkcb,Ncald,Rab15,Fbxw11,Adcy1,Fbxo11,Igsf21,Ntng1,Magee1,Scamp1,Psd3,Rora,Dcaf7,Vgf,Rgma,Scrt1,Pou2f2,Srgap1,Slc16a1,Slc36a1,Atg12,Agap1,Zdhhc22,Acbd5,Zdhhc17,Zic4,Ids,Dnajc6,Adgra1,Dzank1,Scn2b,Hspa12a,Lynx1,Kcna2,Oxr1,Disp2,Shox2,Scn8a,Aak1,Gabra4,Nrip3,Prkcd,Ptpn3,Kcnc2,Cdkl5,Ccdc136,Kcnma1,Spock3,Ptpn4,Pdp1,Rgs7bp,Plcb4,Elmo1,Adarb1,Ildr2,Akap8l,Spty2d1,Pcf11,Cldn9,Tceal6,Rorb,Timeless,Cga,Rprml,Cacnb1,Kcnq5,Gabra5,Htr3a,Kcnip2,Rgs10,Cpne5,Crh,Dlx2,Dlx5
+Ionocytes	Ionocytes	Ascl3,Foxn4,Tfcp2l1,Slc9a4,Slc9a7
+Juxtaglomerular cells	Juxtaglomerular cells	Trpv4,Myh11,Cnn1
+Keratinocytes	Keratinocytes	Flg,Kprp,Tgm1,Krt1,Gm5478,Krt16,Krt17,Lama5,Gjb3,Irf3,Lamc2,Sirt7,Ripk4,Rel,Il13ra1,Sgpp1,Pkp3,Pkp1,Anxa8,Trim29,Dsc3,Krt15,S100a14,Dmkn,Fgf5,Tfap2a,Lgals7,Sfn,Krt10,Sbsn,Krt84,Krt36
+Kidney progenitor cells	Kidney progenitor cells	Osr1,Eya1,Sall1
+Kupffer cells	Kupffer cells	Tnf,Mpo,Prok2,Stard5,Msr1,Trem1,Chit1,Osm,Clec4f,Slc40a1,Timd4,Slc15a3,Ccr5,Folr2,Pltp,Irf7,Spic,Csf1r,C1qc,C1qa,C1qb,Clec4e
+Langerhans cells	Langerhans cells	Ccr6
+Leydig cells	Leydig cells	Hsd11b2,Gm28040,Pde8a,Cxcl10,Dhcr7,Cyp17a1,Cyp11a1,Igf1,Nr5a2,Lhcgr,Mlana,Rln1,Rln3,Star,Thbs2,Hsd17b3,Cyp26b1,Igfbp5,Inhba,Vit,Ednra,Adam21,Esrrg,Gprc6a,Gas6,Plaur
+Loop of Henle cells	Loop of Henle cells	Cldn16,Cldn19,Slc12a1,Cdh6,Dkk1,Slc11a2,Arvcf,Parvb,Sh3rf2,Gem,Enc1,Spsb1,Arid5a,Slc14a2,Rnf182,Dram1,Arc,Nek6,Smarcd3,Kcnt1,Ptgs2,Ppp1r1b,Lipg,Lrrc66
+Luminal epithelial cells	Luminal epithelial cells	Fgfr2,Sytl2,Saa3,Krt23,Btg1-ps1,Stc2,Tnfsf10,Pip,Ddr1,Cebpd,Uxt,Pth1r,Atp2c2,Esr1
+Luteal cells	Luteal cells	Akt1,Sfrp4,Plin5,Gm5096,Pgam1,Chka,Pmpcb,Bcat1,Aif1l,Epdr1,Avpi1,Gamt,Tmem86a,Cited4,Fkbp5,Me1
+Macrophages	Macrophages	Itgal,Gpr34,Cpm,F13a1,Tgfbr1,Slamf9,Pira2,C3ar1,Parp14,Rbpj,Slco2b1,March1,Egln3,Fgl2,Clec4d,Adam8,Arl11,Mmp12,Ms4a4a,Fpr1,Rab20,Snx20,Fmnl1,Nceh1,Ccl24,C5ar1,Cd300a,Ccl12,Irf5,Myo1g,Dusp5,Samsn1,Hilpda,Slc37a2,Ctsk,Lpcat2,Hpgds,Ifnar2,Ms4a7,Hpgd,Cd5l,Cyth4,Cd3e,Treml4,Fgr,Cybb,Cd200,Cd200r2,Tyrobp,Rgs1,P2ry6,Maf,Adgre5,Slc7a7,Syk
+Mammary epithelial cells	Mammary epithelial cells	Csn2,Btn1a1,Btn2a2,Mmp14,Tox3,Ffar1,Pygo2,Serpinb5,Irf6,Kdm3a,Slc30a2,Padi2,Csn3,Csn1s1,Rarres1,Piezo1,Ano1,Wnt5b,Nedd9,Foxp4,Lsr,Lif
+Mast cells	Mast cells	Enpp3,Il2ra,Il17a,Cd274,Cxcr2,Ccr3,Mgst2,Cpa3,Cma1,Hnmt,Tpsab1,Cfp,Rab27b,Sla,Il1rl1,Gnai1,Osbpl8,Tmigd3,Hs3st1,Dapp1,Csrnp1,Plek,Hdc,Tph1,Rgs13,Btk,Il4,Ms4a2,AW551984,Milr1,Hs6st2,Mrgpra6,Plau,Adamts9,Cobl,Ctsg,Grik2,Hs3st3a1,Papss2,Pcbd1,Rnf128,Slc29a1,Slc45a3,Stard13,A4galt,Acer3,Armcx3,Bbs10,Bmpr2,C2,Ccdc141,Cdc42bpa,Cdh9,Copz2,Zdhhc13,Wdr60,Unc13b,Trank1,Tiam2,Stk32b,St6galnac3,Socs2,Spred1,Slc31a2,Sgce,Ror1,Rnf180,Rbfox1,Pde1c,Pcdh7,Optn,Oaf,Ndst2,Mlph,Mfge8,Lsamp,Lima1,Krt4,Kdelr3,Hspa13,Hs2st1,Gp1ba,Gnaz,Ext1,Esyt3,Eno2,Enah,Dusp1,Dgki,Dclk3
+Megakaryocytes	Megakaryocytes	Lat,Gp5,Cxcr1,Pde6b,Matk,Kif5b,Gata1,Tspan9,Treml1,Alox12,Selp,Cib1,Plk3,Mafg,Tgfb1,Gp9
+Melanocytes	Melanocytes	Mc1r,Pmel,Slc45a2,Tyr,Tyrp1,Dct,Filip1l,Loxl2,Zc3h7a,Slk,Ahnak2,Hspb1,Pax3,Trpm1,Ctns,Enpp1,Bnc2,Men1,Rab38,Crabp1,Ptn,Klc2,Il24,Tph2,Prkca
+Meningeal cells	Meningeal cells	Foxc1,Bmp7,Aldh1a2,Alx4,Vtn,Igfbp2,Slc47a1
+Merkel cells	Merkel cells	Vil1,Piezo2,Id2,Pou4f3
+Mesangial cells	Mesangial cells	Pdgfrb,Tns1,Sfrp2,Ecm1,Angpt2,Fgf1,Ogt,Noct,Ncoa2,Pla2r1,Trip4,Amotl2,Lats2,Yap1,Mib1,Adamtsl4,Itga8,Dyrk1a,Arid5b,Fn1,Pawr,Serpine2,Actn1,Akap12,Rock1,Sh3bgrl,Rasd1,Sncg,Flna,Mef2c,Cstb,Smarca5,Map3k20
+Mesothelial cells	Mesothelial cells	Gm5414,Has2,Me2,Lrrn4,Il17re,Kcnab1,Pkhd1l1,Cobll1,St3gal1,Fbxo33,Rasl11a,Pcsk6,Gbp2b,Twsg1,Adgrd1,Crls1,Flnc,Fmo2,Efemp1,Fras1,Rspo1
+Microfold cells	Microfold cells	Pglyrp1,Anxa5,Sox8,Mier3,Nfic,Gm49369,Ccl20,Marcksl1,Rac2,Fabp5,Cyba,Tmprss2,Mtf1,Tulp4,Irf2,Nfib
+Microglia	Microglia	P2ry12,Tmem119,Csf3r,Tcirg1,Susd3,Gpr183,Vav1,Slc2a5,Ptafr,Lag3,Entpd1,Tmem173,Tbxas1,P2ry13,Myo1f,Itgb5,Sphk1,Colec12,Aebp1,Ptgs1,Apbb1ip,Cyfip1,Mertk,Bin2,Cmtm6,Ccl4,Ccrl2,Clec3b,Mrc2,Cd53,Fos,Ski
+Monocytes	Monocytes	Dysf,Mefv,Padi4,Tnfrsf14,Mgmt,Sell,Acp5,Mx1,Il1rn,Ido1,Zfp36l2,Lta4h,Clec12a,Prtn3,Psap,Rhoc,Nfkbiz,Ly6e,Lyn,Rgs2,Spi1,Tymp,Pycard,Lyst
+Motor neurons	Motor neurons	Mnx1,Isl2,Evx2,Sim1
+Müller cells	Müller cells	Cnr2,Rdh10,Slitrk2,Crot,Crym,Dapl1,Col4a2,Col5a1,Clu,S100a16,Dbi,Gnai2,Gpr37,Kcnj2,Kcnj10,Spc25,Itm2b,Atg4b,Zbed4,Prdx6,Crb1
+Myoblasts	Myoblasts	Myog,Cdh15,Capn1,Myf5,Myod1,Musk,Stk40,Tnfrsf12a,Myd88,Braf,Six1,Pdzrn3
+Myocytes	Myocytes	Tnni2,Tnnt1,Tnnt3,Tnnc2,Actn3,Ankrd2,Capza3,Clock,Itga7,Lama2,Ldb1,Ldb3,Mstn,Myh1,Myh8,Nbr1,Neb,Nid1,Nid2,Tmod4,Six4,Cav3,Dll1,Dock1,Dock5,Iqsec1,Itga3,Myh14,Nphs1,Prkcq,Ptgir,Ptk2,Pxn,Trio,Washc1,Wipf1,Edn1,Mef2a,Mef2b,Mef2d,Popdc2,Mylpf,Myl1,Myoz1,Thbs4
+Myoepithelial cells	Myoepithelial cells	Cd109,Cdh3,Actg2,Mdfi,Grwd1,Smim3
+Myofibroblasts	Myofibroblasts	Cdh11,Palld
+Natural killer T cells	Natural killer T cells	Il12rb2,Il17ra,Il12rb1,Klrb1f,Itgb2,Map3k8,Tnfrsf8,Il2rb,Tbx21,Ncam1,Styk1,Tcf7
+Neural stem/precursor cells	Neural stem/precursor cells	Sox1,Igf1r,Sp8,Rbm3,Sox3,Neurod4,Neurog1,Nhlh1,Ppp1r17,Tmtc4,Plekhh2,Parp12,Inafm2,Isg15,Ifi44,Mgat5,Pbk,Cbx3,Sp9,Lhx9,Dbx1,Dll3,Otx1,Hes5,Prss56,Id4,Dcx,Ccnd2,S100a6
+Neuroblasts	Neuroblasts	Tshz1,Sall3,Draxin,Erbb4,Trim32,Igfbpl1,Phf1,Mapk7,Prokr2,Pou6f2,Efna2,Cckar,Grm5,Ezh2,Mark2,Lrp8,Dab1,Ncan,Epha4,Tacc3,Tubb3,Sirt1,Pros1
+Neuroendocrine cells	Neuroendocrine cells	Clasp2,Fxyd7,Dpf1,Penk,Sfxn5,Ccdc85c,Atxn1,Gpr88,Pde10a,Abhd2,Spock1,Negr1,Dusp26,Arhgdig,Prss12,Serpini1
+Neurons	Neurons	Epo,Csf3,Nefh,Dlg4,Gabra1,Cxcr5,Aim2,Matn2,Slc36a4,Prph,Mecp2,Rin1,Omp,Ptpn11,Cbarp,B3gat2,Fbln2,Shisa2,Fam181b,Ctxn2,Clstn3,Hdac11,Slc30a9,Copg1,Fbxw7,Nmt1,Arid4a,Tmem91,Cdk5,Safb,Rnf220,Rasgrf1,Tmem179,Nicn1,Napg,Cmip,Zmynd11,Rhbdd2,St8sia3,Pqbp1,Tro,Syt5,Flywch1,Rit2,Pnck,Tmem59l,Gprasp2,Map7d2,Rb1cc1,Gria3,Sfswap,Scn1a,Rnpc3,Rere,Trip11,Kmt2c,Safb2,Sacs,Cspp1,Chd6,Zcchc7,Gpatch8,Ppp1r14c,Ccdc28b,Kcnk1,Gpr162,Tmem191c,Slc6a17,Dner,Ppp1r9a,Atp6v1h,Hpca,Cpne6,Rims3,Ogfod1,Celf6,Prmt2,Avp,Necab2,Cacnb3,Nwd2,Tescl,Necab3,Dgkb,Cttnbp2,Pcp4,Bex2,Ndn,Camk2n1,Pnisr,Stmn2,Ptk2b,Gng2,Vsnl1,Cacna2d1,Sgip1,Atp6v0a1,Myo5a,Prune2,Elavl3
+Neutrophils	Neutrophils	AY761185,Elane,Hp,Mmp8,Lrg1,Asprv1,Ccr1,Ncf1,Sorl1,Arg2,Il1r2,Cd177,Oas3,Camp,Adpgk,Pstpip1,Dock8,Nlrp3
+NK cells	NK cells	Cd244a,Klrk1,Ncr1,Gzmm,Hmbox1,Cd3g,Pcdh15,Dusp2,Txk,Dok2,Samd3,Chsy1,Il18r1,Dock2,Sh2d2a,Gzmk,Ifng,Csf2,Il2rg,Kir3dl1,Klrg1,Adamts14,Itga2,Clec2g
+Noradrenergic neurons	Noradrenergic neurons	Slc6a2,Slc39a11,Slc9b2
+Nuocytes	Nuocytes	Icos,Il17rb,Il7r,Crlf2,Bcl11b,Il5,Il13
+Olfactory epithelial cells	Olfactory epithelial cells	Ano2,Rarg,Lrrc45,Kcnc4,Manea,Pacrg,Gadl1,Tstd1,Ttc21a,Kcna5,Acsm4,Dusp8,Ttll3,Abhd3,Kif9,Endod1,Ttc9,Retreg1,Wdfy1,Casp6,Traf3ip1,Lman2l,Ift74,B9d1,Wdr54,Tollip,Ormdl3,Dnajb14,Scn4b,Mapk15,Cnga4,Eml2,Riiad1,Ccdc184,Macrod1,Cers5,Rnf121,Borcs7,Elmod3,Klhl5,Gm13698,Trim66,Carns1,Tmem107,Cnppd1,Ngrn,Oscp1,Ric8b,Siah2,Cbx4,Cyb561,Nxnl2,Ttc5,Lrriq1,Arl6,Spef2,Mapkap1,Fam131c,Sh3glb2,Fam92b,Pkib,Fetub,Dusp14,Gramd1c,Rtp2,Golga7b,Cfap126,Ift43,Clgn,Efcab10,Mycbp,Rd3,Scn9a,Abhd16a,Impdh1,Ctxn3,S100a5,Faim,Them6,Cnga2,Cntn4,Efna3,Rtp1,Ak1,Flrt1,Jakmip1,Gng13,Acbd7,Fstl5,Gnal,Gfy,Atf5,Stom,Stoml3
+Oligodendrocyte progenitor cells	Oligodendrocyte progenitor cells	Cspg4,Olig2,Matn4,C1ql1,Gpr17,Epn2,Lhfpl3,Neu4,Lad1,Slc25a47,Etv5,Cspg5,Olig1,Tnr,Fyn,Cnp
+Pericytes	Pericytes	Myo1b,Cog7,Heyl,Gnb4,Msx1
+Peritubular myoid cells	Peritubular myoid cells	Lamc3,Mylip,Tmem98,Kcnmb1,Gstm5,Cilp,Ephx1,Osr2,Col15a1,Wnt2b
+Photoreceptor cells	Photoreceptor cells	Rcvrn,Pdc,Nrl,Nr2e3,Sag,Rho,Rom1,Crx,Pde6g,Tpbg,Frmd3,Rd3l,Rnf152,Sebox,Nlk,Stx3,Grm6,Strip2,Vstm2b,Cacna2d4,Trnp1,Otx2,Cacna2d3,Lin7a,Gpr179,Cabp5,Lrtm1,Qpct,Cplx3,B3galt2,Pcp2
+Pinealocytes	Pinealocytes	Asmt,Gngt1,Cngb1,Cnga1,Pde6c,Slc6a6,Adra1b,Drd4,Chrna3,Chrnb4,Cacna1f,Pmepa1
+Plasma cells	Plasma cells	Irf4,Prdm1,Pias1,Htra2,Cd37,Ccr10,Abcb9,Ampd1,Angpt4,Gng7,Gpr25,Hist1h2ae,Ighe,Kcna3,Kcng2,Lime1,Mast1,Mroh7,Pdk1,Sik1,Spag4,St6galnac4,Tgm5,Tmem156,Zbp1,Ssr4,Il16,Ppib
+Plasmacytoid dendritic cells	Plasmacytoid dendritic cells	Cd4,Tradd,Arhgap9,Lamp5,Map3k2,Tnfsf13b,Ptcra,Tlr7,Mctp2,Grm8,Card6,Itm2c,Zfat,Nrp1,Slc15a4,Ccr9,Bst2
+Platelets	Platelets	Cd226,Tnfsf14,Lrrc32,Ltbr,Abcc4,Fermt3,Tubb1,Ppbp,F5,Prkar2b,Stx11,Mfsd2b,Selplg,F11r,Scarb1,Adam10,Ccr4,F2r,Ost4,Gp1bb,Gpx1,Ppdpf,Grap2,Ctsa,Arhgdib,Cdkn2d,Pdlim1,Agpat1,Smox,Sh3bgrl2,Aldh2,Alox5ap,Rap1b,Laptm5,Rasgrp2,Arhgap10,Treml2,Ilk,Nod2,Mapk14,Abca3,Prex1,Atp8a1,F7,Slc17a9,Sirt3,Cyp2u1,Tlr1,Tlr6,Bglap2,Lgals8,Cd40lg
+Pluripotent stem cells	Pluripotent stem cells	Prmt8,Ncoa5,Prdm14,Fgf4,Msh2,Terf1,Nap1l1,Hk2,Esrp1
+Podocytes	Podocytes	Nphs2,Lama3,Myoc,Cdh13,Sema3g,Enpep,Clic5,Rhpn1,Bcam,Magi2,Efnb1,Plod2,Npr3,Pard3b,Myo1e,Sh2d4a,Tdrd5,Iqgap2,Fat1,Foxd1,Trib2,Col4a5,Hspb8,Kank1,Crb2,Lrrc49,Coro2b,Arhgap24,Gprc5a,Epb41l5,Ajuba,Cd2ap,Golim4,Zbtb8a,Tob1,Wsb2,Emc2,Ehd4,Zfp91,Etf1,Emc7,Mapt
+Principal cells	Principal cells	Scnn1g,Fxyd4,Npnt,Scnn1b,Kcne1,Tmem45b,Tmem229a,Gprc5b,Phactr1,Celsr2,Fzd7,Slc2a9,Rnf186,Trpv5,Peli2,Acer2,Tspan1,Nr3c2
+Proximal tubule cells	Proximal tubule cells	Slc6a18,Slc6a19,Slc5a2,Lrp2,Pdzk1,Miox,Slc34a1,Khk,Glyat,Fbp1,Slc22a6,Slc22a12,Slc17a1,Slc13a3,Slc22a8,Folr1,Slc7a13,Ak4,Slc5a8,Slc22a1,Upb1,Slc17a3,Gcdh,Gstz1,Fah,Tmem106a,Cryl1,Slc5a12,Aoah,Slc13a1,Abcc2,Pkhd1,Scin,Slc22a13b,Slc22a7,Slc16a9,Agxt2,Nme4,Hgd,Osgin1,Serpinf2,Haao,Ppic,Slc23a3,Cacng5,Tgfbi
+Pulmonary alveolar type I cells	Pulmonary alveolar type I cells	Mmp11,Sema3b,Rtkn2,Akap5,Emp2,Pxdc1,Crlf1,Egfl6,Fstl3,Mex3b,Radil
+Pulmonary alveolar type II cells	Pulmonary alveolar type II cells	Sfta2,Slc34a2,Sftpb,Soat1,Lpcat1,S100g,Ctnnd1,Ddx3y
+Purkinje neurons	Purkinje neurons	Hdac6,Prkg1,Atp2b2,Pde5a,Itpr3,Pde1b,Pde9a,Cbln1,Mrps35,Shank2,Cerk,Pkp4,Adgrb1,Hcn1,Slc24a2,Slc24a3,Cnpy1,Gpsm1,Ppm1e,Grid2
+Pyramidal cells	Pyramidal cells	Spink8,Ywhaz,Map2,Rtn4,Pde2a,Kcnb1,Kcnq2,Kcnq3,Satb2,Oxtr,Kcnd2,Kcnd3
+Radial glia cells	Radial glia cells	Pdgfd,Spry1
+Red pulp macrophages	Red pulp macrophages	Hmox1,Siglec1
+Reticulocytes	Reticulocytes	Ruvbl1,Ucp3,Ube2o
+Retinal ganglion cells	Retinal ganglion cells	Pou4f2,Atf6b,Snx16,Irx5,Ydjc,Dpp10,Shd,Smim18,Galnt14,Chrnb3,Them4,Scaper,Galntl6,Nkain3,Lhfpl5,Srrm3,Galnt9,Mtus2,Iglon5,Dctn1,Btbd10,Stoml1,Nell1,Rtn2,Evc2,Syt16,Ttll1,Gphn,Ablim3,Grip1,Tox2,Narf,Dtx1,Mab21l2,Kctd8,Cpne4,Klhdc8a,Irx6,Csdc2,Akap7,Rbpms,Pou4f1,Rbpms2,Cdk14
+Satellite cells	Satellite cells	Erbb2,Foxk1,Calcr,Asb5,Srxn1,Bdkrb1,Barx2,Vamp2,Peg3,Scrib,Nfatc2,Hoxc10
+Satellite glial cells	Satellite glial cells	Bdkrb2,Tgfa,Mapk1,Jak2,Sstr1,Cnga3
+Schwann cells	Schwann cells	Mag,Tst,Ndrg1,Cthrc1,Nf2,Prx,Bcas1,Aspa,Bag3,Rxrg,Egfl8,Scn7a,Apod,Cryab,Plp1,Pmp22,Cadm4,Kcna1
+T regulatory cells	T regulatory cells	Tnfrsf4,Ctla4,Izumo1r,Tnfrsf18,Il10,Itgb8
+Tanycytes	Tanycytes	Gpr50,Col23a1,Lhx2,Col25a1
+Taste receptor cells	Taste receptor cells	Tas1r1,Tas1r2,Tas1r3,Kcnh2,Gnat3,Trpm5,Nr3c1,Pkd2l1,Mcoln3,Trpm8,Grm4
+Thymocytes	Thymocytes	Tagap1,Bcl6,Ezr
+Transient cells	Transient cells	Col18a1,Slc43a2,Tmem117,St14,Enpp5,Gclc,Itgav,Tmem50b,Aco2,Smpd1,Ogdh,Cdc42bpb,Pip4k2c
+Trichocytes	Trichocytes	Dsg2,Dsg4,Hoxc13
+Trigeminal neurons	Trigeminal neurons	Crebrf,Prkx,Prdm12,Dhcr24,Calca,Calcb,Ppp1r1c,Avil,Pirt,Rufy2,Fam189b,Zdhhc2,Phf24,Kcnab2,Atl1,Fkbp1b,Tln2,Gdap1,Dgkz,Dgkh,Cpne3,Ccdc92,Add2,Vamp1,Scn10a
+Trophoblast cells	Trophoblast cells	Ttpa,Cyp24a1,Elf5,Ackr2,Dlx3,Gcm1,Phlda2,Tfeb,Parp1
+Trophoblast progenitor cells	Trophoblast progenitor cells	Isg20,Foxo4
+Tuft cells	Tuft cells	Sucnr1,Fabp1,Pou2f3,Cdhr2,Espn,Dclk1,Camk2b,Il25,Plcb2,Asic5,Klf3,Drd3,Nrep,Ffar3,Alox5,Tslp
+Undefined placental cells	Undefined placental cells	Dio3,Dusp9,Las1l,Ldoc1,Mbnl3,Prss8,Sct
+Urothelial cells	Urothelial cells	Nat1,Upk1b,Umodl1,Slc14a1,Upk3a,Upk1a,Upk2,Upk3b
