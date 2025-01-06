@@ -14,7 +14,7 @@ deps <- c('ggplot2', 'Seurat', 'reshape2', 'dplyr', 'BiocParallel', 'clustree',
           'RColorBrewer',  'pheatmap', 'SingleCellExperiment', 'gridExtra', 
           'network', 'GGally', 'png', 'org.Hs.eg.db', 
           'reticulate', 'progress', 'pbapply',  'circlize', 
-          'cowplot', 'dendextend', 'ggsci', #'Cairo','iSEE', 
+          'cowplot', 'dendextend', 'ggsci',  
           'openxlsx', 'S4Vectors', 
           'gridBase', 'BiocNeighbors', 'limma', 'scDblFinder')
 
