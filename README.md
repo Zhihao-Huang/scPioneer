@@ -1,4 +1,4 @@
->scPioneer is a R package for preprocessing and visualization of scRNA-seq data friendly.
+>ScPioneer is a R package for preprocessing and visualization of scRNA-seq data friendly.
 
 Install required packages:
 ```
