@@ -4,23 +4,12 @@ Install required packages:
 
 install.packages('remotes')
 
-remotes::install_version('Seurat', version = '5.0.1')
+install.packages('BiocManager')
 
-remotes::install_github('satijalab/seurat-wrappers')
+remotes::install_github("satijalab/seurat-data", "seurat5", quiet = TRUE)
 
-install.packages("https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_5.0.1.tar.gz", repos=NULL, type="source")
+remotes::install_github("satijalab/seurat-wrappers", "seurat5", quiet = TRUE)
 
-deps <- c('ggplot2', 'Seurat', 'reshape2', 'dplyr', 'BiocParallel', 'clustree', 
-          'RColorBrewer',  'pheatmap', 'SingleCellExperiment', 'gridExtra', 
-          'network', 'GGally', 'png', 'org.Hs.eg.db', 
-          'reticulate', 'progress', 'pbapply',  'circlize', 
-          'cowplot', 'dendextend', 'ggsci',  
-          'openxlsx', 'S4Vectors', 
-          'gridBase', 'BiocNeighbors', 'limma', 'scDblFinder')
-
-pkgs <- installed.packages(.libPaths())
-
-for (i in deps) if (!i %in% rownames(pkgs)) BiocManager::install(i,update = F)
 
 Then install scPioneer:
 
