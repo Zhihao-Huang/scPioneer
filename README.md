@@ -3,11 +3,9 @@
 Install required packages:
 ```
 install.packages('remotes')
-
 install.packages('BiocManager')
 
 remotes::install_github("satijalab/seurat-data", "seurat5", quiet = TRUE)
-
 remotes::install_github("satijalab/seurat-wrappers", "seurat5", quiet = TRUE)
 ```
 
