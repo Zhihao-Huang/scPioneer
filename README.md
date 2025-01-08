@@ -28,6 +28,7 @@ Then install scPioneer:
 Quick-start:
 ```
 ### Automatically perform QC and clustering from raw rds.
+library(scPioneer)
 param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
 param$object <- 'PATH TO YOUR RAW RDS'
 param$is_multidata <- 'TRUE'
