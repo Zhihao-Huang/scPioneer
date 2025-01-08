@@ -116,7 +116,7 @@ PHASE1_run_Seurat_v3_QC_clustering <- function(param) {
     blacklistgene[['Mitochondria']] <- rownames(SeuratS4)[grepl("mt-", rownames(SeuratS4))]
     blacklistgene[['Ribosome']] <- rownames(SeuratS4)[grepl("^Rp[sl]", rownames(SeuratS4))]
     blacklistgene[['Heat.shock.protein']] <- rownames(SeuratS4)[grepl("^Hsp", rownames(SeuratS4))]
-    df <- biospiper::convert_symbol_mouse_human(blacklist$Dissociation, 'human',using.local.file = T,file.dir = '/storage2/hlinglab/jasper/database/orthologs/')
+    df <- biospiper::convert_symbol_mouse_human(blacklist$Dissociation, 'human',using.local.data )
     blacklistgene[['Dissociation']] <- df$MGI_symbol[!is.na(df$MGI_symbol)]
     maxl <- max(sapply(blacklistgene, length))
     n <- names(blacklistgene)
@@ -567,7 +567,7 @@ PHASE1_run_Seurat_v3_QC_clustering_param_template <- function() {
   param[['scdblFinder_dbr.sd']] <- 'NULL'
   param[['filter.doublet']] <- F
   param[['python_home']] <- '/home/jasper/.conda/envs/easylook/bin/python'
-  param[['scrublet_script_path']] <- '/storage2/hlinglab/jasper/pipeline_development/easylook/scrublet.py'
+  param[['scrublet_script_path']] <- './scPioneer/R/scrublet.py'
   param[['expected.doublet.rate']] <- 0.05
   param[['max.doublet.rate']] <- 0.2
   param[['is_multidata']] <- 'TRUE'

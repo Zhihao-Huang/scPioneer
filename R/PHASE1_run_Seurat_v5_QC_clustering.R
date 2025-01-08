@@ -689,7 +689,7 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   param[['filter.doublet']] <- F
   param[['python_home']] <- '/home/jasper/.conda/envs/Seurat_v5/bin/python'
   param[['python_env']] <- gsub('bin.*$','',param[['python_home']])
-  param[['scrublet_script_path']] <- '/storage2/hlinglab/jasper/pipeline_development/scPioneer/scpioneer_v2.0.0/scPioneer/R/scrublet.py'
+  param[['scrublet_script_path']] <- './scPioneer/R/scrublet.py'
   param[['expected.doublet.rate']] <- 0.05
   param[['max.doublet.rate']] <- 0.2
   param[['is_multidata']] <- 'TRUE'
