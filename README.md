@@ -23,3 +23,16 @@ remotes::install_github("satijalab/seurat-wrappers", "seurat5")
 Then install scPioneer:
 
 `remotes::install_github('Zhihao-Huang/scPioneer')`
+
+
+Quick-start:
+'''
+### Automatically perform QC and clustering from raw rds.
+param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
+param$object <- 'PATH TO YOUR RAW RDS'
+param$is_multidata <- 'TRUE'
+param$sample_colname <- 'COLNAME OF YOUR SAMPLES'
+param$detect.doublet <- 'scDblFinder'
+param$outdir <- 'OUTPUT PATH'
+obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
+'''
