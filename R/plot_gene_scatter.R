@@ -24,7 +24,7 @@ FeaturePlot2 <- function (object, features, color = NULL, pt.size = 0.1,
                          axis.line = element_blank(), axis.text = element_blank(), 
                          axis.ticks = element_blank(), plot.margin = unit(plot.margin, 
                                                                           "cm"))
-  if (ncols(object) > 100000 | ncols(object) < 10000 | AI.friendly) pt.size = 1
+  if (ncol(object) > 100000 | ncol(object) < 10000 | AI.friendly) pt.size = 1
   if (!is.null(split.by)) {
     p <- FeaturePlot(object = object, features = features, pt.size = pt.size, 
                      split.by = split.by,...)
