@@ -1,5 +1,6 @@
 >ScPioneer is a R package for preprocessing and visualization of scRNA-seq data friendly.
 
+>Installation
 Install required packages:
 ```
 install.packages('remotes')
@@ -23,3 +24,47 @@ remotes::install_github("satijalab/seurat-wrappers", "seurat5")
 Then install scPioneer:
 
 `remotes::install_github('Zhihao-Huang/scPioneer')`
+
+
+>Quick-start:
+Processing single sample.
+
+```
+### Automatically perform QC and clustering from raw rds.
+library(scPioneer)
+param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
+param$object <- 'PATH TO YOUR RAW RDS'
+param$outdir <- 'OUTPUT PATH'
+obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
+```
+
+Processing multi-samples from filtered matrix of Cellranger.
+```
+### Automatically perform QC and clustering from matrix files.
+library(scPioneer)
+samplelist <- data.frame(samplename = c('sample1','sample2'),
+                         datadir = c('/XXX/sample1/outs/filtered_feature_bc_matrix/',
+                                     '/XXX/sample2/outs/filtered_feature_bc_matrix/'))
+write.table(samplelist, file = samplelist_path, sep = '\t')
+param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
+param$samplelist <- samplelist_path
+param$is_multidata <- 'TRUE'
+param$sample_colname <- 'COLNAME OF YOUR SAMPLES'
+param$detect.doublet <- 'scDblFinder'
+param$outdir <- 'OUTPUT PATH'
+param$species <- 'Mouse'
+obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
+```
+Processing multi-samples from Seruat object.
+```
+### Automatically perform QC and clustering from raw rds.
+library(scPioneer)
+param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
+param$object <- 'PATH TO YOUR RAW RDS'
+param$is_multidata <- 'TRUE'
+param$sample_colname <- 'COLNAME OF YOUR SAMPLES'
+param$detect.doublet <- 'scDblFinder'
+param$outdir <- 'OUTPUT PATH'
+param$species <- 'Mouse'
+obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
+```
