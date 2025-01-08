@@ -43,9 +43,9 @@ Processing multi-samples from filtered matrix of Cellranger.
 ```
 ### Automatically perform QC and clustering from raw rds.
 library(scPioneer)
-samplelist_path <- data.frame(samplename = c('sample1','sample2'),
+samplelist <- data.frame(samplename = c('sample1','sample2'),
                               datadir = c('/XXX/sample1/outs/filtered_feature_bc_matrix/','/XXX/sample2/outs/filtered_feature_bc_matrix/'))
-write.table(samplelist_path, file = samplelist_path)
+write.table(samplelist, file = samplelist_path, sep = '\t')
 param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
 param$samplelist <- samplelist_path
 param$is_multidata <- 'TRUE'
