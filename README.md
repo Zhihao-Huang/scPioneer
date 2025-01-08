@@ -1,5 +1,6 @@
 >ScPioneer is a R package for preprocessing and visualization of scRNA-seq data friendly.
 
+>Installation
 Install required packages:
 ```
 install.packages('remotes')
@@ -25,7 +26,7 @@ Then install scPioneer:
 `remotes::install_github('Zhihao-Huang/scPioneer')`
 
 
-Quick-start:
+>Quick-start:
 Processing single sample.
 
 ```
