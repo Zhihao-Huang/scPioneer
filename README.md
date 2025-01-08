@@ -26,15 +26,13 @@ Then install scPioneer:
 
 
 Quick-start:
+Processing single sample.
 
 ```
 ### Automatically perform QC and clustering from raw rds.
 library(scPioneer)
 param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
 param$object <- 'PATH TO YOUR RAW RDS'
-param$is_multidata <- 'TRUE'
-param$sample_colname <- 'COLNAME OF YOUR SAMPLES'
-param$detect.doublet <- 'scDblFinder'
 param$outdir <- 'OUTPUT PATH'
 obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
 ```
@@ -52,6 +50,7 @@ param$is_multidata <- 'TRUE'
 param$sample_colname <- 'COLNAME OF YOUR SAMPLES'
 param$detect.doublet <- 'scDblFinder'
 param$outdir <- 'OUTPUT PATH'
+param$species <- 'Mouse'
 obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
 ```
 Processing multi-samples from Seruat object.
@@ -64,5 +63,6 @@ param$is_multidata <- 'TRUE'
 param$sample_colname <- 'COLNAME OF YOUR SAMPLES'
 param$detect.doublet <- 'scDblFinder'
 param$outdir <- 'OUTPUT PATH'
+param$species <- 'Mouse'
 obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
 ```
