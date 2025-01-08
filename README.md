@@ -11,7 +11,7 @@ deps <- c('R.utils','ggplot2', 'reshape2', 'dplyr', 'BiocParallel', 'clustree', 
           'pheatmap', 'SingleCellExperiment', 'gridExtra', 'network', 'GGally', 'png',
           'org.Hs.eg.db','org.Mm.eg.db', 'reticulate', 'progress', 'pbapply', 'circlize', 'cowplot', 
           'dendextend', 'ggsci','openxlsx', 'S4Vectors', 'gridBase', 'BiocNeighbors',
-          'limma', 'scDblFinder', 'clusterProfiler')
+          'limma', 'clusterProfiler')
 exist_pkgs <- installed.packages(.libPaths())
 for (i in deps) if (!i %in% rownames(exist_pkgs)) BiocManager::install(i,update = F)
 
