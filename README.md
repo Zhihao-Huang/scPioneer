@@ -1,6 +1,7 @@
 >ScPioneer is a R package for preprocessing and visualization of scRNA-seq data friendly.
 
 >Installation
+
 Install required packages:
 ```
 install.packages('remotes')
@@ -26,7 +27,8 @@ Then install scPioneer:
 `remotes::install_github('Zhihao-Huang/scPioneer')`
 
 
->Quick-start:
+>Quick-start
+
 Processing single sample.
 
 ```
@@ -38,7 +40,7 @@ param$outdir <- 'OUTPUT PATH'
 obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
 ```
 
-Processing multi-samples from filtered matrix of Cellranger.
+Processing multi-samples from filtered matrix.
 ```
 ### Automatically perform QC and clustering from matrix files.
 library(scPioneer)
