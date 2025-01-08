@@ -877,10 +877,10 @@ QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE",
       object <- CellCycleScoring(object = object, g2m.features = cc.genes$g2m.genes, 
                                  s.features = cc.genes$s.genes)
     }else{
-      orthologs <- biospiper::Get_orthologs_mouse_human(version = 98,#101 -> 98, 20230103
+      orthologs <- Get_orthologs_mouse_human(version = 98,#101 -> 98, 20230103
                                                         remove.duplicated = F,
                                                         only.one.to.one = T,
-                                                        using.local.file = F)
+                                                        using.local.data = T)
       rownames(orthologs) <- orthologs$HGNC_symbol
       g2m.genes.mouse <- as.vector(unique(orthologs[cc.genes$g2m.genes,]$MGI_symbol))
       s.genes.mouse <- as.vector(unique(orthologs[cc.genes$s.genes,]$MGI_symbol))
@@ -1238,6 +1238,7 @@ subsetID <- function (IDmat, num = NULL, fraction = NULL, min.cell = 10,
                      stringsAsFactors = F)
   colnames(newI) <- c("ID", "Cellnames")
   mingroup <- min(table(newI$ID))
+  if (is.null(num)) num <- min(table(IDmat$Annotation))
   frac <- round(num/nrow(newI), 5)
   set.seed(seed)
   if (frac > 1) {
@@ -1245,7 +1246,7 @@ subsetID <- function (IDmat, num = NULL, fraction = NULL, min.cell = 10,
   }
   else if (mingroup * frac < 1) {
     cell10000 <- lapply(unique(newI$ID), function(x) {
-      if (sum(newI$ID %in% x) < 10) {
+      if (sum(newI$ID %in% x) < min.cell) {
         newI[newI$ID %in% x, ]
       }
       else if (sum(sample_frac(newI, frac)$ID %in% x) < 
@@ -1263,8 +1264,16 @@ subsetID <- function (IDmat, num = NULL, fraction = NULL, min.cell = 10,
   }
   if (!is.null(fraction)) {
     cell10000 <- newI %>% group_by(ID) %>% sample_frac(fraction)
-    if (length(unqiue(cell10000$ID)) != length(unique(newI$ID))) {
-      stop("Fraction is too large.")
+    tab <- table(cell10000$ID)
+    if (any(tab < min.cell) | length(unique(cell10000$ID)) != length(unique(newI$ID))) {
+      min.group <- names(tab)[tab < min.cell]
+      cell10000 <- cell10000[!cell10000$ID %in% min.group,]
+      for ( i in min.group) {
+        df <- newI[newI$ID == i,]
+        set.seed(seed)
+        if (nrow(df) > min.cell) df <- df[sample(1:nrow(df),min.cell),] 
+        cell10000 <- rbind(cell10000, df)
+      }
     }
   }
   return(cell10000)

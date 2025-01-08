@@ -20,9 +20,8 @@ get_blacklist <- function(SeuratS4,param) {
     blacklistgene[['Mitochondria']] <- rownames(SeuratS4)[grepl("mt-", rownames(SeuratS4))]
     blacklistgene[['Ribosome']] <- rownames(SeuratS4)[grepl("^Rp[sl]", rownames(SeuratS4))]
     blacklistgene[['Heat.shock.protein']] <- rownames(SeuratS4)[grepl("^Hsp", rownames(SeuratS4))]
-    df <- biospiper::convert_symbol_mouse_human(blacklist$Dissociation, 'human',
-                                                using.local.file = T,
-                                                file.dir = '/storage2/hlinglab/jasper/database/orthologs/')
+    df <- convert_symbol_mouse_human(blacklist$Dissociation, 'human',
+                                                using.local.data = T)
     blacklistgene[['Dissociation']] <- df$MGI_symbol[!is.na(df$MGI_symbol)]
     maxl <- max(sapply(blacklistgene, length))
     n <- names(blacklistgene)

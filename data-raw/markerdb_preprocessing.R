@@ -75,6 +75,16 @@ db_self <- angrycelldata$db_self
 panglaodb_hs <- angrycelldata$panglaodb_hs
 panglaodb_mm <- angrycelldata$panglaodb_mm
 usethis::use_data(db_self, panglaodb_hs, panglaodb_mm, overwrite = F)
+
+# orthologs genesets
+files <- list.files('./data-raw/')
+txtfiles <- files[grepl('txt$',files)]
+orthologslist <- lapply(txtfiles, function(x) {
+  df <- read.table(paste0('./data-raw/', x), sep = '\t')
+})
+versions <- gsub('^.*version_|.txt$','', txtfiles)
+names(orthologslist) <- paste0('v',versions)
+
 ##save rda
 usethis::use_data(A_M, addm_qss, D_M, db_self, db_self_mm10, db_user_mm10,
                   db_users, db1, db2, db3, db4, dblayers, dbref, dbspf, HKgene,
@@ -82,7 +92,7 @@ usethis::use_data(A_M, addm_qss, D_M, db_self, db_self_mm10, db_user_mm10,
                   mlist2, mlist3, MSigDBlist, MSigDBnames, Rlist, slist, 
                   templv1.2.0, user_links, user_mindrlist1, user_mindrlist2, 
                   user_mlist1, user_mlist2, user_mlist3, user_Rlist, user_slist,
-                  panglaodb_hs,panglaodb_mm,
+                  panglaodb_hs,panglaodb_mm, orthologslist,
                   overwrite = TRUE,
                   internal = TRUE)
 
