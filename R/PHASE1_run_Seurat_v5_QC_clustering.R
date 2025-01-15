@@ -448,7 +448,7 @@ run_batch_effect_correction <- function(SeuratS4, param) {
       # Must use specific version of Seurat before running scvi. See https://github.com/satijalab/seurat/issues/7944
       SeuratS4 <- IntegrateLayers(
         object = SeuratS4, method = scVIIntegration, 
-        groups = "Method", dims = param[['select_PCs']],
+        groups = param[['batch_correct_colname']], dims = param[['select_PCs']],
         normalization.method = param[['normalize_method']],
         orig.reduction = "pca", new.reduction = "integrated.scvi",
         conda_env = param[['python_env']], verbose = F
@@ -524,6 +524,7 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
     }else{
       SeuratS4@meta.data$Sample <- param[['project']]
     }
+    SeuratS4 <- JoinLayers(SeuratS4)
   }else{
     # single sample
     main_obj <- readRDS(param[['object']])
@@ -644,7 +645,7 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   ##config
   param <- list()
   param[['samplelist']] <- "NULL"
-  param[['object']] <- "./result/101.cluster_main/final.rds"
+  param[['object']] <- "NULL"
   param[['subset_colname']] <- 'NULL'
   param[['subset_type']] <- c('Macrophage')
   param[['sample_colname']] <- 'NULL'
@@ -689,7 +690,7 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   param[['filter.doublet']] <- F
   param[['python_home']] <- '/home/jasper/.conda/envs/Seurat_v5/bin/python'
   param[['python_env']] <- gsub('bin.*$','',param[['python_home']])
-  param[['scrublet_script_path']] <- './scPioneer/R/scrublet.py'
+  param[['scrublet_script_path']] <- '/storage2/hlinglab/jasper/pipeline_development/scPioneer/scpioneer_v2.0.0/scPioneer/R/scrublet.py'
   param[['expected.doublet.rate']] <- 0.05
   param[['max.doublet.rate']] <- 0.2
   param[['is_multidata']] <- 'TRUE'
