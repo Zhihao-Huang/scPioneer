@@ -467,7 +467,7 @@ run_batch_effect_correction <- function(SeuratS4, param) {
                             dims = param[['select_PCs']])
       param[['umap_name']] <- paste0(param[['umap_name']],'.Full')
     }
-    SeuratS4 <- JoinLayers(SeuratS4)
+    SeuratS4 <- JoinLayers(SeuratS4, assay = "RNA")
   }else{
     message('Skip batch effect correction.')
   }
@@ -519,12 +519,12 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
     }
     SeuratS4 <- Reduce(merge, objlist)
     SeuratS4$Cellname <- colnames(SeuratS4)
-    if (param[['is_multidata']] == 'TRUE') {
+    if (param[['is_multidata']] == 'TRUE' | nrow(samplelist) > 1) {
       SeuratS4@meta.data$Sample <- gsub('_cell_.*$','',colnames(SeuratS4))
     }else{
       SeuratS4@meta.data$Sample <- param[['project']]
     }
-    SeuratS4 <- JoinLayers(SeuratS4)
+    SeuratS4 <- JoinLayers(SeuratS4, assay = "RNA")
   }else{
     # single sample
     main_obj <- readRDS(param[['object']])

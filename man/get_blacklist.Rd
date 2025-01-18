@@ -5,7 +5,7 @@
 \title{Blacklist is from doi.org/10.1038/s41586-022-05400-x
 To avoid unexpected noise and expression artefacts by dissociation, a total of 1,514 genes associated with mitochondria (50 genes), heat-shock protein (178 genes), ribosome (1,253 genes) and dissociation (33 genes) were excluded (Supplementary Table 1).}
 \usage{
-get_blacklist(SeuratS4)
+get_blacklist(SeuratS4, param)
 }
 \description{
 Blacklist is from doi.org/10.1038/s41586-022-05400-x

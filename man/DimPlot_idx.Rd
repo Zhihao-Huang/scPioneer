@@ -12,13 +12,21 @@ DimPlot_idx(
   label.idx.size = 5,
   repel = F,
   idx.sep = " - ",
+  idx.in.key = F,
   prefix.index = NULL,
   cover.outlier = F,
   alter.group.for.outlier = "seurat_clusters",
   rev.outlier.order = F,
+  legend.ncol = 2,
+  legend.byrow = F,
+  legend.title = NULL,
+  legend.position = "right",
+  legend.key.size = 5,
+  legend.text.size = 8,
   AI.friendly = F,
   return.obj = F,
   combine = F,
+  cols = NULL,
   ...
 )
 }

@@ -11,8 +11,24 @@ M1M2_score(
   return.data = F,
   M1M2list = NULL,
   AddModuleScore = F,
-  plot.type = "violin",
-  correlation_centre = T
+  plot.type = c("violin", "violin merge", "box", "correlation"),
+  celltype.order = NULL,
+  order.by.M1M2 = c("none", "M1", "M2", "diff"),
+  correlation_centre = T,
+  remove.axis.x = F,
+  legend.title = "Average expression",
+  legend.position = "right",
+  legend.title.size = 8,
+  strip.position = "bottom",
+  nrow = 1,
+  strip.text.size = 8,
+  strip.text.angle = 45,
+  strip.text.hjust = 1,
+  strip.text.vjust = 1,
+  panel.spacing = 0.5,
+  clip = "on",
+  border.color = "black",
+  border.size = 0.5
 )
 }
 \arguments{
@@ -22,7 +38,7 @@ M1M2_score(
 
 \item{return.data}{Return statistic data.}
 
-\item{plot.type}{The type of plot. Only 'violin', 'box' or 'correlation' is provided.}
+\item{plot.type}{The type of plot. Only 'violin', 'violin merge','box' or 'correlation' is provided.}
 }
 \value{
 A ggplot object of violin, box or heatmap.

@@ -9,6 +9,7 @@ score_correlation(
   genesetlist,
   cellpos,
   AddModuleScore = F,
+  genesetname = NULL,
   scatter_average = F
 )
 }

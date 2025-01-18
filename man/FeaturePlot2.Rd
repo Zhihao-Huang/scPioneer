@@ -8,7 +8,7 @@ FeaturePlot2(
   object,
   features,
   color = NULL,
-  pt.size = 1,
+  pt.size = 0.1,
   legend.position = c(1, 0.2),
   legend.key.size = 0.3,
   legend.text.size = 6,

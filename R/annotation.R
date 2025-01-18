@@ -575,7 +575,7 @@ angrycell <- function(object, select.db = c('db_self'),
                       test.method = 2, ...) {
   options(stringsAsFactors = F)
   object@active.assay <- active.assay
-  mat <- object@assays[[active.assay]]@data
+  mat <- GetAssayData(object, assay = active.assay)
   # filter RP/MT genes
   mat <- mat[!grepl("^RP[SL]|^MT-", rownames(mat)), ]
   ident <- Idents(object)
@@ -880,3 +880,210 @@ anno_top_gene <- function(object, markerdf, group.by = 'seurat_cluster'
   Idents(object) <- meta$Annotation
   return(object)
 }
+
+#' Annotate Celltypes by SingleR
+#' 
+#' @examples
+#' pbmc <- anno_SingleR(pbmc, species = 'Human') # based on individual cells
+#' pbmc <- anno_SingleR(pbmc, species = 'Human', raw_cluster = 'seurat_clusters') # based on seurat clusters
+#' @export
+anno_SingleR <- function(object, species, assay = 'RNA', raw_cluster = NULL, 
+                         ensembl_version = 98,
+                         label_colname = 'SingleR_label_cell',
+                         label_raw_cluster_colname = 'SingleR_label_raw_cluster',
+                         ref = NULL, 
+                         ref.label = c("label.main", "label.fine", "label.ont"),
+                         ...) {
+  ref.label <-  match.arg(NULL, choices = ref.label)
+  if (is.null(ref)) {
+    hpca <- celldex::HumanPrimaryCellAtlasData(ensembl=F)
+    bpe <- celldex::BlueprintEncodeData(ensembl=F)
+    hpca$label.main <- paste0("HPCA.", hpca$label.main)
+    bpe$label.main <- paste0("BPE.", bpe$label.main)
+    shared <- intersect(rownames(hpca), rownames(bpe))
+    ref <- SEtools::mergeSEs( list(se1=hpca[shared,], se2=bpe[shared,]) )
+  }
+  counts <- GetAssayData(object, assay = assay, layer = 'counts')
+  if (species == "Mouse") {
+    orthologs <- Get_orthologs_mouse_human(version = ensembl_version,#101 -> 98, 20230103
+                                           remove.duplicated = F,
+                                           only.one.to.one = T,
+                                           using.local.data = T)
+    enslist <- orthologs[!duplicated(orthologs$MGI_symbol),]
+    rownames(enslist) <- enslist$MGI_symbol
+    features <- rownames(counts)
+    enslist <- enslist[features, ]
+    counts <- counts[!is.na(enslist$HGNC_symbol),]
+    enslist <- enslist[!is.na(enslist$HGNC_symbol),]
+    pos <- duplicated(enslist$HGNC_symbol)
+    counts <- counts[!pos,]
+    enslist <- enslist[!pos,]
+    rownames(counts) <- enslist$HGNC_symbol
+  }
+  sce <- Seurat::as.SingleCellExperiment(CreateSeuratObject(counts = counts))
+  set.seed(1000)
+  clusters <- scran::quickCluster(sce)
+  sce.pbmc <- scran::computeSumFactors(sce, cluster=clusters)
+  sce <- scater::logNormCounts(sce)
+  pred <- SingleR::SingleR(test=sce, ref=ref, labels=ref@colData[,ref.label], ...)
+  table(pred$labels)
+  object@meta.data[,label_colname] <- pred$labels
+  Idents(object) <- object@meta.data[,label_colname]
+  if (!is.null(raw_cluster)) {
+    meta <- object@meta.data[,c(label_colname, raw_cluster)] 
+    colnames(meta) <- c('label_colname', 'raw_cluster')
+    id <- meta %>% group_by(raw_cluster) %>%
+      summarize(label = names(which.max(table(label_colname))))
+    cluster.ids.new <- id$label
+    names(cluster.ids.new) <- id$raw_cluster
+    Idents(object) <- object@meta.data[,raw_cluster] 
+    object <- RenameIdents(object, cluster.ids.new)
+    object@meta.data[,label_raw_cluster_colname] <- Idents(object)
+  }
+  return(object)
+}
+
+
+#' Annotate Celltypes by AUCell
+#' 
+#' @examples
+#' pbmc <- anno_AUCell(pbmc, species = 'Human', scsig.subset = 'Bone_Marrow') # based on individual cells
+#' pbmc <- anno_AUCell(pbmc, species = 'Human', , scsig.subset = 'Bone_Marrow', raw_cluster = 'seurat_clusters') # based on seurat clusters
+#' 
+#' @export
+anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL, 
+                        ensembl_version = 98,
+                        label_colname = 'AUCell_label_cell',
+                        label_raw_cluster_colname = 'AUCell_label_raw_cluster',
+                        scsig = NULL, 
+                        scsig.subset = c('_','Cord_Blood','Esophagus','Stomach',
+                        'Small_Intestine','Large_Intestine','PFC','Embryonic',
+                        'Midbrain','Bone_Marrow','Liver','Fetal_Kidney','Adult_Kidney','Pancreas'),
+                        nCores = 4,
+                        ...) {
+  if (is.null(scsig)) {
+    bfc <- BiocFileCache::BiocFileCache(ask=FALSE)
+    scsig.path <- BiocFileCache::bfcrpath(bfc, file.path("http://software.broadinstitute.org",
+                                          "gsea/msigdb/supplemental/scsig.all.v1.0.symbols.gmt"))
+    scsig <- GSEABase::getGmt(scsig.path)
+  }
+  counts <- GetAssayData(object, assay = assay, layer = 'counts')
+  if (species == 'Mouse') {
+    orthologs <- Get_orthologs_mouse_human(version = ensembl_version,#101 -> 98, 20230103
+                                           remove.duplicated = F,
+                                           only.one.to.one = T,
+                                           using.local.data = T)
+    enslist <- orthologs[!duplicated(orthologs$MGI_symbol),]
+    rownames(enslist) <- enslist$MGI_symbol
+    features <- rownames(counts)
+    enslist <- enslist[features, ]
+    counts <- counts[!is.na(enslist$HGNC_symbol),]
+    enslist <- enslist[!is.na(enslist$HGNC_symbol),]
+    pos <- duplicated(enslist$HGNC_symbol)
+    counts <- counts[!pos,]
+    enslist <- enslist[!pos,]
+    rownames(counts) <- enslist$HGNC_symbol
+  }
+  rankings <- AUCell::AUCell_buildRankings(counts, nCores = nCores, plotStats=FALSE)
+
+    # Restricting to the subset of scsig gene sets:
+  scsig <- scsig[grep(scsig.subset, names(scsig))]
+  
+  # Applying MsigDB to the Muraro dataset, because it's human:
+  scsig.aucs <- AUCell::AUCell_calcAUC(scsig, rankings, nCores = nCores, ...)
+  scsig.results <- t(SummarizedExperiment::assay(scsig.aucs))
+  full.labels <- colnames(scsig.results)[max.col(scsig.results)]
+  table(full.labels)
+  object@meta.data[,label_colname] <- full.labels
+  Idents(object) <- object@meta.data[,label_colname]
+  if (!is.null(raw_cluster)) {
+    meta <- object@meta.data[,c(label_colname, raw_cluster)] 
+    colnames(meta) <- c('label_colname', 'raw_cluster')
+    id <- meta %>% group_by(raw_cluster) %>%
+      summarize(label = names(which.max(table(label_colname))))
+    cluster.ids.new <- id$label
+    names(cluster.ids.new) <- id$raw_cluster
+    Idents(object) <- object@meta.data[,raw_cluster] 
+    object <- RenameIdents(object, cluster.ids.new)
+    object@meta.data[,label_raw_cluster_colname] <- Idents(object)
+  }
+  return(object)
+}
+
+#' Annotate Celltypes in one function
+#' 
+#' @examples
+#' ### SingleR
+#' pbmc <- FindClusters(pbmc, resolution = 3)
+#' obj <- annocell(pbmc, species = 'Human', method = 'SingleR')
+#' obj <- annocell(pbmc, species = 'Human', method = 'SingleR', raw_cluster = 'seurat_clusters')
+#' DimPlot(obj, label = T)
+#' 
+#' ### AUCell
+#' obj <- annocell(pbmc, species = 'Human', method = 'AUCell', scsig.subset = 'Bone_Marrow')
+#' obj <- annocell(pbmc, species = 'Human', method = 'AUCell', scsig.subset = 'Bone_Marrow', raw_cluster = 'seurat_clusters')
+#' DimPlot(obj, label = T)
+#' 
+#' ### top_gene
+#' markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
+#' markers = c('CD3D','CD3E','NCAM1','NKG7','CD14','FCGR3A','CST3','CD1C','CD79A','MS4A1','PPBP'))
+#' colnames(markerdf)
+#' # "celltypes" "markers"
+#' obj <- annocell(pbmc, species = 'Human', method = 'topgene', markerdf = markerdf, raw_cluster = 'seurat_clusters')
+#' DimPlot(obj, label = T)
+#' 
+#' ### angrycell
+#' obj <- annocell(pbmc, species = 'Human', method = 'angrycell', raw_cluster = 'seurat_clusters')
+#' DimPlot(obj, label = T)
+#' 
+#' @export
+annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL, 
+                     method = c('SingleR','AUCell','topgene','angrycell'), 
+                     ensembl_version = 98,
+                     label_colname = NULL,
+                     label_raw_cluster_colname = NULL,
+                     ref = NULL, 
+                     ref.label = c("label.main", "label.fine", "label.ont"),
+                     scsig = NULL, 
+                     scsig.subset = c('_','Cord_Blood','Esophagus','Stomach',
+                                      'Small_Intestine','Large_Intestine','PFC','Embryonic',
+                                      'Midbrain','Bone_Marrow','Liver','Fetal_Kidney','Adult_Kidney','Pancreas'),
+                     markerdf = NULL,
+                     min.pct = 0.3,
+                     n.cores = 4,
+                     ...) {
+  method <- match.arg(NULL, choices = method)
+  ref.label <-  match.arg(NULL, choices = ref.label)
+  scsig.subset <-  match.arg(NULL, choices = scsig.subset)
+  if (is.null(label_colname)) label_colname <- paste0(method, '_label_cell')
+  if (is.null(label_raw_cluster_colname)) label_raw_cluster_colname <- paste0(method, '_label_raw_cluster')
+  if (method == 'SingleR') object <- anno_SingleR(object, species, assay, raw_cluster, 
+                                               ensembl_version,
+                                               label_colname, label_raw_cluster_colname,
+                                               ref, ref.label, 
+                                               BPPARAM = BiocParallel::MulticoreParam(n.cores),
+                                               ...)
+  if (method == 'AUCell') object <- anno_AUCell(object, species, assay, raw_cluster, 
+                                             ensembl_version,
+                                             label_colname, label_raw_cluster_colname,
+                                             scsig, scsig.subset, 
+                                             nCores = n.cores, ...)
+  if (method == 'topgene') {
+    object <- anno_top_gene(object, markerdf, group.by = raw_cluster)
+    object@meta.data[,label_raw_cluster_colname] <- Idents(object)
+  }
+  if (method == 'angrycell') {
+    db <- ifelse(species == 'Human', 'panglaodb_hs', 'panglaodb_mm')
+    if (!is.null(raw_cluster)) Idents(object) <- object@meta.data[, raw_cluster]
+    df <- angrycell(object, select.db = db, show.top = 1, min.pct = min.pct, core.num = n.cores)
+    new.id <- df$Celltype_predicted
+    names(new.id) <- df$Orig_Idents
+    Idents(object) <- object@meta.data[,raw_cluster] 
+    object <- RenameIdents(object, new.id)
+    object@meta.data[,label_raw_cluster_colname] <- Idents(object)
+  }
+  return(object)
+}
+
+
+

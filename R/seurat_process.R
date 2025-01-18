@@ -894,7 +894,6 @@ QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE",
                        paste(cc.genes$s.genes[is.na(s.genes.mouse)],collapse = ',')))
         s.genes.mouse <- s.genes.mouse[!is.na(s.genes.mouse)]
       }
-      object <- JoinLayers(object)
       object <- CellCycleScoring(object = object, g2m.features = g2m.genes.mouse, 
                                  s.features = s.genes.mouse)
     }
