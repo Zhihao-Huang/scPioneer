@@ -1,3 +1,0 @@
-"samplename"	"datadir"
-"1"	"sample1"	"/XXX/sample1/outs/filtered_feature_bc_matrix/"
-"2"	"sample2"	"/XXX/sample2/outs/filtered_feature_bc_matrix/"
