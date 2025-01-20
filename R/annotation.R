@@ -544,7 +544,7 @@ get_HKcutoff <- function(object, active.assay, celltype, HKgenes, min.pct) {
 #'  \item{2}: phyper;
 #'  \item{3}: Rcpp Ramanujan's approximation.
 #'  }
-#' @param ... Arguments passed to signDE.
+#' @param ... Arguments passed to anno_openai.
 #' 
 #' @return A dataframe of celltype annotation.
 #'
@@ -600,7 +600,7 @@ angrycell <- function(object, select.db = c('db_self'),
     #use DE function in ./R/DE.R
     object@meta.data$Annotation <- paste0("cluster_", Idents(object))
     markerlist <- signDE(seurat = object, group.by = "Annotation",
-                         BPPARAM = MulticoreParam(core.num), test.use = test.use,...)
+                         BPPARAM = MulticoreParam(core.num), test.use = test.use)
     genelist <- list()
     for (g in names(markerlist)) {
       genelist[[g]] <- markerlist[[g]]$feature
@@ -664,6 +664,12 @@ angrycell <- function(object, select.db = c('db_self'),
       return(genelist)
     }
   }
+  ### 20250120 add openai function
+  if(select.db == 'openai') {
+    annodf <- anno_openai(genelist = genelist, ...)
+    return(annodf)
+  }
+  ### 20250120 End.
   ## filtering common genes shared in all groups.
   comm <- Reduce(intersect, genelist)
   ##db
@@ -943,7 +949,6 @@ anno_SingleR <- function(object, species, assay = 'RNA', raw_cluster = NULL,
   return(object)
 }
 
-
 #' Annotate Celltypes by AUCell
 #' 
 #' @examples
@@ -1009,7 +1014,56 @@ anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
   }
   return(object)
 }
-
+#' Annotate celltypes by ChatGPT.
+#' 
+#' @examples
+#' Idents(pbmc) <- pbmc$seurat_clusters
+#' markers <- FindAllMarkers(pbmc, logfc.threshold = 0.5, test.use = 'MAST', only.pos = T)
+#' top10 <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)
+#' 
+#' @export
+anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
+                        base_url = "http://chatapi.littlewheat.com/v1",
+                        api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM',
+                        model = "gpt-3.5-turbo", 
+                        seed = 123) {
+  if (!is.null(deg)) {
+    if (is.numeric(deg$cluster)) deg$cluster <- paste0('raw_cluster__',deg$cluster)
+    all.cluster <- unique(deg$cluster)
+    genelist <- lapply(all.cluster, function(x) deg$gene[deg$cluster == x])
+    names(genelist) <- all.cluster
+  }else if (is.null(genelist)) {
+    stop('Please provide a data.frame from FindAllmarkers or a genelist.')
+  }
+  if (is.null(names(genelist))) names(genelist) <- paste0('raw_cluster__',length(genelist))
+  input <- sapply(names(genelist), function(x) paste0(x, ':', paste(genelist[[x]], collapse = ','),'. '))
+  content = paste(paste0("Identify cell types of ", 
+                         tissuename, " cells using the following markers separately for each"),
+                  " row. Only provide the cell type name.",
+                  " Some can be a mixture of multiple cell types.", 
+                  input, collapse = "\n")
+  
+  client <- openai::OpenAI( base_url = base_url,
+                            api_key = api_key)
+  completion <- client$chat$completions$create(
+    model = model,
+    seed = seed,
+    messages = list(list("role" = "user", "content" = content))
+  )
+  text <- completion$choices[1][[1]]$message$content
+  text <-  gsub("(\n)\\1{0,}", "__celltype__", text)
+  anno <- strsplit(text, split = '__celltype__')[[1]]
+  print(head(anno))
+  anno <- gsub(' $','', anno)
+  raw_clusters <- sapply(anno, function(x) gsub('\\:.*$|-.*$','',x))
+  raw_clusters = gsub('raw_cluster__','',raw_clusters)
+  anno_clusters <- sapply(anno, function(x) gsub('^.*\\:|^.*-','',x))
+  anno_clusters <- gsub('^ ','', anno_clusters)
+  anno_clusters <- gsub('\\,.*$', '', anno_clusters)
+  df <- data.frame(Orig_Idents = raw_clusters,
+                   Celltype_predicted = anno_clusters)
+  return(df)
+}
 #' Annotate Celltypes in one function
 #' 
 #' @examples
@@ -1036,6 +1090,16 @@ anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
 #' obj <- annocell(pbmc, species = 'Human', method = 'angrycell', raw_cluster = 'seurat_clusters')
 #' DimPlot(obj, label = T)
 #' 
+#' ### angrycell & OpenAI
+#' Idents(pbmc) <- pbmc$seurat_clusters
+#' markers <- FindAllMarkers(pbmc, logfc.threshold = 0.5, test.use = 'MAST', only.pos = T)
+#' top10 <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)
+#' obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
+#'  DE = top10, raw_cluster = 'seurat_clusters', model = "gpt-3.5-turbo", seed = 123,
+#'  base_url = "http://chatapi.littlewheat.com/v1",
+#'  api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
+#' DimPlot(obj, label = T)
+#' 
 #' @export
 annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL, 
                      method = c('SingleR','AUCell','topgene','angrycell'), 
@@ -1050,6 +1114,7 @@ annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
                                       'Midbrain','Bone_Marrow','Liver','Fetal_Kidney','Adult_Kidney','Pancreas'),
                      markerdf = NULL,
                      min.pct = 0.3,
+                     db = NULL,
                      n.cores = 4,
                      ...) {
   method <- match.arg(NULL, choices = method)
@@ -1073,9 +1138,9 @@ annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
     object@meta.data[,label_raw_cluster_colname] <- Idents(object)
   }
   if (method == 'angrycell') {
-    db <- ifelse(species == 'Human', 'panglaodb_hs', 'panglaodb_mm')
+    if (is.null(db)) db <- ifelse(species == 'Human', 'panglaodb_hs', 'panglaodb_mm')
     if (!is.null(raw_cluster)) Idents(object) <- object@meta.data[, raw_cluster]
-    df <- angrycell(object, select.db = db, show.top = 1, min.pct = min.pct, core.num = n.cores)
+    df <- angrycell(object, select.db = db, show.top = 1, min.pct = min.pct, core.num = n.cores,...)
     new.id <- df$Celltype_predicted
     names(new.id) <- df$Orig_Idents
     Idents(object) <- object@meta.data[,raw_cluster] 

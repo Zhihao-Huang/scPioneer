@@ -635,6 +635,8 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
                 file = paste0(param[['outdir']], 'FindAllMarkers.xls'))
   }
   ############################################
+  message('########################  PHASE1: QC and clustering were done.  #########################')
+  message('All the results were stored at ',param[[outdir]])
   return(SeuratS4)
 }
 
