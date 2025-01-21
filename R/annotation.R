@@ -1067,20 +1067,24 @@ anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
   return(df)
 }
 
-#' Annotate celltypes by ellmer R package
+#' Annotate cell types using an AI wrapper embedded in the ellmer R package.
 #' 
 #' @examples
 #' Idents(pbmc) <- pbmc$seurat_clusters
 #' markers <- FindAllMarkers(pbmc, logfc.threshold = 0.5, test.use = 'MAST', only.pos = T)
 #' top10 <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)
 #' annodf <- anno_ellmer(top10)
+#' # depends on local model ollama. First download and install Ollama, then install model with ollama pull llama3.2. Test on Mac.
+#' annodf <- anno_ellmer(top10, llm_function = 'ollama')
 #' 
 #' @export
 anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
                         api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM',
                         model = "gpt-3.5-turbo", 
-                        llm_function = c('openai'),
+                        llm_function = c('openai','ollama'),
+                        ollama_model = 'llama3.2',
+                        return.content = F,
                         seed = 123) {
   llm_function <- match.arg(NULL, choices = llm_function)
   if (!is.null(deg)) {
@@ -1093,11 +1097,12 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
   }
   if (is.null(names(genelist))) names(genelist) <- paste0('raw_cluster__',length(genelist))
   input <- sapply(names(genelist), function(x) paste0(x, ':', paste(genelist[[x]], collapse = ','),'. '))
-  content = paste(paste0("Identify cell types of ", 
+  content = paste(c(list(paste0("Identify cell types of ", 
                          tissuename, " cells using the following markers separately for each"),
-                  " row. Only provide the cell type name.",
-                  " Some can be a mixture of multiple cell types.", 
-                  input, collapse = "\n")
+                  " row. Only provide one cell type name.", 
+                  " Some can be a mixture of multiple cell types."),
+                  input), collapse = "\n")
+  if (return.content) return(content)
   if (llm_function == 'openai') {
     chat <- chat_openai(
       system_prompt = NULL,
@@ -1109,6 +1114,17 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
       api_args = list(),
       echo = c("none", "text", "all")
     )
+    if (llm_function == 'ollama') {
+      chat <- chat_ollama(
+        system_prompt = NULL,
+        turns = NULL,
+        base_url = "http://localhost:11434",
+        model = ollama_model,
+        seed = seed,
+        api_args = list(),
+        echo = NULL
+      )
+    }
     text <- chat$chat(content)
   }
   text <-  gsub("(\n)\\1{0,}", "__celltype__", text)
