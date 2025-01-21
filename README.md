@@ -74,7 +74,7 @@ Idents(pbmc) <- pbmc$seurat_clusters
 markers <- FindAllMarkers(pbmc, logfc.threshold = 0.5, test.use = 'MAST', only.pos = T)
 top10 <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)
 obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
-          DE = top10, raw_cluster = 'seurat_clusters',model = "gpt-3.5-turbo", seed = 123,
+          DE = top10, raw_cluster = 'seurat_clusters',model = "gpt-3.5-turbo", seed = 1234,
           base_url = "http://chatapi.littlewheat.com/v1",
           api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
 p3 <- DimPlot_idx(obj)
