@@ -30,44 +30,56 @@ Then install scPioneer:
 
 # Quick-start
 
-Processing single sample.
+PHASE 1: QC and clustering
+```
+### Create a samplelist including samplename and datadir.
+df <- data.frame(samplename = 'PBMC', datadir = './data-raw/filtered_gene_bc_matrices/hg19/')
+write.table(df, file = 'samplelist.txt', sep = '\t')
+library(scPioneer)
+param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
+param$samplelist <- './samplelist.txt'
+param$outdir <- './result/'
+param$min.features <- 200
+param$max.mt <- 10
+param$min.cells <- 3
+param$species <- 'Human'
+param$normalize_method <- 'SCT'
+param$detect.doublet <- "scDblFinder"
+param$return.plot <- T
+resultlist <- PHASE1_run_Seurat_v5_QC_clustering(param)
+names(resultlist)
+# object plotlist
+patchwork::wrap_plots(resultlist$plotlist)
+```
 
+PHASE 2: cell-type annotation
 ```
-### Automatically perform QC and clustering from raw rds.
-library(scPioneer)
-param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
-param$object <- 'PATH TO YOUR RAW RDS'
-param$outdir <- 'OUTPUT PATH'
-obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
-```
+### Load preprecessed object from PHASE 1.
+pbmc <- resultlist$object
 
-Processing multi-samples from filtered matrix.
-```
-### Automatically perform QC and clustering from matrix files.
-library(scPioneer)
-samplelist <- data.frame(samplename = c('sample1','sample2'),
-                         datadir = c('/XXX/sample1/outs/filtered_feature_bc_matrix/',
-                                     '/XXX/sample2/outs/filtered_feature_bc_matrix/'))
-write.table(samplelist, file = samplelist_path, sep = '\t')
-param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
-param$samplelist <- samplelist_path
-param$is_multidata <- 'TRUE'
-param$sample_colname <- 'COLNAME OF YOUR SAMPLES'
-param$detect.doublet <- 'scDblFinder'
-param$outdir <- 'OUTPUT PATH'
-param$species <- 'Mouse'
-obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
-```
-Processing multi-samples from Seruat object.
-```
-### Automatically perform QC and clustering from raw rds.
-library(scPioneer)
-param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
-param$object <- 'PATH TO YOUR RAW RDS'
-param$is_multidata <- 'TRUE'
-param$sample_colname <- 'COLNAME OF YOUR SAMPLES'
-param$detect.doublet <- 'scDblFinder'
-param$outdir <- 'OUTPUT PATH'
-param$species <- 'Mouse'
-obj <- PHASE1_run_Seurat_v5_QC_clustering(param)
+### Perform annotation by SingleR
+obj <- annocell(pbmc, species = 'Human', method = 'SingleR', raw_cluster = 'seurat_clusters')
+p1 <- DimPlot_idx(obj)
+
+### Perform annotation by top markers
+markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
+ markers = c('CD3D','CD3E','NCAM1','NKG7','CD14','FCGR3A','CST3','CD1C','CD79A','MS4A1','PPBP'))
+colnames(markerdf)
+# "celltypes" "markers"
+obj <- annocell(pbmc, species = 'Human', method = 'topgene', markerdf = markerdf, raw_cluster = 'seurat_clusters')
+p2 <- DimPlot_idx(obj)
+
+### Perform annotation by LLM model (OpenAI)
+Idents(pbmc) <- pbmc$seurat_clusters
+markers <- FindAllMarkers(pbmc, logfc.threshold = 0.5, test.use = 'MAST', only.pos = T)
+top10 <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)
+obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
+          DE = top10, raw_cluster = 'seurat_clusters',model = "gpt-3.5-turbo", seed = 123,
+          base_url = "http://chatapi.littlewheat.com/v1",
+          api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
+p3 <- DimPlot_idx(obj)
+
+### Perform annotation by LLM model (ollama. Local model, less accurate than OpenAI)
+
+
 ```
