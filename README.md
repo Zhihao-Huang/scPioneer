@@ -60,7 +60,7 @@ patchwork::wrap_plots(resultlist$plotlist)
 ```
 
 <p align="center">
-  <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/phage1.png">
+  <img width="750"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/phage1.png">
 </p>
 
 PHASE 2: cell-type annotation
@@ -97,6 +97,6 @@ patchwork::wrap_plots(resultlist$plotlist)
 ```
 
 <p align="center">
-  <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/phage2.png">
+  <img width="750"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/phage2.png">
 </p>
 
