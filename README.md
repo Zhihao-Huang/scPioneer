@@ -70,7 +70,7 @@ pbmc <- resultlist$object
 
 ### Perform annotation by SingleR
 obj <- annocell(pbmc, species = 'Human', method = 'SingleR', raw_cluster = 'seurat_clusters')
-p1 <- DimPlot_idx(obj)
+p1 <- DimPlot_idx(obj) + ggtitle('singleR')
 
 ### Perform annotation by top markers
 markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
@@ -78,7 +78,7 @@ markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC',
 colnames(markerdf)
 # "celltypes" "markers"
 obj <- annocell(pbmc, species = 'Human', method = 'topgene', markerdf = markerdf, raw_cluster = 'seurat_clusters')
-p2 <- DimPlot_idx(obj)
+p2 <- DimPlot_idx(obj) + ggtitle('top gene')
 
 ### Perform annotation by LLM model (OpenAI)
 Idents(pbmc) <- pbmc$seurat_clusters
@@ -88,7 +88,7 @@ obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
           DE = top10, raw_cluster = 'seurat_clusters',model = "gpt-3.5-turbo", seed = 1234,
           base_url = "http://chatapi.littlewheat.com/v1",
           api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
-p3 <- DimPlot_idx(obj)
+p3 <- DimPlot_idx(obj) + ggtitle('gpt-3.5-turbo')
 
 ### Perform annotation by LLM model (ollama. Local model, less accurate than OpenAI)
 annodf <- anno_allama(top10)
