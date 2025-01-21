@@ -35,7 +35,11 @@ PHASE 1: QC and clustering
 ### Create a samplelist including samplename and datadir.
 df <- data.frame(samplename = 'PBMC', datadir = './data-raw/filtered_gene_bc_matrices/hg19/')
 write.table(df, file = 'samplelist.txt', sep = '\t')
+
+### Load package
 library(scPioneer)
+
+### set arguments
 param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
 param$samplelist <- './samplelist.txt'
 param$outdir <- './result/'
@@ -46,9 +50,13 @@ param$species <- 'Human'
 param$normalize_method <- 'SCT'
 param$detect.doublet <- "scDblFinder"
 param$return.plot <- T
+
+### Run in one command
 resultlist <- PHASE1_run_Seurat_v5_QC_clustering(param)
+
 names(resultlist)
 # object plotlist
+
 patchwork::wrap_plots(resultlist$plotlist)
 ```
 
@@ -62,8 +70,8 @@ obj <- annocell(pbmc, species = 'Human', method = 'SingleR', raw_cluster = 'seur
 p1 <- DimPlot_idx(obj)
 
 ### Perform annotation by top markers
-markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
- markers = c('CD3D','CD3E','NCAM1','NKG7','CD14','FCGR3A','CST3','CD1C','CD79A','MS4A1','PPBP'))
+markerdf <- data.frame(celltypes = c('CD8+ T','CD8+ T','CD4+ T','CD4+ T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
+ markers = c('CD3D','CD8A','CD3D','CD4','NCAM1','NKG7','CD14','FCGR3A','CST3','CD1C','CD79A','MS4A1','PPBP'))
 colnames(markerdf)
 # "celltypes" "markers"
 obj <- annocell(pbmc, species = 'Human', method = 'topgene', markerdf = markerdf, raw_cluster = 'seurat_clusters')
@@ -80,6 +88,7 @@ obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
 p3 <- DimPlot_idx(obj)
 
 ### Perform annotation by LLM model (ollama. Local model, less accurate than OpenAI)
+annodf <- anno_ollama(top10)
 
-
+patchwork::wrap_plots(list(p1, p2, p3))
 ```
