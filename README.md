@@ -25,7 +25,7 @@ remotes::install_github("satijalab/seurat-wrappers", "seurat5")
 
 Then install scPioneer:
 
-`remotes::install_github('Zhihao-Huang/scPioneer')`
+```remotes::install_github('Zhihao-Huang/scPioneer')```
 
 
 # Quick-start
