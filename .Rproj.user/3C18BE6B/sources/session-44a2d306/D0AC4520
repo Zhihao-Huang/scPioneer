@@ -1,0 +1,26 @@
+{
+    "id": "D0AC4520",
+    "path": "~/Documents/GitHub/scPioneer/data-raw/markerdb_preprocessing.R",
+    "project_path": "data-raw/markerdb_preprocessing.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1737449429946.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "116,0",
+        "scrollLine": "125"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1737450160,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1737450162539,
+    "read_only": false,
+    "read_only_alternatives": []
+}

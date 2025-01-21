@@ -1,0 +1,26 @@
+Package: scPioneer
+Title: A tool for analysis of single cell RNA-seq.
+Version: 2.0.0
+Authors@R: 
+    person(given = "Zhihao",
+           family = "Huang",
+           role = c("aut", "cre"),
+           email = "zhihao.jnu@gmail.com",
+           comment = c(ORCID = "0000-0003-3136-3720"))
+Description: Functions for analysis of single cell RNA-seq.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 4.2.0), ggplot2 (>= 3.0.0), Seurat (>= 5.0.0), reshape2,
+        Matrix, dplyr, dbplyr (== 2.3.4), grid
+biocViews:
+Imports: BiocParallel, clustree,
+        RColorBrewer, grid, grDevices, pheatmap,
+        SingleCellExperiment, gridExtra, network, GGally, png, ggedit,
+        org.Hs.eg.db,reticulate, progress,
+        pbapply, circlize, cowplot,dendextend, ggsci,ComplexHeatmap,
+        openxlsx, S4Vectors, parallel,gridBase,BiocNeighbors,limma,
+        BiocParallel,SeuratWrappers
+RoxygenNote: 7.3.2
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
