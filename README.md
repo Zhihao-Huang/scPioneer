@@ -35,7 +35,11 @@ PHASE 1: QC and clustering
 ### Create a samplelist including samplename and datadir.
 df <- data.frame(samplename = 'PBMC', datadir = './data-raw/filtered_gene_bc_matrices/hg19/')
 write.table(df, file = 'samplelist.txt', sep = '\t')
+
+### load data
 library(scPioneer)
+
+### set arguments
 param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
 param$samplelist <- './samplelist.txt'
 param$outdir <- './result/'
@@ -46,11 +50,18 @@ param$species <- 'Human'
 param$normalize_method <- 'SCT'
 param$detect.doublet <- "scDblFinder"
 param$return.plot <- T
+
+### run
 resultlist <- PHASE1_run_Seurat_v5_QC_clustering(param)
+
 names(resultlist)
 # object plotlist
 patchwork::wrap_plots(resultlist$plotlist)
 ```
+
+<p align="center">
+  <img width="750"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/phage1.png">
+</p>
 
 PHASE 2: cell-type annotation
 ```
@@ -59,7 +70,7 @@ pbmc <- resultlist$object
 
 ### Perform annotation by SingleR
 obj <- annocell(pbmc, species = 'Human', method = 'SingleR', raw_cluster = 'seurat_clusters')
-p1 <- DimPlot_idx(obj)
+p1 <- DimPlot_idx(obj) + ggtitle('singleR')
 
 ### Perform annotation by top markers
 markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
@@ -67,7 +78,7 @@ markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC',
 colnames(markerdf)
 # "celltypes" "markers"
 obj <- annocell(pbmc, species = 'Human', method = 'topgene', markerdf = markerdf, raw_cluster = 'seurat_clusters')
-p2 <- DimPlot_idx(obj)
+p2 <- DimPlot_idx(obj) + ggtitle('top gene')
 
 ### Perform annotation by LLM model (OpenAI)
 Idents(pbmc) <- pbmc$seurat_clusters
@@ -77,9 +88,15 @@ obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
           DE = top10, raw_cluster = 'seurat_clusters',model = "gpt-3.5-turbo", seed = 1234,
           base_url = "http://chatapi.littlewheat.com/v1",
           api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
-p3 <- DimPlot_idx(obj)
+p3 <- DimPlot_idx(obj) + ggtitle('gpt-3.5-turbo')
 
 ### Perform annotation by LLM model (ollama. Local model, less accurate than OpenAI)
+annodf <- anno_allama(top10)
 
-
+patchwork::wrap_plots(resultlist$plotlist)
 ```
+
+<p align="center">
+  <img width="750"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/phage2.png">
+</p>
+
