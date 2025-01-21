@@ -71,14 +71,48 @@ rownames(panglaodb_hs) <- panglaodb_hs$cellName
   
 }
 angrycelldata <- readRDS('./data-raw/angrycelldb.rds')
+print(names(angrycelldata))
+cat(paste(paste0(names(angrycelldata), ' <- angrycelldata$', names(angrycelldata)),collapse = '\n'))
+A_M <- angrycelldata$A_M
+addm_qss <- angrycelldata$addm_qss
+D_M <- angrycelldata$D_M
 db_self <- angrycelldata$db_self
+db_self_mm10 <- angrycelldata$db_self_mm10
+db_user_mm10 <- angrycelldata$db_user_mm10
+db_users <- angrycelldata$db_users
+db1 <- angrycelldata$db1
+db2 <- angrycelldata$db2
+db3 <- angrycelldata$db3
+db4 <- angrycelldata$db4
+dblayers <- angrycelldata$dblayers
+dbref <- angrycelldata$dbref
+dbspf <- angrycelldata$dbspf
+HKgene <- angrycelldata$HKgene
+homolog_Human_mouse <- angrycelldata$homolog_Human_mouse
+links <- angrycelldata$links
+mindrlist1 <- angrycelldata$mindrlist1
+mindrlist2 <- angrycelldata$mindrlist2
+mlist1 <- angrycelldata$mlist1
+mlist2 <- angrycelldata$mlist2
+mlist3 <- angrycelldata$mlist3
+MSigDBlist <- angrycelldata$MSigDBlist
+MSigDBnames <- angrycelldata$MSigDBnames
+Rlist <- angrycelldata$Rlist
+slist <- angrycelldata$slist
+templv1.2.0 <- angrycelldata$templv1.2.0
+user_links <- angrycelldata$user_links
+user_mindrlist1 <- angrycelldata$user_mindrlist1
+user_mindrlist2 <- angrycelldata$user_mindrlist2
+user_mlist1 <- angrycelldata$user_mlist1
+user_mlist2 <- angrycelldata$user_mlist2
+user_mlist3 <- angrycelldata$user_mlist3
+user_Rlist <- angrycelldata$user_Rlist
+user_slist <- angrycelldata$user_slist
 panglaodb_hs <- angrycelldata$panglaodb_hs
 panglaodb_mm <- angrycelldata$panglaodb_mm
-usethis::use_data(db_self, panglaodb_hs, panglaodb_mm, overwrite = F)
-
 # orthologs genesets
 files <- list.files('./data-raw/')
-txtfiles <- files[grepl('txt$',files)]
+txtfiles <- files[grepl('^orthologs_mouse',files)]
 orthologslist <- lapply(txtfiles, function(x) {
   df <- read.table(paste0('./data-raw/', x), sep = '\t')
 })
@@ -109,7 +143,7 @@ usethis::use_data(A_M, addm_qss, D_M, db_self, db_self_mm10, db_user_mm10,
                   mlist2, mlist3, MSigDBlist, MSigDBnames, Rlist, slist, 
                   templv1.2.0, user_links, user_mindrlist1, user_mindrlist2, 
                   user_mlist1, user_mlist2, user_mlist3, user_Rlist, user_slist,
-                  panglaodb_hs,panglaodb_mm, orthologslist,symbol_ensembl_list,
+                  panglaodb_hs,panglaodb_mm, 
                   overwrite = TRUE,
                   internal = TRUE)
 
