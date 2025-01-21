@@ -35,7 +35,11 @@ PHASE 1: QC and clustering
 ### Create a samplelist including samplename and datadir.
 df <- data.frame(samplename = 'PBMC', datadir = './data-raw/filtered_gene_bc_matrices/hg19/')
 write.table(df, file = 'samplelist.txt', sep = '\t')
+
+### load data
 library(scPioneer)
+
+### set arguments
 param <- PHASE1_run_Seurat_v5_QC_clustering_param_template()
 param$samplelist <- './samplelist.txt'
 param$outdir <- './result/'
@@ -46,11 +50,18 @@ param$species <- 'Human'
 param$normalize_method <- 'SCT'
 param$detect.doublet <- "scDblFinder"
 param$return.plot <- T
+
+### run
 resultlist <- PHASE1_run_Seurat_v5_QC_clustering(param)
+
 names(resultlist)
 # object plotlist
 patchwork::wrap_plots(resultlist$plotlist)
 ```
+
+<p align="center">
+  <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/main/data-raw/phage1.png">
+</p>
 
 PHASE 2: cell-type annotation
 ```
@@ -80,6 +91,12 @@ obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
 p3 <- DimPlot_idx(obj)
 
 ### Perform annotation by LLM model (ollama. Local model, less accurate than OpenAI)
+annodf <- anno_allama(top10)
 
-
+patchwork::wrap_plots(resultlist$plotlist)
 ```
+
+<p align="center">
+  <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/main/data-raw/phage2.png">
+</p>
+
