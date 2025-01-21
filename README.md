@@ -22,7 +22,6 @@ remotes::install_github("satijalab/seurat-wrappers", "seurat5")
 
 ```
 
-
 Then install scPioneer:
 
 `remotes::install_github('Zhihao-Huang/scPioneer')`
@@ -59,6 +58,11 @@ names(resultlist)
 
 patchwork::wrap_plots(resultlist$plotlist)
 ```
+
+<p align="center">
+  <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/main/data-raw/phage1.png">
+</p>
+
 
 PHASE 2: cell-type annotation
 ```
