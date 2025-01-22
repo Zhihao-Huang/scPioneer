@@ -131,19 +131,23 @@ run_normalization <- function(SeuratS4, param) {
 #' 
 #' @export
 run_pca <- function(SeuratS4, param) {
+  plist <- list()
   SeuratS4 <- RunPCA(SeuratS4, npcs = param[['npcs']], 
                      features = VariableFeatures(object = SeuratS4))
   p <- ElbowPlot(SeuratS4, ndims = param[['npcs']])
   ggsave(paste(param[['outdir']],"Select_pc.pdf",sep=''), p, width = 8,height = 7)
+  plist[['ElbowPlot']] <- p
   p <- DimPlot(SeuratS4, reduction = "pca",group.by = 'Sample')
+  plist[['pca']] <- p
   ggsave(paste(param[['outdir']],"pca.pdf",sep=''), p, width = 8,height = 7)
-  return(SeuratS4)
+  return(list(object = SeuratS4, plotlist = plist))
 }
 
 #' Detect doublet and filter low-quality cells
 #' 
 #' @export
 run_doublet_and_filter <- function(SeuratS4, param) {
+  plist <- list()
   if (param[['detect.doublet']] == 'scrublet') {
     ###########################################
     # scrublet
@@ -225,6 +229,9 @@ run_doublet_and_filter <- function(SeuratS4, param) {
                 quote = F, sep = '\t')
     print(dim(SeuratS4))
     #[1] 23467 56089
+    plist[['scrublet_histogram']] <- p
+    plist[['doublet_scores']] <- p1
+    plist[['doublet_umap']] <- p2
     if (param[['filter.doublet']]) {
       #SeuratS4 <- readRDS(paste0(outdir,'rawObject.rds'))
       SeuratS4 <- subset(SeuratS4, subset = nFeature_RNA > param[['min.features']] & 
@@ -308,6 +315,8 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     ggsave(paste0(param[['outdir']],'doublet_score.',device), p1 + p2, device = device,
            width = 7.7, height = 3.9)
     saveRDS(SeuratS4, file = paste0(param[['outdir']],'rawObject.rds'))
+    plist[['doublet_scores']] <- p1
+    plist[['doublet_umap']] <- p2
     ##raw statistic. add doublet info. to raw meta data
     meta$Cellname <- rownames(meta)
     SeuratS4$Cellname <- rownames(SeuratS4@meta.data)
@@ -366,7 +375,7 @@ run_doublet_and_filter <- function(SeuratS4, param) {
                          nCount_RNA < param[['max.UMIs']] &
                          percent.mt < param[['max.mt']])
   }
-  return(SeuratS4)
+  return(list(object = SeuratS4, plotlist = plist))
 }
 
 #' Run Batch effect correction based on Incorporated methods in Seurat V5
@@ -559,7 +568,8 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   message('#########################  2.Run QC before filtering.  #########################')
   #SeuratS4 <- QC_raw(SeuratS4,outdir,species,multi.samples=is_multidata)
   message(param[['species']])
-  SeuratS4 <- QC_raw(object = SeuratS4, species = param[['species']],
+  plist <- list()
+  obj_list <- QC_raw(object = SeuratS4, species = param[['species']],
                      outdir = param[['outdir']], 
                      max.mt = param[['max.mt']],
                      min.features = param[['min.features']], 
@@ -567,13 +577,15 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
                      multi.samples = param[['is_multidata']], 
                      do_cellcycle = param[['cal_cellcycle']],
                      plot.raw = param[['plot.raw']])
-  
+  SeuratS4 <- obj_list$object
+  plist <- c(plist, obj_list$plotlist)
   
   ###########################################
   # 3. Detect doublet 
   message('#########################  3. Find low-quality cells and filter.  #########################')
-  SeuratS4 <- run_doublet_and_filter(SeuratS4, param)
- 
+  obj_list <- run_doublet_and_filter(SeuratS4, param)
+  SeuratS4 <- obj_list$object
+  plist <- c(plist, obj_list$plotlist)
   #4. QC plot after filtering
   message('#########################  4. Run QC after filtering.  #########################')
   message('Complete filtering.')
@@ -595,8 +607,9 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   ###########################################
   # 8. Perform linear dimensional reduction (PCA)
   message('#########################  6. Perform linear dimensional reduction (PCA). ########################')
-  SeuratS4 <- run_pca(SeuratS4, param)
-  
+  obj_list <- run_pca(SeuratS4, param)
+  SeuratS4 <- obj_list$object
+  plist <- c(plist, obj_list$plotlist)
   ##############################################
   # 9. Batch effect correction
   message('#########################  7. Batch effect correction.  #########################')
@@ -626,6 +639,9 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   p1 <- DimPlot(SeuratS4, reduction = param[['umap_name']])
   p2 <- DimPlot(SeuratS4, group.by = 'Sample', reduction = param[['umap_name']])
   ggsave(paste0(param[['outdir']], 'UMAP.pdf'), patchwork::wrap_plots(p1,p2), width = 12, height = 4.8)
+  plist[['umap_seurat_clusters']] <- p1
+  plist[['umap_sample']] <- p2
+  
   ############################################
   # 12. Do DEG analysis of raw clusters 
   if (param[['do_DEG_wilcox']] == 'TRUE') {
@@ -636,8 +652,12 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   }
   ############################################
   message('########################  PHASE1: QC and clustering were done.  #########################')
-  message('All the results were stored at ',param[[outdir]])
-  return(SeuratS4)
+  message('All the results were stored at ',param[['outdir']])
+  if (param[['return.plot']]) {
+    return(list(object = SeuratS4, plotlist = plist))
+  }else{
+    return(SeuratS4)
+  }
 }
 
 #' Parameter template for PHASE1_run_Seurat_v3_QC_clustering.
@@ -703,6 +723,7 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   param[['umap_name']] <- 'umap'
   param[['sketch_integration']] <- 'FALSE'
   param[['sketch_ncells']] <- 5000
+  param[['return.plot']] <- F
   return(param)
 }
 

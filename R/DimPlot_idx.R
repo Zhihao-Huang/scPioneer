@@ -15,6 +15,7 @@ draw_key_cust <- function(data, params, size) {
     draw_key_text(data_text, list())
   )
 }
+
 #' DimPlot with index prefix.
 #' 
 #' @examples 

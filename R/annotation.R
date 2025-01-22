@@ -857,7 +857,7 @@ anno_top_gene <- function(object, markerdf, group.by = 'seurat_cluster'
 ) {
   df <- GetAssayData(object)
   df <- df[unique(markerdf$markers),]
-  df <- t(df)
+  df <- t(as.matrix(df))
   ident <- as.vector(object@meta.data[,group.by])
   dflist <- list()
   for (i in unique(ident)) {
@@ -1085,7 +1085,7 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         llm_function = c('openai','ollama'),
                         ollama_model = 'llama3.2',
                         return.content = F,
-                        seed = 123) {
+                        seed = 1234) {
   llm_function <- match.arg(NULL, choices = llm_function)
   if (!is.null(deg)) {
     if (is.numeric(deg$cluster)) deg$cluster <- paste0('raw_cluster__',deg$cluster)
@@ -1098,13 +1098,13 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
   if (is.null(names(genelist))) names(genelist) <- paste0('raw_cluster__',length(genelist))
   input <- sapply(names(genelist), function(x) paste0(x, ':', paste(genelist[[x]], collapse = ','),'. '))
   content = paste(c(list(paste0("Identify cell types of ", 
-                         tissuename, " cells using the following markers separately for each"),
-                  " row. Only provide one cell type name.", 
+                         tissuename, " cells using the following markers separately for each row."),
+                  " Only provide the cell type name.",
                   " Some can be a mixture of multiple cell types."),
                   input), collapse = "\n")
   if (return.content) return(content)
   if (llm_function == 'openai') {
-    chat <- chat_openai(
+    chat <- ellmer::chat_openai(
       system_prompt = NULL,
       turns = NULL,
       base_url = base_url,
@@ -1113,9 +1113,11 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
       seed = seed,
       api_args = list(),
       echo = c("none", "text", "all")
-    )
-    if (llm_function == 'ollama') {
-      chat <- chat_ollama(
+      )
+    text <- chat$chat(content)
+  }
+  if (llm_function == 'ollama') {
+      chat <- ellmer::chat_ollama(
         system_prompt = NULL,
         turns = NULL,
         base_url = "http://localhost:11434",
@@ -1124,8 +1126,13 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
         api_args = list(),
         echo = NULL
       )
-    }
-    text <- chat$chat(content)
+      content <- paste0("Identify cell types of ", 
+                        tissuename, " cells using the following markers separately for each row.",
+      " Only provide the cell type name. Do not interpret.",
+      " Some can be a mixture of multiple cell types.")
+      for (i in input) {
+        text <- chat$chat(paste0(content))
+      }
   }
   text <-  gsub("(\n)\\1{0,}", "__celltype__", text)
   anno <- strsplit(text, split = '__celltype__')[[1]]

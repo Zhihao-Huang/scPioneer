@@ -839,7 +839,7 @@ QC_filtered <- function (SeuratS4, outdir, do_cellcycle = "TRUE") {
 #' pbmc <- QC_raw(pbmc,'./')
 #' @export
 QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE", 
-                    plot.raw = 'TRUE',
+                    plot.raw = 'TRUE', 
                     max.mt = 10, min.features = 200, max.features = Inf,
                     multi.samples = "TRUE") 
 {
@@ -898,6 +898,7 @@ QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE",
                                  s.features = s.genes.mouse)
     }
   }
+  rawlist <- list()
   if (plot.raw == 'TRUE') {
     message("================step1 statistic parameters================")
     parameters <- c("percent.mt", "percent.ribo", "percent.HSP", 
@@ -926,10 +927,9 @@ QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE",
       features1 = parameters
       plist <- plist[features1]
       num_g <- length(unique(object@meta.data$Sample))
-      pdf(paste(outdir, "QC.RidgePlot_density.pdf", sep = ""), 
-          6, (8 + num_g * 1.2))
-      print(patchwork::wrap_plots(plist, ncol = 1))
-      dev.off()
+      ggsave(paste0(outdir, "QC.RidgePlot_density.pdf"), patchwork::wrap_plots(plist, ncol = 1),
+          width = 6, height = (8 + num_g * 1.2))
+      rawlist <- c(rawlist, plist)
     }
     message("================step2 plot density=================")
     pdf(paste(outdir, "QC.meta_density.pdf", sep = ""), 6, 3)
@@ -965,26 +965,23 @@ QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE",
       geom_vline(xintercept = 100-max.mt, lty = "dashed")
     ggsave(paste0(outdir, "QC.scatter2.png"),p,device = 'png', 
            width = 5.2, height = 4.6)
+    rawlist[['QC.scatter2']] <- p
     message("================step3 plot violin================")
-    if (multi.samples == "TRUE") {
-      pdf(paste0(outdir, "QC.violin.pdf"), (12 + num_g/5.5), 
-          4)
-    }
-    else {
-      pdf(paste0(outdir, "QC.violin.pdf"), 12, 4)
-    }
+    num_g <- length(unique(object@meta.data$Sample)) 
     plot1 <- FeatureScatter(object, feature1 = "nCount_RNA", 
                             feature2 = "percent.mt")
     plot2 <- FeatureScatter(object, feature1 = "nCount_RNA", 
                             feature2 = "nFeature_RNA")
     p <- CombinePlots(plots = list(plot1, plot2))
-    print(p)
-    dev.off()
+    ggsave(paste0(outdir, "QC.violin.pdf"), p, width = (12 + num_g/5.5), 
+          height = 4)
+    rawlist[['Feature_mt_Scatter']] <- plot1
+    rawlist[['Feature_Count_Scatter']] <- plot2
   }
   orig.metadata <- object@meta.data
   write.table(file = paste(outdir, "orig.metadata.txt", sep = ""), 
               orig.metadata, quote = F, sep = "\t")
-  return(object)
+  return(list(object = object, plotlist = rawlist))
 }
 
 #' QC. Add percent.ribo or percent.HSP to object；return object or Ridgeplot.
