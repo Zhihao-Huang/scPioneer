@@ -8,7 +8,7 @@ Authors@R:
            email = "zhihao.jnu@gmail.com",
            comment = c(ORCID = "0000-0003-3136-3720"))
 Description: Functions for analysis of single cell RNA-seq.
-License: GPL-3
+License: GLP-3
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 4.2.0), ggplot2 (>= 3.0.0), Seurat (>= 5.0.0), reshape2,
@@ -17,7 +17,7 @@ biocViews:
 Imports: BiocParallel, clustree,
         RColorBrewer, grid, grDevices, pheatmap,
         SingleCellExperiment, gridExtra, network, GGally, png, ggedit,
-        org.Hs.eg.db,reticulate, progress,
+        org.Hs.eg.db,reticulate, progress, glmGamPoi,
         openai, ellmer, 
         SingleR, celldex, BiocFileCache, GSEABase,AUCell, scRNAseq, SEtools,
         pbapply, circlize, cowplot,dendextend, ggsci,ComplexHeatmap,
