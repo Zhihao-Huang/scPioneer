@@ -34,7 +34,6 @@
 #' 
 #' @export
 scrublet_R <- function (seurat_obj, python_home = system("which python", intern = TRUE), 
-                        scrublet_script_path = '/storage2/hlinglab/jasper/pipeline_development/scPioneer/scpioneer_v2.0.0/scPioneer/R/scrublet.py',
                         return_results_only = FALSE, min_counts=2, 
                         min_cells=3, expected_doublet_rate=0.06,
                         min_gene_variability_pctl=85, 
@@ -42,13 +41,12 @@ scrublet_R <- function (seurat_obj, python_home = system("which python", intern 
 {
   print(reticulate::py_config())
   if(!reticulate::py_module_available("scrublet")) stop("python module scrublet does not seem to be installed; - try running 'py_config()'")
-  if (!is.null(scrublet_script_path)) {
-    reticulate::source_python(scrublet_script_path)
-  }else{
-    reticulate::source_python(paste(system.file(package = "m3addon"), 
-                                    "scrublet.py", sep = "/"))
+  source_py_script <- system.file("scrublet.py", package = "scPioneer")
+  if (source_py_script == '') {
+    source_py_script <- paste(system.file(package = "m3addon"), 
+                                    "scrublet.py", sep = "/")
   }
-  
+  reticulate::source_python(source_py_script)
   #mat <- Biobase::exprs(cds)
   mat <- GetAssayData(seurat_obj, slot = 'counts')
   print(class(mat))

@@ -972,7 +972,7 @@ QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE",
                             feature2 = "percent.mt")
     plot2 <- FeatureScatter(object, feature1 = "nCount_RNA", 
                             feature2 = "nFeature_RNA")
-    p <- CombinePlots(plots = list(plot1, plot2))
+    p <- patchwork::wrap_plots(list(plot1, plot2))
     ggsave(paste0(outdir, "QC.violin.pdf"), p, width = (12 + num_g/5.5), 
           height = 4)
     rawlist[['Feature_mt_Scatter']] <- plot1

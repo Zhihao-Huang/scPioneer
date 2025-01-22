@@ -151,7 +151,7 @@ run_doublet_and_filter <- function(SeuratS4, param) {
   if (param[['detect.doublet']] == 'scrublet') {
     ###########################################
     # scrublet
-    message('3. Detect doublet by scrublet.')
+    message('#########################  Detect doublet by scrublet  #########################')
     # get raw meta data for statistic
     meta <- SeuratS4@meta.data[,c("Sample","percent.mt", "percent.ribo",
                                   "nFeature_RNA","nCount_RNA")]
@@ -192,10 +192,10 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     message("Running scrublet...")
     scrublet_res <- scrublet_R(SeuratS4, python_home = param[['python_home']], 
                                return_results_only = T,
-                               scrublet_script_path = param[['scrublet_script_path']],
                                min_cells = param[['min.cells']],
                                expected_doublet_rate = param[['expected.doublet.rate']])
-    message("Scrublet done.")
+    
+    message('#########################  Scrublet done.  #########################')
     SeuratS4$doublet_scores <- scrublet_res$doublet_scores
     p <- ggplot(data.frame(doublet_scores = SeuratS4$doublet_scores), 
                 aes(x = doublet_scores)) + geom_histogram(bins = 200) + 
@@ -241,7 +241,7 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     }
     
   }else if (param[['detect.doublet']] == 'scDblFinder') {
-    message('3. Detect doublet by scDblFinder.')
+    message('#########################  Detect doublet by scDblFinder  #########################')
     # get raw meta data for statistic
     meta <- SeuratS4@meta.data[,c("Sample","percent.mt", "percent.ribo",
                                   "nFeature_RNA","nCount_RNA")]
@@ -284,7 +284,7 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     SeuratS4 <- FindClusters(SeuratS4, resolution = 0.3,
                              algorithm = param[['cluster_algorithm']])
     # detect doublet using scDblFinder
-    message("Running scDblFinder...")
+    message('#########################  Running scDblFinder...  #########################')
     if ( param[['scdblFinder_dbr']] == 'NULL') param[['scdblFinder_dbr']] <- NULL
     if ( param[['scdblFinder_dbr.sd']] == 'NULL') param[['scdblFinder_dbr.sd']] <- NULL
     if (param[['is_multidata']] == 'TRUE') {
@@ -304,7 +304,7 @@ run_doublet_and_filter <- function(SeuratS4, param) {
                                       dbr.sd = param[['scdblFinder_dbr.sd']]
       )
     }
-    message("scDblFinder running is over.")
+    message('######################### scDblFinder done.  #########################')
     # port the resulting scores back to the Seurat object:
     SeuratS4$doublet_scores <- sce$scDblFinder.score
     SeuratS4$doublet <- sce$scDblFinder.class
@@ -712,7 +712,6 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   param[['filter.doublet']] <- F
   param[['python_home']] <- '/home/jasper/.conda/envs/Seurat_v5/bin/python'
   param[['python_env']] <- gsub('bin.*$','',param[['python_home']])
-  param[['scrublet_script_path']] <- '/storage2/hlinglab/jasper/pipeline_development/scPioneer/scpioneer_v2.0.0/scPioneer/R/scrublet.py'
   param[['expected.doublet.rate']] <- 0.05
   param[['max.doublet.rate']] <- 0.2
   param[['is_multidata']] <- 'TRUE'

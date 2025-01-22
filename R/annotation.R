@@ -844,6 +844,7 @@ angrycell <- function(object, select.db = c('db_self'),
 
 ################## Annotation
 #' Annotate raw clusters by max expression, and return an object with annotation Idents
+#' 
 #' @examples
 #' markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
 #' markers = c('CD3D','CD3E','NCAM1','NKG7','CD14','FCGR3A','CST3','CD1C','CD79A','MS4A1','PPBP'))
@@ -851,7 +852,6 @@ angrycell <- function(object, select.db = c('db_self'),
 #' #[1] "celltypes" "markers"
 #' pbmc_anno <- anno_top_gene(pbmc, markerdf, group.by = 'seurat_clusters')
 #' DimPlot(pbmc_anno, label = T)
-#' 
 #' @export
 anno_top_gene <- function(object, markerdf, group.by = 'seurat_cluster'
 ) {
@@ -954,7 +954,6 @@ anno_SingleR <- function(object, species, assay = 'RNA', raw_cluster = NULL,
 #' @examples
 #' pbmc <- anno_AUCell(pbmc, species = 'Human', scsig.subset = 'Bone_Marrow') # based on individual cells
 #' pbmc <- anno_AUCell(pbmc, species = 'Human', , scsig.subset = 'Bone_Marrow', raw_cluster = 'seurat_clusters') # based on seurat clusters
-#' 
 #' @export
 anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL, 
                         ensembl_version = 98,
@@ -1022,7 +1021,6 @@ anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
 #' markers <- FindAllMarkers(pbmc, logfc.threshold = 0.5, test.use = 'MAST', only.pos = T)
 #' top10 <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)
 #' annodf <- anno_openai(top10)
-#' 
 #' @export
 anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
@@ -1076,7 +1074,6 @@ anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
 #' annodf <- anno_ellmer(top10)
 #' # depends on local model ollama. First download and install Ollama, then install model with ollama pull llama3.2. Test on Mac.
 #' annodf <- anno_ellmer(top10, llm_function = 'ollama')
-#' 
 #' @export
 anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
@@ -1182,7 +1179,6 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
 #'  base_url = "http://chatapi.littlewheat.com/v1",
 #'  api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
 #' DimPlot(obj, label = T)
-#' 
 #' @export
 annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL, 
                      method = c('SingleR','AUCell','topgene','angrycell'), 
