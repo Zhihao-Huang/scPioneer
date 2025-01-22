@@ -3,7 +3,6 @@
 #' @examples 
 #' pbmc$Cellname <- colnames(pbmc)
 #' subsetID(pbmc@@meta.data[,c('Annotation','Cellname')], num = 100)
-#' 
 #' @export
 subsetID <- function (IDmat, num = NULL, fraction = NULL, min.cell = 10, 
                       seed = 123) 
@@ -63,7 +62,6 @@ subsetID <- function (IDmat, num = NULL, fraction = NULL, min.cell = 10,
 #' 
 #' @examples 
 #' subsetID2(newI, expected.cell = 200, seed = 123)
-#' 
 #' @export
 subsetID2 <- function (newI, expected.cell = 200, fraction = NULL, min.cell = 10, seed = 123) 
 {
