@@ -72,7 +72,7 @@ Load data:
 ### Load preprecessed object from PHASE 1.
 pbmc <- resultlist$object
 ```
-### Method 1: Perform annotation by reference (SingleR)
+### Method 1: Perform annotation using reference (SingleR)
 ```
 ### Perform annotation by reference (SingleR)
 obj <- annocell(pbmc, species = 'Human', method = 'SingleR', raw_cluster = 'seurat_clusters')
@@ -83,7 +83,7 @@ p1
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_singler.png">
 </p>
 
-### Method 2: Perform annotation by LLM model
+### Method 2: Perform annotation using LLM model
 Firstly getting DEGs
 ```
 ### Get DEGs by FindAllMarkers
@@ -117,7 +117,7 @@ p3
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_DeepSeekR1.png">
 </p>
 
-### Method 3: Perform annotation by top markers
+### Method 3: Perform annotation using top markers
 ```
 ### Perform annotation by top markers
 markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
