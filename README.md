@@ -113,7 +113,7 @@ p3 <- DimPlot_idx(obj) + ggtitle('deepseek-chat')
 p3
 ```
 <p align="center">
-  <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_gpt-3.5-turbo.png">
+  <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_DeepSeekR1.png">
 </p>
 
 Perform annotation by top markers:
