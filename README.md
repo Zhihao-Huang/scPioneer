@@ -132,7 +132,8 @@ p4
 </p>
 
 # SessionInfo
->```sessionInfo()
+```
+sessionInfo()
 R version 4.4.2 (2024-10-31)
 Platform: x86_64-conda-linux-gnu
 Running under: Rocky Linux 8.10 (Green Obsidian)
@@ -277,4 +278,5 @@ loaded via a namespace (and not attached):
 [227] htmlwidgets_1.6.4           ComplexHeatmap_2.18.0
 [229] RColorBrewer_1.1-3          rlang_1.1.4
 [231] spatstat.sparse_3.1-0       spatstat.explore_3.3-3
-[233] beeswarm_0.4.0              sechm_1.14.0```
+[233] beeswarm_0.4.0              sechm_1.14.0
+```
