@@ -32,7 +32,7 @@ remotes::install_github('Zhihao-Huang/scPioneer')
 
 # Quick-start
 
-PHASE 1: QC and clustering
+# PHASE 1: QC and clustering
 ```
 ### Create a samplelist including samplename and datadir.
 df <- data.frame(samplename = 'PBMC', datadir = './data-raw/filtered_gene_bc_matrices/hg19/')
