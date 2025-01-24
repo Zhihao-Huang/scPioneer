@@ -82,6 +82,7 @@ p1
 <p align="center">
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_singler.png">
 </p>
+
 Perform annotation by LLM model:
 ```
 ### Get DEGs by FindAllMarkers
@@ -101,6 +102,7 @@ p2
 <p align="center">
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_gpt-3.5-turbo.png">
 </p>
+
 DeepSeek R1 (Getting your api key from: https://api-docs.deepseek.com/):
 ```
 obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
@@ -113,9 +115,10 @@ p3
 <p align="center">
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_gpt-3.5-turbo.png">
 </p>
-Perform annotation by top markers
+
+Perform annotation by top markers:
 ```
-### Perform annotation by top markers:
+### Perform annotation by top markers
 markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
                        markers = c('CD3D','CD3E','NCAM1','NKG7','CD14','FCGR3A','CST3','CD1C','CD79A','MS4A1','PPBP'))
 colnames(markerdf)
