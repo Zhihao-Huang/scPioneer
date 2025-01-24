@@ -67,7 +67,7 @@ patchwork::wrap_plots(resultlist$plotlist)
 
 
 # PHASE 2: cell-type annotation
-Load data
+Load data:
 ```
 ### Load preprecessed object from PHASE 1.
 pbmc <- resultlist$object
@@ -82,43 +82,40 @@ p1
 <p align="center">
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_singler.png">
 </p>
-
-Perform annotation by LLM model
+Perform annotation by LLM model:
 ```
 ### Get DEGs by FindAllMarkers
 Idents(pbmc) <- pbmc$seurat_clusters
 markers <- FindAllMarkers(pbmc, logfc.threshold = 0.5, test.use = 'MAST', only.pos = T)
 top10 <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)
 ```
-OpenAI GPT-3.5-turbo (Getting your api key from: https://openai.com/.)
+OpenAI GPT-3.5-turbo (Getting your api key from: https://openai.com/):
 ```
 obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
                 DE = top10, raw_cluster = 'seurat_clusters',model = "gpt-3.5-turbo", seed = 1234,
                 base_url = "http://chatapi.littlewheat.com/v1",
-                api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
+                api_key = )
 p2 <- DimPlot_idx(obj) + ggtitle('gpt-3.5-turbo')
 p2
 ```
 <p align="center">
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_gpt-3.5-turbo.png">
 </p>
-
-DeepSeek R1 (Getting your api key from: https://api-docs.deepseek.com/.)
+DeepSeek R1 (Getting your api key from: https://api-docs.deepseek.com/):
 ```
 obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
                 DE = top10, raw_cluster = 'seurat_clusters',model = "deepseek-chat", seed = 1234,
                 base_url = 'https://api.deepseek.com/v1',
-                api_key = 'sk-dfa7e4495c174050a82d81e6f82a9d14')
+                api_key = )
 p3 <- DimPlot_idx(obj) + ggtitle('deepseek-chat')
 p3
 ```
 <p align="center">
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_gpt-3.5-turbo.png">
 </p>
-
 Perform annotation by top markers
 ```
-### Perform annotation by top markers
+### Perform annotation by top markers:
 markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
                        markers = c('CD3D','CD3E','NCAM1','NKG7','CD14','FCGR3A','CST3','CD1C','CD79A','MS4A1','PPBP'))
 colnames(markerdf)
