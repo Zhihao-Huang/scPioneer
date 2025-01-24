@@ -1,7 +1,7 @@
-### Introduction
+# Introduction
 >ScPioneer is a R package for preprocessing and visualization of scRNA-seq data friendly.
 
-### Installation
+# Installation
 
 Install required packages:
 ```
@@ -30,9 +30,9 @@ remotes::install_github('Zhihao-Huang/scPioneer')
 ```
 
 
-### Quick-start
+# Quick-start
 
-# PHASE 1: QC and clustering
+### PHASE 1: QC and clustering
 ```
 ### Create a samplelist including samplename and datadir.
 df <- data.frame(samplename = 'PBMC', datadir = './data-raw/filtered_gene_bc_matrices/hg19/')
@@ -66,7 +66,7 @@ patchwork::wrap_plots(resultlist$plotlist)
 </p>
 
 
-# PHASE 2: cell-type annotation
+### PHASE 2: cell-type annotation
 Load data:
 ```
 ### Load preprecessed object from PHASE 1.
@@ -131,7 +131,7 @@ p4
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_topgene.png">
 </p>
 
-### SessionInfo
+# SessionInfo
 <details>
 
 <summary>SessionInfo</summary>
