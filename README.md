@@ -32,7 +32,7 @@ remotes::install_github('Zhihao-Huang/scPioneer')
 
 # Quick-start
 
-### PHASE 1: QC and clustering
+## PHASE 1: QC and clustering
 ```
 ### Create a samplelist including samplename and datadir.
 df <- data.frame(samplename = 'PBMC', datadir = './data-raw/filtered_gene_bc_matrices/hg19/')
@@ -66,13 +66,13 @@ patchwork::wrap_plots(resultlist$plotlist)
 </p>
 
 
-### PHASE 2: cell-type annotation
+## PHASE 2: cell-type annotation
 Load data:
 ```
 ### Load preprecessed object from PHASE 1.
 pbmc <- resultlist$object
 ```
-Perform annotation by reference (SingleR)
+# Method 1: Perform annotation by reference (SingleR)
 ```
 ### Perform annotation by reference (SingleR)
 obj <- annocell(pbmc, species = 'Human', method = 'SingleR', raw_cluster = 'seurat_clusters')
@@ -83,7 +83,7 @@ p1
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_singler.png">
 </p>
 
-Perform annotation by LLM model:
+# Method 2: Perform annotation by LLM model
 ```
 ### Get DEGs by FindAllMarkers
 Idents(pbmc) <- pbmc$seurat_clusters
@@ -116,7 +116,7 @@ p3
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_DeepSeekR1.png">
 </p>
 
-Perform annotation by top markers:
+# Method 3: Perform annotation by top markers
 ```
 ### Perform annotation by top markers
 markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
