@@ -285,5 +285,3 @@ loaded via a namespace (and not attached):
 [233] beeswarm_0.4.0              sechm_1.14.0
 ```
 
-<details>
-
