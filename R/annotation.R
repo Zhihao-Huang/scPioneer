@@ -1081,6 +1081,10 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         model = "gpt-3.5-turbo", 
                         llm_function = c('openai','ollama'),
                         ollama_model = 'llama3.2',
+                        prompts = NULL,
+                        rm_str = c('\\*'),
+                        sep = c('\\: ','- ','\\* ','\\. '),
+                        as.order = F,
                         return.content = F,
                         seed = 1234) {
   llm_function <- match.arg(NULL, choices = llm_function)
@@ -1094,11 +1098,12 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
   }
   if (is.null(names(genelist))) names(genelist) <- paste0('raw_cluster__',length(genelist))
   input <- sapply(names(genelist), function(x) paste0(x, ':', paste(genelist[[x]], collapse = ','),'. '))
-  content = paste(c(list(paste0("Identify cell types of ", 
-                         tissuename, " cells using the following markers separately for each row."),
-                  " Only provide the cell type name.",
-                  " Some can be a mixture of multiple cell types."),
-                  input), collapse = "\n")
+  if (is.null(prompts)) prompts <- c(list(paste0("Identify cell types of ", 
+                           tissuename, " cells using the following markers separately for each row."),
+                    " Only provide one cell type name.",
+                    'Do not interpret.',
+                    " Some can be a mixture of multiple cell types."))
+  content = paste(prompts, input, collapse = "\n")
   if (return.content) return(content)
   if (llm_function == 'openai') {
     chat <- ellmer::chat_openai(
@@ -1123,26 +1128,51 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
         api_args = list(),
         echo = NULL
       )
-      content <- paste0("Identify cell types of ", 
-                        tissuename, " cells using the following markers separately for each row.",
-      " Only provide the cell type name. Do not interpret.",
-      " Some can be a mixture of multiple cell types.")
-      for (i in input) {
-        text <- chat$chat(paste0(content))
-      }
+      # content <- paste0("Identify cell types of ", 
+      #                   tissuename, " cells using the following markers separately for each row.",
+      # " Only provide one cell type name. Do not interpret.",
+      # " Some can be a mixture of multiple cell types.")
+      # for (i in input) {
+      #   text <- chat$chat(paste0(content))
+      # }
+      text <- chat$chat(content)
   }
+  text <-  gsub(rm_str, "", text)
   text <-  gsub("(\n)\\1{0,}", "__celltype__", text)
   anno <- strsplit(text, split = '__celltype__')[[1]]
   anno <- gsub(' $','', anno)
-  raw_clusters <- sapply(anno, function(x) gsub('\\:.*$|-.*$','',x))
+  if (as.order) {
+    raw_clusters <- unique(deg$cluster)
+  }else{
+    raw_clusters <- sapply(anno, function(x) gsub(paste0(paste(sep, collapse = '.*$|'),'.*$'),'',x))
+  }
   raw_clusters = gsub('raw_cluster__','',raw_clusters)
-  anno_clusters <- sapply(anno, function(x) gsub('^.*\\:|^.*-|^.*\\.','',x))
+  anno_clusters <- sapply(anno, function(x) gsub(paste0('^.*', paste(sep, collapse = '|^.*')),'',x))
   anno_clusters <- gsub('^ ','', anno_clusters)
   anno_clusters <- gsub('\\,.*$', '', anno_clusters)
   df <- data.frame(Orig_Idents = raw_clusters,
                    Celltype_predicted = anno_clusters)
+  print(head(df))
   return(df)
 }
+
+#' Annotate cell types using LLM model and DEGs
+#' 
+#' 
+#' @export
+anno_llm <- function(object, deg, raw_cluster, label_raw_cluster_colname,
+                     base_url, api_key, llm_function, ...) {
+  if (!is.null(raw_cluster)) Idents(object) <- object@meta.data[, raw_cluster]
+  df <- anno_ellmer(deg = deg, llm_function = llm_function, base_url = base_url,
+                    api_key = api_key, ...)
+  new.id <- df$Celltype_predicted
+  names(new.id) <- df$Orig_Idents
+  Idents(object) <- object@meta.data[,raw_cluster] 
+  object <- RenameIdents(object, new.id)
+  object@meta.data[,label_raw_cluster_colname] <- Idents(object)
+  return(object)
+}
+
 
 #' Annotate Celltypes in one function
 #' 
@@ -1181,7 +1211,7 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
 #' DimPlot(obj, label = T)
 #' @export
 annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL, 
-                     method = c('SingleR','AUCell','topgene','angrycell'), 
+                     method = c('SingleR','AUCell','llm','topgene','angrycell'), 
                      ensembl_version = 98,
                      label_colname = NULL,
                      label_raw_cluster_colname = NULL,
@@ -1192,6 +1222,7 @@ annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
                                       'Small_Intestine','Large_Intestine','PFC','Embryonic',
                                       'Midbrain','Bone_Marrow','Liver','Fetal_Kidney','Adult_Kidney','Pancreas'),
                      markerdf = NULL,
+                     DE = NULL,
                      min.pct = 0.3,
                      db = NULL,
                      n.cores = 4,
@@ -1212,6 +1243,7 @@ annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
                                              label_colname, label_raw_cluster_colname,
                                              scsig, scsig.subset, 
                                              nCores = n.cores, ...)
+  if (method == 'llm') object <- anno_llm(object, DE, raw_cluster,label_raw_cluster_colname, ...)
   if (method == 'topgene') {
     object <- anno_top_gene(object, markerdf, group.by = raw_cluster)
     object@meta.data[,label_raw_cluster_colname] <- Idents(object)
