@@ -131,12 +131,15 @@ p3
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_DeepSeekR1.png">
 </p>
 
+Ollama 3.2. Adjust the prompt, rm_str, and sep if the answers do not match the provided identities.
 ```
-obj <- annocell(pbmc, species = 'Human', assay = 'SCT', raw_cluster = 'seurat_clusters',
-                method = 'llm', llm_function = 'ollama', ollama_model = 'llama3.2',
-                DE = top10, seed = 1234, 
-                rm_str = c('Here are the identified cell types for each row:\n\n'),
-                sep = ': ', as.order = T)
+obj <- annocell(pbmc, species = 'Human', method = 'llm',
+                llm_function = 'ollama', ollama_model = 'llama3.2',
+                raw_cluster = 'seurat_clusters',
+                DE = top10,  seed = 1234, 
+                prompts = 'Identify cell type matching each row. Only return name of cell type. Do not explain.',
+                rm_str = c('Here is the list of cell types matching each row:\n\n'),
+                sep = '\\. ', as.order = F)
 p4 <- DimPlot_idx(obj) + ggtitle('ollama')
 p4
 ```
