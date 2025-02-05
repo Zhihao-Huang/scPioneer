@@ -67,6 +67,18 @@ patchwork::wrap_plots(resultlist$plotlist)
 
 
 ## PHASE 2: cell-type annotation
+Load libraries and functions:
+```
+library(scPioneer)
+```
+If you don't want to install scPioneer, just load the required packages and functions:
+```
+library(Seurat)
+library(dplyr)
+library(ggplot2)
+source('./R/annotation.R')
+source('./R/DimPlot_idx.R')
+```
 Load data:
 ```
 ### Load preprecessed object from PHASE 1.
@@ -93,8 +105,9 @@ top10 <- markers %>% group_by(cluster) %>% top_n(10, avg_log2FC)
 ```
 OpenAI GPT-3.5-turbo (Getting your api key from: https://openai.com/):
 ```
-obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
-                DE = top10, raw_cluster = 'seurat_clusters',model = "gpt-3.5-turbo", seed = 1234,
+obj <- annocell(pbmc, species = 'Human',assay = 'SCT', raw_cluster = 'seurat_clusters',
+                method = 'llm', llm_function = 'openai', model = "gpt-3.5-turbo",
+                DE = top10, seed = 1234,
                 base_url = "http://chatapi.littlewheat.com/v1",
                 api_key = )
 p2 <- DimPlot_idx(obj) + ggtitle('gpt-3.5-turbo')
@@ -106,8 +119,9 @@ p2
 
 DeepSeek R1 (Getting your api key from: https://api-docs.deepseek.com/):
 ```
-obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
-                DE = top10, raw_cluster = 'seurat_clusters',model = "deepseek-chat", seed = 1234,
+obj <- annocell(pbmc, species = 'Human', assay = 'SCT', raw_cluster = 'seurat_clusters',
+                method = 'llm', llm_function = 'deepseek', model = "deepseek-chat",
+                DE = top10, seed = 1234,
                 base_url = 'https://api.deepseek.com/v1',
                 api_key = )
 p3 <- DimPlot_idx(obj) + ggtitle('deepseek-chat')
@@ -116,6 +130,16 @@ p3
 <p align="center">
   <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_DeepSeekR1.png">
 </p>
+
+```
+obj <- annocell(pbmc, species = 'Human', assay = 'SCT', raw_cluster = 'seurat_clusters',
+                method = 'llm', llm_function = 'ollama', ollama_model = 'llama3.2',
+                DE = top10, seed = 1234, 
+                rm_str = c('Here are the identified cell types for each row:\n\n'),
+                sep = ': ', as.order = T)
+p4 <- DimPlot_idx(obj) + ggtitle('ollama')
+p4
+```
 
 ### Method 3: Perform annotation using top markers
 ```
