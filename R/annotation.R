@@ -667,6 +667,7 @@ angrycell <- function(object, select.db = c('db_self'),
   ### 20250120 add openai function
   if(select.db == 'openai') {
     annodf <- anno_ellmer(genelist = genelist, llm_function = 'openai', ...)
+    annodf$Orig_Idents <- gsub('cluster','', annodf$Orig_Idents)
     return(annodf)
   }
   ### 20250120 End.
@@ -1024,7 +1025,7 @@ anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
 #' @export
 anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
-                        api_key,
+                        api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM',
                         model = "gpt-3.5-turbo", 
                         seed = 123) {
   if (!is.null(deg)) {
@@ -1077,9 +1078,9 @@ anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
 #' @export
 anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
-                        api_key,
+                        api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM',
                         model = "gpt-3.5-turbo", 
-                        llm_function = c('openai','ollama'),
+                        llm_function = c('openai','deepseek','ollama'),
                         ollama_model = 'llama3.2',
                         prompts = NULL,
                         rm_str = c('\\*'),
@@ -1093,7 +1094,9 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
     all.cluster <- unique(deg$cluster)
     genelist <- lapply(all.cluster, function(x) deg$gene[deg$cluster == x])
     names(genelist) <- all.cluster
-  }else if (is.null(genelist)) {
+  }else if (!is.null(genelist)) {
+    all.cluster <- names(genelist)
+  }else{  
     stop('Please provide a data.frame from FindAllmarkers or a genelist.')
   }
   if (is.null(names(genelist))) names(genelist) <- paste0('raw_cluster__',length(genelist))
@@ -1116,6 +1119,19 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
       api_args = list(),
       echo = c("none", "text", "all")
       )
+    text <- chat$chat(content)
+  }
+  if (llm_function == 'deepseek') {
+    chat <- ellmer::chat_openai(
+      system_prompt = NULL,
+      turns = NULL,
+      base_url = base_url,
+      api_key = api_key,
+      model = model,
+      seed = seed,
+      api_args = list(),
+      echo = c("none", "text", "all")
+    )
     text <- chat$chat(content)
   }
   if (llm_function == 'ollama') {
@@ -1142,14 +1158,17 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
   anno <- strsplit(text, split = '__celltype__')[[1]]
   anno <- gsub(' $','', anno)
   if (as.order) {
-    raw_clusters <- unique(deg$cluster)
+    raw_clusters <- all.cluster
   }else{
     raw_clusters <- sapply(anno, function(x) gsub(paste0(paste(sep, collapse = '.*$|'),'.*$'),'',x))
   }
+  print(raw_clusters)
   raw_clusters = gsub('raw_cluster__','',raw_clusters)
   anno_clusters <- sapply(anno, function(x) gsub(paste0('^.*', paste(sep, collapse = '|^.*')),'',x))
   anno_clusters <- gsub('^ ','', anno_clusters)
   anno_clusters <- gsub('\\,.*$', '', anno_clusters)
+  print(anno_clusters)
+  
   df <- data.frame(Orig_Idents = raw_clusters,
                    Celltype_predicted = anno_clusters)
   print(head(df))
@@ -1160,8 +1179,8 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
 #' 
 #' 
 #' @export
-anno_llm <- function(object, deg, raw_cluster, label_raw_cluster_colname,
-                     base_url, api_key, llm_function, ...) {
+anno_llm <- function(object, deg, raw_cluster, label_raw_cluster_colname, llm_function,
+                     base_url, api_key, ...) {
   if (!is.null(raw_cluster)) Idents(object) <- object@meta.data[, raw_cluster]
   df <- anno_ellmer(deg = deg, llm_function = llm_function, base_url = base_url,
                     api_key = api_key, ...)
@@ -1207,11 +1226,12 @@ anno_llm <- function(object, deg, raw_cluster, label_raw_cluster_colname,
 #' obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai', DE = top10, raw_cluster = 'seurat_clusters',
 #'  model = "gpt-3.5-turbo", seed = 123,
 #'  base_url = "http://chatapi.littlewheat.com/v1",
-#'  api_key = )
+#'  api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
 #' DimPlot(obj, label = T)
 #' @export
 annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL, 
                      method = c('SingleR','AUCell','llm','topgene','angrycell'), 
+                     llm_function = c('openai','deepseek','ollama'),
                      ensembl_version = 98,
                      label_colname = NULL,
                      label_raw_cluster_colname = NULL,
@@ -1228,8 +1248,17 @@ annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
                      n.cores = 4,
                      ...) {
   method <- match.arg(NULL, choices = method)
+  llm_function <- match.arg(NULL, choices = llm_function)
   ref.label <-  match.arg(NULL, choices = ref.label)
   scsig.subset <-  match.arg(NULL, choices = scsig.subset)
+  if (!is.null(raw_cluster)) {
+    Idents(object) <- object@meta.data[, raw_cluster]
+  }else{
+    message('Idents(object) were used for raw clusters, as raw_cluster is NULL.')
+    raw_cluster <- 'raw_cluster_temp'
+    object$raw_cluster_temp <- Idents(object)
+  }
+  
   if (is.null(label_colname)) label_colname <- paste0(method, '_label_cell')
   if (is.null(label_raw_cluster_colname)) label_raw_cluster_colname <- paste0(method, '_label_raw_cluster')
   if (method == 'SingleR') object <- anno_SingleR(object, species, assay, raw_cluster, 
@@ -1243,15 +1272,16 @@ annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
                                              label_colname, label_raw_cluster_colname,
                                              scsig, scsig.subset, 
                                              nCores = n.cores, ...)
-  if (method == 'llm') object <- anno_llm(object, DE, raw_cluster,label_raw_cluster_colname, ...)
+  if (method == 'llm') object <- anno_llm(object, DE, raw_cluster,label_raw_cluster_colname,
+                                          llm_function, ...)
   if (method == 'topgene') {
     object <- anno_top_gene(object, markerdf, group.by = raw_cluster)
     object@meta.data[,label_raw_cluster_colname] <- Idents(object)
   }
   if (method == 'angrycell') {
     if (is.null(db)) db <- ifelse(species == 'Human', 'panglaodb_hs', 'panglaodb_mm')
-    if (!is.null(raw_cluster)) Idents(object) <- object@meta.data[, raw_cluster]
-    df <- angrycell(object, select.db = db, show.top = 1, min.pct = min.pct, core.num = n.cores,...)
+    df <- angrycell(object, select.db = db, show.top = 1, min.pct = min.pct, core.num = n.cores,
+                    active.assay = assay,...)
     new.id <- df$Celltype_predicted
     names(new.id) <- df$Orig_Idents
     Idents(object) <- object@meta.data[,raw_cluster] 
