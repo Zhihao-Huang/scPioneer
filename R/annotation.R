@@ -1025,7 +1025,7 @@ anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
 #' @export
 anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
-                        api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM',
+                        api_key = '',
                         model = "gpt-3.5-turbo", 
                         seed = 123) {
   if (!is.null(deg)) {
@@ -1078,7 +1078,7 @@ anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
 #' @export
 anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
-                        api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM',
+                        api_key = '',
                         model = "gpt-3.5-turbo", 
                         llm_function = c('openai','deepseek','ollama'),
                         ollama_model = 'llama3.2',

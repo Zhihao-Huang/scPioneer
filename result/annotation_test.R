@@ -30,7 +30,7 @@ obj <- annocell(pbmc, species = 'Human', method = 'llm',
                 raw_cluster = 'seurat_clusters', assay = 'SCT',
                 DE = top10,  seed = 1234, sep = ': ', as.order = F,
                 base_url = "http://chatapi.littlewheat.com/v1",
-                api_key = 'sk-7OpB4wXOH9fmCngPJAg0MPeqIU0JYxvVnSvk10pzZX0Bj1H6')
+                api_key = '')
 p2 <- DimPlot_idx(obj) + ggtitle('gpt-3.5-turbo')
 ggsave('./result/anno_gpt-3.5-turbo.png', device = 'png', plot = p2, width = 6.25,height = 3.25)
 plist[['gpt']] <- p2
@@ -71,7 +71,7 @@ saveRDS(plist, file= './result/plist_top10.rds')
 obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai',
                 DE = top10, raw_cluster = 'seurat_clusters',model = "gpt-3.5-turbo", seed = 1234,
                 base_url = "http://chatapi.littlewheat.com/v1", assay = 'SCT',
-                api_key = 'sk-7OpB4wXOH9fmCngPJAg0MPeqIU0JYxvVnSvk10pzZX0Bj1H6')
+                api_key = '')
 p6 <- DimPlot_idx(obj) + ggtitle('angrycell + deepseek-chat')
 p6
 
