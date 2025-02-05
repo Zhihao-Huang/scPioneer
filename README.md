@@ -67,11 +67,11 @@ patchwork::wrap_plots(resultlist$plotlist)
 
 
 ## PHASE 2: cell-type annotation
-Load libraries and functions:
+Load library:
 ```
 library(scPioneer)
 ```
-If you don't want to install scPioneer, just load the required packages and functions:
+If scPioneer cannot be installed, you can just load the required packages and functions directly:
 ```
 library(Seurat)
 library(dplyr)
