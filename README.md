@@ -143,6 +143,9 @@ obj <- annocell(pbmc, species = 'Human', method = 'llm',
 p4 <- DimPlot_idx(obj) + ggtitle('ollama')
 p4
 ```
+<p align="center">
+  <img width="250"  src="https://github.com/Zhihao-Huang/scPioneer/blob/main/data-raw/anno_ollama.png">
+</p>
 
 ### Method 3: Perform annotation using top markers
 ```
