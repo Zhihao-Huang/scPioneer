@@ -1025,7 +1025,7 @@ anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
 #' @export
 anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
-                        api_key = '',
+                        api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM',
                         model = "gpt-3.5-turbo", 
                         seed = 123) {
   if (!is.null(deg)) {
@@ -1078,15 +1078,17 @@ anno_openai <- function(deg = NULL, genelist = NULL, tissuename = NULL,
 #' @export
 anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                         base_url = "http://chatapi.littlewheat.com/v1",
-                        api_key = '',
+                        api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM',
                         model = "gpt-3.5-turbo", 
                         llm_function = c('openai','deepseek','ollama'),
                         ollama_model = 'llama3.2',
                         prompts = NULL,
+                        prompts.add = NULL,
                         rm_str = c('\\*'),
                         sep = c('\\: ','- ','\\* ','\\. '),
                         as.order = F,
-                        return.content = F,
+                        return.prompt = F,
+                        return.answer = F,
                         seed = 1234) {
   llm_function <- match.arg(NULL, choices = llm_function)
   if (!is.null(deg)) {
@@ -1106,8 +1108,8 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
                     " Only provide one cell type name.",
                     'Do not interpret.',
                     " Some can be a mixture of multiple cell types."))
-  content = paste(prompts, input, collapse = "\n")
-  if (return.content) return(content)
+  content = paste(prompts, prompts.add, input, collapse = "\n")
+  if (return.prompt) return(content)
   if (llm_function == 'openai') {
     chat <- ellmer::chat_openai(
       system_prompt = NULL,
@@ -1153,6 +1155,7 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
       # }
       text <- chat$chat(content)
   }
+  if (return.answer) return(text)
   text <-  gsub(rm_str, "", text)
   text <-  gsub("(\n)\\1{0,}", "__celltype__", text)
   anno <- strsplit(text, split = '__celltype__')[[1]]
@@ -1162,12 +1165,12 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
   }else{
     raw_clusters <- sapply(anno, function(x) gsub(paste0(paste(sep, collapse = '.*$|'),'.*$'),'',x))
   }
-  print(raw_clusters)
-  raw_clusters = gsub('raw_cluster__','',raw_clusters)
+  #print(raw_clusters)
+  raw_clusters = gsub('^.*raw_cluster__','',raw_clusters)
   anno_clusters <- sapply(anno, function(x) gsub(paste0('^.*', paste(sep, collapse = '|^.*')),'',x))
   anno_clusters <- gsub('^ ','', anno_clusters)
   anno_clusters <- gsub('\\,.*$', '', anno_clusters)
-  print(anno_clusters)
+  #print(anno_clusters)
   
   df <- data.frame(Orig_Idents = raw_clusters,
                    Celltype_predicted = anno_clusters)
