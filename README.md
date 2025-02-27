@@ -316,4 +316,5 @@ loaded via a namespace (and not attached):
 [231] spatstat.sparse_3.1-0       spatstat.explore_3.3-3
 [233] beeswarm_0.4.0              sechm_1.14.0
 ```
-
+# License
+The software package is licensed under GPL-3.0. For commercial use, please contact zhihao.jnu@gmail.com.
