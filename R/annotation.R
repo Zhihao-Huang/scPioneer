@@ -117,14 +117,14 @@ anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
                         label_raw_cluster_colname = 'AUCell_label_raw_cluster',
                         scsig = NULL,
                         scsig.subset = c('_','Cord_Blood','Esophagus','Stomach',
-                        'Small_Intestine','Large_Intestine','PFC','Embryonic',
-                        'Midbrain','Bone_Marrow','Liver','Fetal_Kidney','Adult_Kidney','Pancreas'),
+                                         'Small_Intestine','Large_Intestine','PFC','Embryonic',
+                                         'Midbrain','Bone_Marrow','Liver','Fetal_Kidney','Adult_Kidney','Pancreas'),
                         nCores = 4,
                         ...) {
   if (is.null(scsig)) {
     bfc <- BiocFileCache::BiocFileCache(ask=FALSE)
     scsig.path <- BiocFileCache::bfcrpath(bfc, file.path("http://software.broadinstitute.org",
-                                          "gsea/msigdb/supplemental/scsig.all.v1.0.symbols.gmt"))
+                                                         "gsea/msigdb/supplemental/scsig.all.v1.0.symbols.gmt"))
     scsig <- GSEABase::getGmt(scsig.path)
   }
   counts <- GetAssayData(object, assay = assay, layer = 'counts')
@@ -146,7 +146,7 @@ anno_AUCell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
   }
   rankings <- AUCell::AUCell_buildRankings(counts, nCores = nCores, plotStats=FALSE)
 
-    # Restricting to the subset of scsig gene sets:
+  # Restricting to the subset of scsig gene sets:
   scsig <- scsig[grep(scsig.subset, names(scsig))]
 
   # Applying MsigDB to the Muraro dataset, because it's human:
@@ -257,13 +257,13 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
     stop('Please provide a data.frame from FindAllmarkers or a genelist.')
   }
   if (is.null(names(genelist))) names(genelist) <- paste0('raw_cluster__',length(genelist))
-  input <- sapply(names(genelist), function(x) paste0(x, ':', paste(genelist[[x]], collapse = ','),'. '))
+  input <- lapply(names(genelist), function(x) paste0(x, ':', paste(genelist[[x]], collapse = ','),'. '))
   if (is.null(prompts)) prompts <- c(list(paste0("Identify cell types of ",
-                           tissuename, " cells using the following markers separately for each row."),
-                    " Only provide one cell type name.",
-                    'Do not interpret.',
-                    " Some can be a mixture of multiple cell types."))
-  content = paste(prompts, prompts.add, input, collapse = "\n")
+                                                 tissuename, " cells using the following markers separately for each row."),
+                                          " Only provide one cell type name.",
+                                          'Do not interpret.',
+                                          " Some can be a mixture of multiple cell types."))
+  content = paste(c(prompts, prompts.add, input), collapse = "\n")
   if (return.prompt) return(content)
   if (llm_function == 'openai') {
     chat <- ellmer::chat_openai(
@@ -275,7 +275,7 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
       seed = seed,
       api_args = list(),
       echo = c("none", "text", "all")
-      )
+    )
     text <- chat$chat(content)
   }
   if (llm_function == 'deepseek') {
@@ -292,23 +292,23 @@ anno_ellmer <- function(deg = NULL, genelist = NULL, tissuename = NULL,
     text <- chat$chat(content)
   }
   if (llm_function == 'ollama') {
-      chat <- ellmer::chat_ollama(
-        system_prompt = NULL,
-        turns = NULL,
-        base_url = "http://localhost:11434",
-        model = ollama_model,
-        seed = seed,
-        api_args = list(),
-        echo = NULL
-      )
-      # content <- paste0("Identify cell types of ",
-      #                   tissuename, " cells using the following markers separately for each row.",
-      # " Only provide one cell type name. Do not interpret.",
-      # " Some can be a mixture of multiple cell types.")
-      # for (i in input) {
-      #   text <- chat$chat(paste0(content))
-      # }
-      text <- chat$chat(content)
+    chat <- ellmer::chat_ollama(
+      system_prompt = NULL,
+      turns = NULL,
+      base_url = "http://localhost:11434",
+      model = ollama_model,
+      seed = seed,
+      api_args = list(),
+      echo = NULL
+    )
+    # content <- paste0("Identify cell types of ",
+    #                   tissuename, " cells using the following markers separately for each row.",
+    # " Only provide one cell type name. Do not interpret.",
+    # " Some can be a mixture of multiple cell types.")
+    # for (i in input) {
+    #   text <- chat$chat(paste0(content))
+    # }
+    text <- chat$chat(content)
   }
   if (return.answer) return(text)
   text <-  gsub(rm_str, "", text)
@@ -420,16 +420,16 @@ annocell <- function(object, species, assay = 'RNA', raw_cluster = NULL,
   if (is.null(label_colname)) label_colname <- paste0(method, '_label_cell')
   if (is.null(label_raw_cluster_colname)) label_raw_cluster_colname <- paste0(method, '_label_raw_cluster')
   if (method == 'SingleR') object <- anno_SingleR(object, species, assay, raw_cluster,
-                                               ensembl_version,
-                                               label_colname, label_raw_cluster_colname,
-                                               ref, ref.label,
-                                               BPPARAM = BiocParallel::MulticoreParam(n.cores),
-                                               ...)
+                                                  ensembl_version,
+                                                  label_colname, label_raw_cluster_colname,
+                                                  ref, ref.label,
+                                                  BPPARAM = BiocParallel::MulticoreParam(n.cores),
+                                                  ...)
   if (method == 'AUCell') object <- anno_AUCell(object, species, assay, raw_cluster,
-                                             ensembl_version,
-                                             label_colname, label_raw_cluster_colname,
-                                             scsig, scsig.subset,
-                                             nCores = n.cores, ...)
+                                                ensembl_version,
+                                                label_colname, label_raw_cluster_colname,
+                                                scsig, scsig.subset,
+                                                nCores = n.cores, ...)
   if (method == 'llm') object <- anno_llm(object, DE, raw_cluster,label_raw_cluster_colname,
                                           llm_function, ...)
   if (method == 'topgene') {
