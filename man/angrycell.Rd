@@ -108,7 +108,7 @@ The median value of the DropOutRate of house keep genes as cutoff value.}
  \item{3}: Rcpp Ramanujan's approximation.
  }}
 
-\item{...}{Arguments passed to signDE.}
+\item{...}{Arguments passed to anno_openai.}
 }
 \value{
 A dataframe of celltype annotation.

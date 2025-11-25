@@ -6,14 +6,14 @@
 \usage{
 inferCNV_preprocess(
   object,
-  meta.data,
   annotation,
-  malignant_prefix = "^EP",
   group,
-  min.cell.per.group = 30,
   gene.anno.gtf,
   outdir,
-  subset.malig = F,
+  malignant_prefix = "^EP",
+  ref_prefix = "Immune|T cell|Mono|Macro|DC",
+  min.cell.per.group = 30,
+  subset.malig = T,
   subset.malig.num = 10000,
   subset.ref = T,
   subset.ref.prop = 0.5,
@@ -23,21 +23,16 @@ inferCNV_preprocess(
 \arguments{
 \item{annotation}{Column of meta.data for distinguishing malignant and reference.}
 
-\item{malignant_prefix}{Prefix of malignant names.}
-
 \item{group}{Column of meta.data for annotation bar on the left side of CNV heatmap.}
+
+\item{malignant_prefix}{Prefix of malignant names.}
 }
 \description{
 Function of pre-processing data for inferCNV
 }
 \examples{
-datalist <- inferCNV_preprocess(object, meta.data,annotation, malignant_prefix = '^EP',
-group,min.cell.per.group = 30,gene.anno.gtf,outdir,subset.malig = F,
-subset.ref = T,subset.ref.prop = 0.5,seed = 123)
-infercnv_obj = CreateInfercnvObject(raw_counts_matrix=datalist$matrix,
-annotations_file=datalist$annotations_file,delim="\t",
-gene_order_file=datalist$gene_order_file,
-ref_group_names = datalist$ref_group_names)
-infercnv_obj = infercnv::run(infercnv_obj,cutoff=0.1, # cutoff=1 works well for Smart-seq2, and cutoff=0.1 works well for 10x Genomics
-out_dir=outdir, cluster_by_groups=TRUE, denoise=TRUE,HMM=TRUE)
+datalist <- inferCNV_preprocess(scPioneer::pbmc, annotation = 'Annotation', group = 'Annotation', malignant_prefix = '^B', ref_prefix = 'Immune|T cell|Mono|Macro|DC',
+gene.anno.gtf = '../../../../database/STAR_ref/GRCh38/Homo_sapiens.GRCh38.112.gtf.gz',outdir = './result/')
+infercnv_obj = CreateInfercnvObject(raw_counts_matrix=datalist$raw_counts_matrix,annotations_file=datalist$annotations_file,delim="\t",gene_order_file=datalist$gene_order_file,ref_group_names = datalist$ref_group_names)
+infercnv_obj = infercnv::run(infercnv_obj,cutoff=0.1, out_dir=outdir, cluster_by_groups=TRUE, denoise=TRUE,HMM=TRUE)
 }

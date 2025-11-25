@@ -10,6 +10,7 @@ M1M2_score(
   Macrophage.names,
   return.data = F,
   M1M2list = NULL,
+  M1M2list_Cell2018 = F,
   AddModuleScore = F,
   plot.type = c("violin", "violin merge", "box", "correlation"),
   celltype.order = NULL,

@@ -27,5 +27,4 @@ colnames(markerdf)
 #[1] "celltypes" "markers"
 pbmc_anno <- anno_top_gene(pbmc, markerdf, group.by = 'seurat_clusters')
 DimPlot(pbmc_anno, label = T)
-
 }

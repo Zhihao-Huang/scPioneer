@@ -1,11 +1,77 @@
 #' Define outlier by MAD. Refer to https://www.sc-best-practices.org/preprocessing_visualization/quality_control.html
 #' 
 #' @export
-is_outlier <- function(metadata, metric, nmads = 5, mad.scale.factor = 1.0) {
+is_outlier_self <- function(metadata, metric, nmads = 5, mad.scale.factor = 1.0) {
   M <- metadata[,metric]
   coefMAD <- nmads * mad(M, constant = mad.scale.factor)
   outlier <- (M < median(M) - coefMAD) | (median(M) + coefMAD < M)
   return(outlier)
+}
+#' filter cells by MAD method 
+#' 
+#' @export
+QC_MAD <- function(SeuratS4, param) {
+  if (param[['mad_method']] == 'scuttle') {
+    message('Define outlier if it is more than a specified number of MADs...')
+    sce <- as.SingleCellExperiment(SeuratS4)
+    metadata <- SeuratS4@meta.data
+    poslist <- list()
+    metricdf <- data.frame(param[['mad.outlier.metric']], param[['mad.outlier.coef']], param[['mad.outlier.constant']])
+    colnames(metricdf) <- c('Metric', 'MADs', 'mad.scale.factor')
+    print(metricdf)
+    for (i in 1:nrow(metricdf)) {
+      metric.type <- param[['mad.outlier.type']][i]
+      discard.mt <- isOutlier(metadata[, metricdf[i,1]],
+                              nmads = metricdf[i,2],
+                              type= metric.type,
+                              batch=metadata$Sample)
+      p  <- scater::plotColData(sce, x="Sample", y=metricdf[i,1],
+                        colour_by=I(discard.mt)) + ggtitle('allBatchs')
+      # To identify problematic batches, one useful rule of thumb is to find batches with QC thresholds that are themselves outliers compared to the thresholds of other batches.
+      mt.thresholds <- attr(discard.mt, "thresholds")[metric.type,]
+      
+      problematic_batches <- names(mt.thresholds)[isOutlier(mt.thresholds, type=metric.type)]
+      if (length(problematic_batches) > 0) {
+        message('Problematic batches measured by ',metricdf[i,1],': ', paste(problematic_batches, collapse = ', '))
+        discard.mt <- scuttle::isOutlier(metric = sce@colData[, metricdf[i,1]], 
+                                         nmads = metricdf[i,2],
+                                         type = metric.type, 
+                                         batch = sce$Sample,
+                                         subset= !sce$Sample %in% problematic_batches
+        )
+        p2 <- scater::plotColData(sce, x="Sample", y=metricdf[i,1],
+                          colour_by=I(discard.mt)) + ggtitle('subsetBatchs')
+        p <- p + p2
+      }
+      ggsave(paste0(param[['outdir']], 'MAD_violin_',metricdf[i,1],'.png'), device = 'png', p, 
+             width = 12, height = 4.5)
+      poslist[[i]] <- discard.mt
+    }
+    metadata$mad.outliers <- Reduce('|', poslist)
+    message(paste0('Remove MAD outlier: ',sum(metadata$mad.outliers)))
+    SeuratS4@meta.data <- metadata
+  }
+  else if (param[['mad_method']] == 'self') {
+    metalist <- list()
+    for (sam in unique(SeuratS4$Sample)) {
+      subobj <- subset(SeuratS4, subset = Sample == sam)
+      #subobj <- subset(SeuratS4, Sample == sam)
+      metadata <- subobj@meta.data
+      poslist <- list()
+      metricdf <- data.frame(param[['mad.outlier.metric']], param[['mad.outlier.coef']], param[['mad.outlier.constant']])
+      for (i in 1:nrow(metricdf)) {
+        poslist[[i]] <- is_outlier_self(metadata, metricdf[i,1], nmads = metricdf[i,2], mad.scale.factor = metricdf[i,3])
+      }
+    }
+    metadata$mad.outliers <- Reduce('|', poslist)
+    message(paste0('Remove MAD outlier of Sample ',sam,': ',sum(metadata$mad.outliers)))
+    metalist[[sam]] <- metadata
+    metadata <- do.call(rbind, metalist)
+    rownames(metadata) <- metadata$Cellname
+    metadata <- metadata[colnames(SeuratS4),]
+    SeuratS4$mad.outliers <- metadata$mad.outliers
+  }
+ subset(SeuratS4, subset = mad.outliers == FALSE)
 }
 
 #' Blacklist is from doi.org/10.1038/s41586-022-05400-x
@@ -42,13 +108,15 @@ get_blacklist <- function(SeuratS4,param) {
 #' @export
 run_normalization <- function(SeuratS4, param) {
   blacklist <- get_blacklist(SeuratS4,param)
+  blacklist <- as.data.frame(blacklist)
   noiselist <- as.list(blacklist)
-  noiselist <- lapply(noiselist, function(x) x[x != ''])
+  noiselist <- lapply(noiselist, function(x) x[!(x == ''| is.na(x))])
   allgene <- as.vector(unlist(noiselist))
   noiselist[['noise_gene']] <- allgene
   geneset <- c("Mitochondria", "Heat.shock.protein", "Ribosome", "Dissociation","noise_gene")
   select_set <- 'noise_gene'
   regress_gene <- noiselist[select_set]
+  message('Noise genes length: ', length(regress_gene[[select_set]]))
   # 5. Normalization
   if ('NULL' %in% param[['var.to.regress']]){
     vars.to.regress = NULL
@@ -61,6 +129,8 @@ run_normalization <- function(SeuratS4, param) {
                                name = 'noise_gene')
     colnames(SeuratS4@meta.data)[colnames(SeuratS4@meta.data) == 'noise_gene1'] <- 'noise_gene'
   }
+  #############################################
+  ### LogNormalize
   if (param[['normalize_method']] == 'LogNormalize') {
     assay <- 'RNA'
     SeuratS4 <- NormalizeData(object = SeuratS4, 
@@ -69,7 +139,7 @@ run_normalization <- function(SeuratS4, param) {
     if (param[['remove_noise']] == 'TRUE') {
       SeuratS4 <- SeuratS4[!rownames(SeuratS4) %in% unlist(regress_gene),  ]
     }
-    #############################################
+    
     # 6. Detection of variable genes across the single cells
     SeuratS4 <- FindVariableFeatures(object = SeuratS4,
                                      selection.method = param[['vargene.method']],
@@ -93,8 +163,7 @@ run_normalization <- function(SeuratS4, param) {
     print(plot1)
     print(plot2)
     dev.off()
-    
-    ############################################
+    ####
     # 7. Scaling the data
     message('7. Scaling the data.')
     ###regress
@@ -105,15 +174,54 @@ run_normalization <- function(SeuratS4, param) {
     }
     SeuratS4 <- ScaleData(SeuratS4,features = scale.genes, 
                           vars.to.regress = vars.to.regress)
+    
   }else if (param[['normalize_method']] == 'SCT') {
-    assay <- 'SCT'
+    #############################################
+    ### SCTransform
     if (param[['remove_noise']] == 'TRUE') {
       SeuratS4 <- SeuratS4[!rownames(SeuratS4) %in% unlist(regress_gene),  ]
     }
-    SeuratS4 <- SCTransform(SeuratS4, vars.to.regress = vars.to.regress, 
-                            variable.features.n = param[['nFeatures']])
+    # # merge layers if default assay is Assay5 format.
+    # if (class(SeuratS4[['SCT']]) == 'Assay5') SeuratS4 <- JoinLayers(SeuratS4, assay = 'SCT')
+    # # Running SCTransform independently if multi-samples are from separate sequencing runs
+    # samplenames <- unique(SeuratS4@meta.data[,param$sample_colname])
+    # objlist <- parallel::mclapply(samplenames, function(x) {
+    #   cellID <- colnames(SeuratS4)[SeuratS4@meta.data[,param$sample_colname] == x]
+    #   obj <- subset(SeuratS4, cells = cellID)
+    #   obj <- SCTransform(obj, vars.to.regress = vars.to.regress, 
+    #                      conserve.memory	= param[['conserve.memory']],
+    #                      return.only.var.genes = param[['return.only.var.genes']],
+    #                      variable.features.n = param[['nFeatures']])
+    # }, mc.cores =  param[['SCT.n.cores']])
+    # names(objlist) <- samplenames
+    # varlist <- sapply()
+    # SeuratS4 <- merge(objlist[[1]], objlist[2:length(objlist)])
+    
+    samplenames <- unique(SeuratS4$Sample)
+    if (length(samplenames) > 1) {
+      # https://github.com/satijalab/seurat/issues/4896
+      obj.list <- SplitObject(SeuratS4, split.by=param[['batch_correct_colname']])
+      obj.list <- parallel::mclapply(X =obj.list, 
+                         FUN = SCTransform, 
+                         method = "glmGamPoi", 
+                         vars.to.regress = vars.to.regress, 
+                         conserve.memory	= param[['conserve.memory']],
+                         return.only.var.genes = param[['return.only.var.genes']],
+                         variable.features.n = param[['nFeatures']], 
+                         mc.cores = param[['SCT.n.cores']])
+      var.features <- SelectIntegrationFeatures(object.list =obj.list, nfeatures = param$nFeatures)
+      SeuratS4 <- merge(x =obj.list[[1]], y =obj.list[2:length(obj.list)], merge.data=TRUE)
+      VariableFeatures(SeuratS4) <- var.features
+    }else{
+      SeuratS4 <- SCTransform(SeuratS4, vars.to.regress = vars.to.regress, 
+                              conserve.memory	= param[['conserve.memory']],
+                              return.only.var.genes = param[['return.only.var.genes']],
+                              variable.features.n = param[['nFeatures']])
+    }
+    
+    
     if (param[['var.to.regress']] %in% select_set) {
-      pos <- rownames(SeuratS4) %in% unlist(regress_gene)
+      pos <- SeuratS4@assays$SCT@var.features %in% unlist(regress_gene)
       SeuratS4@assays$SCT@var.features <- SeuratS4@assays$SCT@var.features[!pos] 
     }
     if (sum(param[['var.to.regress']] %in% c('S.Score','G2M.Score')) > 1) {
@@ -148,6 +256,33 @@ run_pca <- function(SeuratS4, param) {
 #' @export
 run_doublet_and_filter <- function(SeuratS4, param) {
   plist <- list()
+  if (param[['detect.doublet']] == 'scrublet_scanpy') {
+    scrublet
+    message('####################  Detect doublet by scrublet-scanpy  ####################')
+    # get raw meta data for statistic
+    meta <- SeuratS4@meta.data[,c("Sample","percent.mt", "percent.ribo",
+                                  "nFeature_RNA","nCount_RNA")]
+    # filter and normalize for detecting doublet.
+    if (!'NULL' %in% param[['mad_method']]) {
+      SeuratS4 <- QC_MAD(SeuratS4, param)
+    }
+    SeuratS4 <- subset(SeuratS4, subset = nFeature_RNA > param[['min.features']] & 
+                         nFeature_RNA < param[['max.features']] & 
+                         nCount_RNA > param[['min.UMIs']] &
+                         nCount_RNA < param[['max.UMIs']] &
+                         percent.mt < param[['max.mt']])
+    message("Running scrublet...")
+    scrublet_res <- scrublet_scanpy_R(SeuratS4, outdir = param[['outdir']],
+                                      python_home = param[['python_home']], 
+                               return_results_only = T,
+                               batch_key = param[['batch_correct_colname']],
+                               expected_doublet_rate = param[['expected.doublet.rate']])
+    message('#########################  Scrublet done.  #########################')
+    rownames(scrublet_res) <- scrublet_res$Cellname
+    scrublet_res <- scrublet_res[colnames(SeuratS4),]
+    SeuratS4$doublet_scores <- scrublet_res$doublet_scores
+   
+  }
   if (param[['detect.doublet']] == 'scrublet') {
     ###########################################
     # scrublet
@@ -156,24 +291,8 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     meta <- SeuratS4@meta.data[,c("Sample","percent.mt", "percent.ribo",
                                   "nFeature_RNA","nCount_RNA")]
     # filter and normalize for detecting doublet.
-    if (!'NULL' %in% param[['mad.outlier.metric']]) {
-      metalist <- list()
-      for (sam in unique(SeuratS4$Sample)) {
-        subobj <- subset(SeuratS4, subset = Sample == sam)
-        #subobj <- subset(SeuratS4, Sample == sam)
-        metadata <- subobj@meta.data
-        poslist <- list()
-        metricdf <- data.frame(param[['mad.outlier.metric']], param[['mad.outlier.coef']], param[['mad.outlier.constant']])
-        for (i in 1:nrow(metricdf)) poslist[[i]] <- is_outlier(metadata, metricdf[i,1], nmads = metricdf[i,2], mad.scale.factor = metricdf[i,3])
-        metadata$mad.outliers <- Reduce('|', poslist)
-        message(paste0('Remove MAD outlier of Sample ',sam,': ',sum(metadata$mad.outliers)))
-        metalist[[sam]] <- metadata
-      }
-      metadata <- do.call(rbind, metalist)
-      rownames(metadata) <- metadata$Cellname
-      metadata <- metadata[colnames(SeuratS4),]
-      SeuratS4$mad.outliers <- metadata$mad.outliers
-      SeuratS4 <- subset(SeuratS4, subset = mad.outliers == FALSE)
+    if (!'NULL' %in% param[['mad_method']]) {
+      SeuratS4 <- QC_MAD(SeuratS4, param)
     }
     SeuratS4 <- subset(SeuratS4, subset = nFeature_RNA > param[['min.features']] & 
                          nFeature_RNA < param[['max.features']] & 
@@ -181,8 +300,8 @@ run_doublet_and_filter <- function(SeuratS4, param) {
                          nCount_RNA < param[['max.UMIs']] &
                          percent.mt < param[['max.mt']])
     
-    SeuratS4 <- run_normalization(SeuratS4, param)
-    SeuratS4 <- RunPCA(SeuratS4)
+    #SeuratS4 <- run_normalization(SeuratS4, param)
+    SeuratS4 <- SeuratS4 %>% NormalizeData() %>% FindVariableFeatures() %>% ScaleData() %>% RunPCA()
     SeuratS4 <- RunUMAP(SeuratS4, reduction = param[['reduction_name']],
                         reduction.name = param[['umap_name']],
                         dims =  param[['select_PCs']])
@@ -197,6 +316,9 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     
     message('#########################  Scrublet done.  #########################')
     SeuratS4$doublet_scores <- scrublet_res$doublet_scores
+  }
+    ## plot of scrublet result
+    if (grepl('scrublet',param[['detect.doublet']])){
     p <- ggplot(data.frame(doublet_scores = SeuratS4$doublet_scores), 
                 aes(x = doublet_scores)) + geom_histogram(bins = 200) + 
       scale_y_log10() + theme_bw()
@@ -206,14 +328,16 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     dbpos <- SeuratS4$doublet_scores > param[['max.doublet.rate']]
     sum(dbpos)
     #[1] 1529
+    
     SeuratS4$doublet <- 'singlet'
     SeuratS4$doublet[dbpos] <- 'doublet'
     p1 <- FeaturePlot2(SeuratS4, features = 'doublet_scores')
     p2 <- DimPlot(SeuratS4, group.by = 'doublet')
+    p3 <- DimPlot(SeuratS4, group.by = 'Sample')
     SeuratMajorVersion <- gsub('\\..*$','',packageVersion('Seurat'))
     device <- ifelse(SeuratMajorVersion == 4, yes = 'pdf', no = 'png')
-    ggsave(paste0(param[['outdir']],'doublet_score.',device), p1 + p2, device = device,
-           width = 7.7, height = 3.9)
+    ggsave(paste0(param[['outdir']],'doublet_score.',device), p1 + p2 + p3, device = device,
+           width = 11, height = 3.9)
     saveRDS(SeuratS4, file = paste0(param[['outdir']],'rawObject.rds'))
     ##raw statistic. add doublet info. to raw meta data
     meta$Cellname <- rownames(meta)
@@ -246,24 +370,8 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     meta <- SeuratS4@meta.data[,c("Sample","percent.mt", "percent.ribo",
                                   "nFeature_RNA","nCount_RNA")]
     # get clusters
-    if (!'NULL' %in% param[['mad.outlier.metric']]) {
-      metalist <- list()
-      for (sam in unique(SeuratS4$Sample)) {
-        subobj <- subset(SeuratS4, subset = Sample == sam)
-        #subobj <- subset(SeuratS4, Sample == sam)
-        metadata <- subobj@meta.data
-        poslist <- list()
-        metricdf <- data.frame(param[['mad.outlier.metric']], param[['mad.outlier.coef']], param[['mad.outlier.constant']])
-        for (i in 1:nrow(metricdf)) poslist[[i]] <- is_outlier(metadata, metricdf[i,1], nmads = metricdf[i,2], mad.scale.factor = metricdf[i,3])
-        metadata$mad.outliers <- Reduce('|', poslist)
-        message(paste0('Remove MAD outlier of Sample ',sam,': ',sum(metadata$mad.outliers)))
-        metalist[[sam]] <- metadata
-      }
-      metadata <- do.call(rbind, metalist)
-      rownames(metadata) <- metadata$Cellname
-      metadata <- metadata[colnames(SeuratS4),]
-      SeuratS4$mad.outliers <- metadata$mad.outliers
-      SeuratS4 <- subset(SeuratS4, subset = mad.outliers == FALSE)
+    if (!'NULL' %in% param[['mad_method']]) {
+      SeuratS4 <- QC_MAD(SeuratS4, param)
     }
     SeuratS4 <- subset(SeuratS4, subset = nFeature_RNA > param[['min.features']] & 
                          nFeature_RNA < param[['max.features']] & 
@@ -271,17 +379,18 @@ run_doublet_and_filter <- function(SeuratS4, param) {
                          nCount_RNA < param[['max.UMIs']] &
                          percent.mt < param[['max.mt']])
     
-    SeuratS4 <- run_normalization(SeuratS4, param)
-    SeuratS4 <- RunPCA(SeuratS4)
+    #SeuratS4 <- run_normalization(SeuratS4, param)
+    SeuratS4 <- SeuratS4 %>% NormalizeData() %>% FindVariableFeatures() %>% ScaleData() %>% RunPCA()
     set.seed(123)
-    SeuratS4 <- RunUMAP(SeuratS4, dims =  param[['select_PCs']],
+    SeuratS4 <- RunUMAP(SeuratS4, dims =  param[['select_PCs_dbl']],
                         reduction = param[['reduction_name']],
                         reduction.name = param[['umap_name']])
-    SeuratS4 <- FindNeighbors(SeuratS4, dims = param[['select_PCs']],
+    SeuratS4 <- FindNeighbors(SeuratS4, dims = param[['select_PCs_dbl']],
                               reduction = param[['reduction_name']], 
-                              k.param = param[['k.param']])
+                              k.param = param[['k.param']], 
+                              prune.SNN = param[['prune.SNN']])
     # resolution was set to low value for remaining main clusters
-    SeuratS4 <- FindClusters(SeuratS4, resolution = 0.3,
+    SeuratS4 <- FindClusters(SeuratS4, resolution = param[['resolution_dbl']], 
                              algorithm = param[['cluster_algorithm']])
     # detect doublet using scDblFinder
     message('#########################  Running scDblFinder...  #########################')
@@ -310,10 +419,11 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     SeuratS4$doublet <- sce$scDblFinder.class
     p1 <- FeaturePlot2(SeuratS4, features = 'doublet_scores')
     p2 <- DimPlot(SeuratS4, group.by = 'doublet')
+    p3 <- DimPlot(SeuratS4, group.by = 'Sample')
     SeuratMajorVersion <- gsub('\\..*$','',packageVersion('Seurat'))
     device <- ifelse(SeuratMajorVersion == 4, yes = 'pdf', no = 'png')
-    ggsave(paste0(param[['outdir']],'doublet_score.',device), p1 + p2, device = device,
-           width = 7.7, height = 3.9)
+    ggsave(paste0(param[['outdir']],'doublet_score.',device), p1 + p2 + p3, device = device,
+           width = 11, height = 3.9)
     saveRDS(SeuratS4, file = paste0(param[['outdir']],'rawObject.rds'))
     plist[['doublet_scores']] <- p1
     plist[['doublet_umap']] <- p2
@@ -350,24 +460,8 @@ run_doublet_and_filter <- function(SeuratS4, param) {
     write.table(statmat, file = paste0(param[['outdir']], 'sample_cell_number.txt'), 
                 quote = F, sep = '\t')
     print(dim(SeuratS4))
-    if (!'NULL' %in% param[['mad.outlier.metric']]) {
-      metalist <- list()
-      for (sam in unique(SeuratS4$Sample)) {
-        subobj <- subset(SeuratS4, subset = Sample == sam)
-        #subobj <- subset(SeuratS4, Sample == sam)
-        metadata <- subobj@meta.data
-        poslist <- list()
-        metricdf <- data.frame(param[['mad.outlier.metric']], param[['mad.outlier.coef']], param[['mad.outlier.constant']])
-        for (i in 1:nrow(metricdf)) poslist[[i]] <- is_outlier(metadata, metricdf[i,1], nmads = metricdf[i,2], mad.scale.factor = metricdf[i,3])
-        metadata$mad.outliers <- Reduce('|', poslist)
-        message(paste0('Remove MAD outlier of Sample ',sam,': ',sum(metadata$mad.outliers)))
-        metalist[[sam]] <- metadata
-      }
-      metadata <- do.call(rbind, metalist)
-      rownames(metadata) <- metadata$Cellname
-      metadata <- metadata[colnames(SeuratS4),]
-      SeuratS4$mad.outliers <- metadata$mad.outliers
-      SeuratS4 <- subset(SeuratS4, subset = mad.outliers == FALSE)
+    if (!'NULL' %in% param[['mad_method']]) {
+      SeuratS4 <- QC_MAD(SeuratS4, param)
     }
     SeuratS4 <- subset(SeuratS4, subset = nFeature_RNA > param[['min.features']] & 
                          nFeature_RNA < param[['max.features']] & 
@@ -388,12 +482,19 @@ run_batch_effect_correction <- function(SeuratS4, param) {
     }else if (param[['normalize_method']] == 'SCT') {
       assay = 'SCT'
     }
-    SeuratS4[[assay]] <- split(SeuratS4[[assay]], f = SeuratS4@meta.data[,param[['batch_correct_colname']]])
-    SeuratS4 <- run_normalization(SeuratS4, param)
-    SeuratS4 <- RunPCA(SeuratS4)
-    SeuratS4 <- FindNeighbors(SeuratS4, dims = param$select_PCs, reduction = "pca")
-    SeuratS4 <- FindClusters(SeuratS4, resolution = param$resolution, cluster.name = "unintegrated_clusters")
-    SeuratS4 <- RunUMAP(SeuratS4, dims = param$select_PCs, reduction = "pca", reduction.name = "umap.unintegrated")
+    
+    if (param[['use_RunHarmony']]) {
+      SeuratS4 <- harmony::RunHarmony(SeuratS4, assay.use=assay,
+                             group.by.vars = param[['batch_correct_colname']],
+                             theta = param[['harmony_theta']])
+      param[['reduction_name']] <- 'harmony'
+      param[['umap_name']] <- 'umap.Harmony'
+      return(list(obj = SeuratS4, par = param))
+    }
+    
+    SeuratS4[[assay]] <- split(SeuratS4[[assay]],drop = T,
+                               f = SeuratS4@meta.data[,param[['batch_correct_colname']]])
+    
     if (param[['sketch_integration']] %in% c('TRUE','T')) {
       # Perform integration on the sketched cells across samples
       SeuratS4 <- SketchData(object = SeuratS4, ncells = param[['sketch_ncells']], 
@@ -402,6 +503,23 @@ run_batch_effect_correction <- function(SeuratS4, param) {
       SeuratS4 <- run_normalization(SeuratS4, param)
       SeuratS4 <- RunPCA(SeuratS4)
     } 
+    message('Number of High Variable Genes: ', length(VariableFeatures(SeuratS4)))
+    if (param[['batch_correct_method']] == 'harmony') {
+      message('Perform integraton by harmony')
+      # b. harmony
+      SeuratS4 <- IntegrateLayers(
+        object = SeuratS4, method = HarmonyIntegration,
+        orig.reduction = "pca", new.reduction = "harmony",
+        verbose = T, dims = param[['select_PCs']], 
+        assay = assay,
+        features = VariableFeatures(SeuratS4),
+        normalization.method = param[['normalize_method']],
+        theta = param[['harmony_theta']]
+      )
+      param[['reduction_name']] <- 'harmony'
+      param[['umap_name']] <- 'umap.Harmony'
+    }
+    
     # SeuratV3-CCA and harmony are available
     if (param[['batch_correct_method']] == 'cca') {
       message('Perform integraton by CCA')
@@ -409,33 +527,26 @@ run_batch_effect_correction <- function(SeuratS4, param) {
       SeuratS4 <- IntegrateLayers(
         object = SeuratS4, method = CCAIntegration,
         orig.reduction = "pca", new.reduction = "integrated.cca",
-        verbose = FALSE, dims = param[['select_PCs']],
+        verbose = T, dims = param[['select_PCs']],
         normalization.method = param[['normalize_method']],
+        assay = assay,
+        features = VariableFeatures(SeuratS4),
         k.weight = param[['k.weight']]
       )
       param[['reduction_name']] <- 'integrated.cca'
       param[['umap_name']] <- 'umap.CCA'
     }
-    if (param[['batch_correct_method']] == 'harmony') {
-      message('Perform integraton by harmony')
-      # b. harmony
-      SeuratS4 <- IntegrateLayers(
-        object = SeuratS4, method = HarmonyIntegration,
-        orig.reduction = "pca", new.reduction = "harmony",
-        verbose = FALSE, dims = param[['select_PCs']],
-        normalization.method = param[['normalize_method']]
-      )
-      param[['reduction_name']] <- 'harmony'
-      param[['umap_name']] <- 'umap.Harmony'
-    }
+   
     if (param[['batch_correct_method']] == 'rpca') {
       message('Perform integraton by rpca')
       # b. RPCA
       SeuratS4 <- IntegrateLayers(
         object = SeuratS4, method = RPCAIntegration,
         orig.reduction = "pca", new.reduction = "integrated.rpca",
-        verbose = FALSE, dims = param[['select_PCs']],
+        verbose = T, dims = param[['select_PCs']],
         normalization.method = param[['normalize_method']],
+        assay = assay,
+        features = VariableFeatures(SeuratS4),
         k.weight = param[['k.weight']]
       )
       param[['reduction_name']] <- 'integrated.rpca'
@@ -447,7 +558,9 @@ run_batch_effect_correction <- function(SeuratS4, param) {
       SeuratS4 <- IntegrateLayers(
         object = SeuratS4, method = FastMNNIntegration,
         orig.reduction = "pca", new.reduction = "integrated.mnn",
-        verbose = FALSE
+        assay = assay,
+        features = VariableFeatures(SeuratS4),
+        verbose = T
       )
       param[['reduction_name']] <- 'integrated.mnn'
       param[['umap_name']] <- 'umap.MNN'
@@ -460,7 +573,9 @@ run_batch_effect_correction <- function(SeuratS4, param) {
         groups = param[['batch_correct_colname']], dims = param[['select_PCs']],
         normalization.method = param[['normalize_method']],
         orig.reduction = "pca", new.reduction = "integrated.scvi",
-        conda_env = param[['python_env']], verbose = F
+        assay = assay,
+        features = VariableFeatures(SeuratS4),
+        conda_env = param[['python_env']], verbose = T
       )
       param[['reduction_name']] <- 'integrated.scvi'
       param[['umap_name']] <- 'umap.SCVI'
@@ -476,7 +591,7 @@ run_batch_effect_correction <- function(SeuratS4, param) {
                             dims = param[['select_PCs']])
       param[['umap_name']] <- paste0(param[['umap_name']],'.Full')
     }
-    SeuratS4 <- JoinLayers(SeuratS4, assay = "RNA")
+    SeuratS4 <- JoinLayers(SeuratS4, assay = assay)
   }else{
     message('Skip batch effect correction.')
   }
@@ -566,19 +681,20 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   ############################################
   # 2. QC of raw data
   message('#########################  2.Run QC before filtering.  #########################')
-  #SeuratS4 <- QC_raw(SeuratS4,outdir,species,multi.samples=is_multidata)
-  message(param[['species']])
-  plist <- list()
-  obj_list <- QC_raw(object = SeuratS4, species = param[['species']],
-                     outdir = param[['outdir']], 
-                     max.mt = param[['max.mt']],
-                     min.features = param[['min.features']], 
-                     max.features = param[['max.features']],
-                     multi.samples = param[['is_multidata']], 
-                     do_cellcycle = param[['cal_cellcycle']],
-                     plot.raw = param[['plot.raw']])
-  SeuratS4 <- obj_list$object
-  plist <- c(plist, obj_list$plotlist)
+  if (param[['perform.qc']]) {
+    message(param[['species']])
+    plist <- list()
+    obj_list <- QC_raw(object = SeuratS4, species = param[['species']],
+                       outdir = param[['outdir']], 
+                       max.mt = param[['max.mt']],
+                       min.features = param[['min.features']], 
+                       max.features = param[['max.features']],
+                       multi.samples = param[['is_multidata']], 
+                       do_cellcycle = param[['cal_cellcycle']],
+                       plot.raw = param[['plot.raw']])
+    SeuratS4 <- obj_list$object
+    plist <- c(plist, obj_list$plotlist)
+  }
   
   ###########################################
   # 3. Detect doublet 
@@ -602,14 +718,16 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   #################################################
   # 5. Normalization
   message('#########################  5. Perform normalization. #########################')
-  SeuratS4 <- run_normalization(SeuratS4, param)
-  
+  if (param[['perform.normalize']]) SeuratS4 <- run_normalization(SeuratS4, param)
   ###########################################
   # 8. Perform linear dimensional reduction (PCA)
   message('#########################  6. Perform linear dimensional reduction (PCA). ########################')
-  obj_list <- run_pca(SeuratS4, param)
-  SeuratS4 <- obj_list$object
-  plist <- c(plist, obj_list$plotlist)
+  if (param[['perform.pca']]) {
+    obj_list <- run_pca(SeuratS4, param)
+    SeuratS4 <- obj_list$object
+    plist <- c(plist, obj_list$plotlist)
+  }
+  if (param[['save.filtered.rds']]) saveRDS(SeuratS4, file = paste0(param[['outdir']], 'filtered_obj.rds'))
   ##############################################
   # 9. Batch effect correction
   message('#########################  7. Batch effect correction.  #########################')
@@ -620,10 +738,17 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   ###############################################
   # 10. Run Non-linear dimensional reduction
   message('#########################  8. Run Non-linear dimensional reduction.  #########################')
+  if (param[['normalize_method']] == 'LogNormalize') {
+    assay = 'RNA'
+  }else if (param[['normalize_method']] == 'SCT') {
+    assay = 'SCT'
+  }
+  DefaultAssay(SeuratS4) <- assay
   set.seed(123)
   SeuratS4 <- RunUMAP(SeuratS4, reduction = param[['reduction_name']],
                       reduction.name = param[['umap_name']],
                       dims =  param[['select_PCs']])
+  SeuratS4@reductions$umap <- SeuratS4@reductions[[param[['umap_name']]]]
   SeuratS4@meta.data$UMAP_1 <- SeuratS4@reductions[[param[['umap_name']]]]@cell.embeddings[,1]
   SeuratS4@meta.data$UMAP_2 <- SeuratS4@reductions[[param[['umap_name']]]]@cell.embeddings[,2]
   
@@ -633,7 +758,8 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   set.seed(123)
   SeuratS4 <- FindNeighbors(SeuratS4, dims = param[['select_PCs']],
                             reduction = param[['reduction_name']], 
-                            k.param = param[['k.param']])
+                            k.param = param[['k.param']],
+                            prune.SNN = param[['prune.SNN']])
   SeuratS4 <- FindClusters(SeuratS4, resolution = param[['resolution']],
                            algorithm = param[['cluster_algorithm']])
   p1 <- DimPlot(SeuratS4, reduction = param[['umap_name']])
@@ -642,6 +768,7 @@ PHASE1_run_Seurat_v5_QC_clustering <- function(param) {
   plist[['umap_seurat_clusters']] <- p1
   plist[['umap_sample']] <- p2
   
+  if (param[['save.final.rds']]) saveRDS(SeuratS4, file = paste0(param[['outdir']], 'final_obj.rds'))
   ############################################
   # 12. Do DEG analysis of raw clusters 
   if (param[['do_DEG_wilcox']] == 'TRUE') {
@@ -679,12 +806,17 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   param[['min.UMIs']]  <- -Inf
   param[['max.UMIs']] <- Inf
   param[['max.mt']] <- 10
-  param[['mad.outlier.metric']] <- 'NULL'
+  param[['mad_method']] <- 'NULL' # scuttle or self
+  param[['mad.outlier.metric']] <- 'percent.mt'
   param[['mad.outlier.coef']] <- 5
   param[['mad.outlier.constant']] <- 1
+  param[['mad.outlier.type']] <- 'higher'
   param[['cal_cellcycle']] <- 'TRUE'
   param[['plot.raw']] <- 'TRUE'
   param[['normalize_method']] <- 'LogNormalize' #### 'LogNormalize','SCT'
+  param[['conserve.memory']] <- FALSE # Set TRUE for large dataset when running SCT
+  param[['return.only.var.genes']] <- FALSE
+  param[['SCT.n.cores']]  <- 4
   param[["scale.factor"]] = 10000
   param[['var.to.regress']] <- c('NULL')
   param[['scale.all.gene']] <- FALSE
@@ -697,7 +829,10 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   param[['reduction_name']] <- 'pca'
   param[['batch_correct_method']] <- 'NULL' #### 'cca','rpca','harmony','fastmnn','scvi'
   param[['batch_correct_colname']] <- 'Sample'
+  param[['harmony_theta']] <- 2
+  param[['use_RunHarmony']] <- FALSE
   param[['k.param']] <- 30
+  param[['prune.SNN']] <- 1/15
   param[['resolution']] <- 0.8
   param[['cluster_algorithm']] <- 1
   param[['perplexity']] <- 30
@@ -709,6 +844,8 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   param[['detect.doublet']] <- 'NULL' ### scDblFinder or scrublet
   param[['scdblFinder_dbr']] <- 'NULL'
   param[['scdblFinder_dbr.sd']] <- 'NULL'
+  param[['select_PCs_dbl']] <- param[['select_PCs']]
+  param[['resolution_dbl']] <- 0.3
   param[['filter.doublet']] <- F
   param[['python_home']] <- '/home/jasper/.conda/envs/Seurat_v5/bin/python'
   param[['python_env']] <- gsub('bin.*$','',param[['python_home']])
@@ -723,6 +860,11 @@ PHASE1_run_Seurat_v5_QC_clustering_param_template <- function() {
   param[['sketch_integration']] <- 'FALSE'
   param[['sketch_ncells']] <- 5000
   param[['return.plot']] <- F
+  param[['save.filtered.rds']] <- F
+  param[['save.final.rds']] <- F
+  param[['perform.qc']] <- T
+  param[['perform.normalize']] <- T
+  param[['perform.pca']] <- T
   return(param)
 }
 

@@ -11,7 +11,9 @@
 #' 
 #' @export
 M1M2_score <- function (object, Macrophage.names, return.data = F, 
-                        M1M2list = NULL, AddModuleScore = F,
+                        M1M2list = NULL, 
+                        M1M2list_Cell2018 = F ,
+                        AddModuleScore = F,
                         plot.type = c("violin", 'violin merge', 'box', 'correlation'),
                         celltype.order = NULL,
                         order.by.M1M2 = c('none','M1','M2','diff'),
@@ -35,6 +37,24 @@ M1M2_score <- function (object, Macrophage.names, return.data = F,
                        "IL4R", "IRF4", "LYVE1", "MMP9", "MMP14", "MMP19", "MSR1", 
                        "TGFB1", "TGFB2", "TGFB3", "TNFSF8", "TNFSF12", "VEGFA", 
                        "VEGFB", "VEGFC", "GSTT1")
+  }else if (M1M2list_Cell2018) {
+    # Refer to doi: 10.1016/j.cell.2018.03.034, table 4
+    Mlist <- list()
+    Mlist[["M1"]] <- c('IL12B','IL23A','TNF','IL6','CD86',
+                       ## 'HLA-DRA','HLA-DRB1','HLA-DRB3','HLA-DRB5','MARCO','PTPRC','CD68','CD14','CLEC10A','CSF1R'
+                       ## CXCR10
+                       'IL1B','NOS2','FCGR3A','CD80','IL23',
+                       'CXCL9','CXCL10','CXCL11','IL1A','IL1B','CCL5','IRF5','IRF1',
+                       'CD40','IDO1','KYNU','CCR7'
+                       )
+    Mlist[["M2"]] <- c('ARG1','ARG2','IL10','FCGR2A','CD163','FCER2','CD200R1',
+                       ## 'HLA-DRA','HLA-DRB1','HLA-DRB3','HLA-DRB5','MARCO','PTPRC','CD68','CD14','CLEC10A','CSF1R'
+                       'PDCD1LG2','CD274','MRC1','IL1RN','IL1R2','IL4R','CCL4',
+                       'CCL13','CCL20','CCL17','CCL18','CCL22','CCL24','LYVE1',
+                       'VEGFA','VEGFB','VEGFC','VEGFD','EGF','CTSA','CTSB','CTSC','CTSD',
+                       'TGFB1','TGFB2','TGFB3','MMP14','MMP19','MMP9','CLEC7A',
+                       'WNT7B','FASL','TNFSF12','TNFSF8','CD276','VTCN1','MSR1',
+                       'FN1','IRF4')
   }else{
     Mlist <- M1M2list
   }
@@ -48,7 +68,7 @@ M1M2_score <- function (object, Macrophage.names, return.data = F,
     for (st in names(Mlist)) {
       genesetname <- paste0("Macrophages ", st, " Score")
       p <- violin_score(object, Mlist[[st]], genesetname,
-                        MACpos, AddModuleScore)
+                        MACpos, AddModuleScore,border.color,border.size)
       plist[[st]] <- p
     }
     return(plist)
@@ -57,7 +77,7 @@ M1M2_score <- function (object, Macrophage.names, return.data = F,
     for (st in names(Mlist)) {
       genesetname <- paste0("Macrophages ", st, " Score")
       p <- violin_score(object, Mlist[[st]], genesetname,
-                        MACpos, AddModuleScore)
+                        MACpos, AddModuleScore,border.color, border.size)
       plist[[st]] <- p
     }
     df1 <- plist$M1$data
@@ -75,8 +95,9 @@ M1M2_score <- function (object, Macrophage.names, return.data = F,
     }
     if (!is.null(celltype.order)) df$Celltypes <- factor(df$Celltypes, levels = celltype.order)
     p <- ggplot(df, aes(x = Type, y = Expression, fill = mean_exp)) + 
-      geom_violin(trim = F, scale = "width") + 
-      geom_boxplot(width = 0.1, fill = "white", outlier.size = 0.1) +
+      geom_violin(trim = F, scale = "width", color = border.color, linewidth = border.size) + 
+      geom_boxplot(width = 0.1, fill = "white", outlier.size = 0.1,
+                   color = 'black', linewidth = border.size) +
       theme_classic() + 
       labs(x = "", y = "Macrophages M1/M2 Score") + 
       #facet_grid(cols = vars(Celltypes), scales = "free", switch = strip.text.switch) + 
@@ -116,7 +137,7 @@ M1M2_score <- function (object, Macrophage.names, return.data = F,
     for (st in names(Mlist)) {
       genesetname <- paste0("Macrophages ", st, " Score")
       p <- box_score(object, Mlist[[st]], genesetname, 
-                     MACpos, AddModuleScore)
+                     MACpos, AddModuleScore,  'black', border.size)
       plist[[st]] <- p
     }
     return(plist)
@@ -138,7 +159,8 @@ M1M2_score <- function (object, Macrophage.names, return.data = F,
 #' box_score(pbmc, geneset,'Type 2 inflammation in Th2 and ILC2',cellpos)
 #' 
 #' @export
-box_score <- function (object, geneset, genesetname, cellpos, AddModuleScore = F) {
+box_score <- function (object, geneset, genesetname, cellpos, AddModuleScore = F,
+                       border.color = 'black',border.size = 1) {
   .Deprecated('boxplot_score')
   if (AddModuleScore) {
     # use Seurat::AddModuleScore to calculate score
@@ -154,7 +176,7 @@ box_score <- function (object, geneset, genesetname, cellpos, AddModuleScore = F
                                                          collapse = ","), " are not in data."))
     }
     mgene <- geneset[Mgene_in_data]
-    plot.data <- as.data.frame(t(object@assays$RNA@data[mgene,cellpos]))
+    plot.data <- as.data.frame(t(GetAssayData(object)[mgene,cellpos]))
     plot.data <- as.data.frame(apply(plot.data, 1, mean))
   }
   plot.data$Celltypes <- as.vector(Idents(object))[cellpos]
@@ -163,7 +185,8 @@ box_score <- function (object, geneset, genesetname, cellpos, AddModuleScore = F
   p10 <- ggplot(plot.data, aes(x = Celltypes, y = Expression, 
                                color = Celltypes, fill = Celltypes)) + 
     stat_boxplot(geom = "errorbar", width = 0.5) +
-    geom_boxplot(width = 0.5, outlier.size = 0.1)
+    geom_boxplot(width = 0.5, outlier.size = 0.1,
+                 color = border.color, linewidth = border.size)
   p10 <- p10 + theme_classic() + theme(legend.position = "none") + 
     theme(axis.text.x = element_text(size = 10, hjust = 1, 
                                      vjust = 1, angle = 45)) + labs(x = "", y = scorename)
@@ -182,7 +205,8 @@ box_score <- function (object, geneset, genesetname, cellpos, AddModuleScore = F
 #' violin_score(pbmc, geneset,'Naive lymphocytes',cellpos)
 #' 
 #' @export
-violin_score <- function (object, geneset, genesetname, cellpos, AddModuleScore = F) 
+violin_score <- function (object, geneset, genesetname, cellpos, AddModuleScore = F,
+                          border.color = 'black', border.size = 1) 
 {
   if (AddModuleScore) {
     # use Seurat::AddModuleScore to calculate score
@@ -198,7 +222,7 @@ violin_score <- function (object, geneset, genesetname, cellpos, AddModuleScore 
                                                          collapse = ","), " are not in data."))
     }
     mgene <- geneset[Mgene_in_data]
-    plot.data <- as.data.frame(t(as.matrix(object@assays$RNA@data[mgene,cellpos,drop = F])))
+    plot.data <- as.data.frame(t(as.matrix(GetAssayData(object)[mgene,cellpos,drop = F])))
     plot.data <- as.data.frame(apply(plot.data, 1, mean))
   }
   plot.data$Celltypes <- as.vector(Idents(object))[cellpos]
@@ -208,8 +232,9 @@ violin_score <- function (object, geneset, genesetname, cellpos, AddModuleScore 
   plot.data2 <- plyr::join(plot.data, ave, type = "full", by = "Celltypes")
   scorename <- genesetname
   p10 <- ggplot(plot.data2, aes(x = Celltypes, y = Expression, 
-                                fill = mean_exp)) + geom_violin(trim = F, scale = "width") + 
-    geom_boxplot(width = 0.1, fill = "white")
+                                fill = mean_exp)) + 
+    geom_violin(trim = F, scale = "width", color = border.color, linewidth = border.size) + 
+    geom_boxplot(width = 0.1, fill = "white", color = border.color, linewidth = border.size)
   p10 <- p10 + theme_classic() + theme(legend.position = "right") + 
     theme(axis.text.x = element_text(size = 10, hjust = 1, 
                                      vjust = 1, angle = 45)) + labs(x = "", y = scorename)
@@ -231,6 +256,7 @@ violin_score <- function (object, geneset, genesetname, cellpos, AddModuleScore 
 #' @export
 violin_score2 <- function (object, geneset, genesetname, 
                            group.by = NULL, 
+                           cell.order = NULL,
                            assay = 'RNA',
                            slot = 'data',
                            scale = F,
@@ -249,7 +275,11 @@ violin_score2 <- function (object, geneset, genesetname,
                            color.use = NULL,
                            midpoint = NULL,
                            outlier.size = 0.5,
+                           violin.border.color = 'black',
+                           box.border.color = 'black',
+                           box.border.size = 0.5,
                            return.stat = F,
+                           legend.name = NULL,
                            ...) 
 {
   test.use <- match.arg(arg = test.use, choices = c("none", "t", "wilcox"))
@@ -287,17 +317,25 @@ violin_score2 <- function (object, geneset, genesetname,
     plot.data$Celltypes <- object@meta.data[,group.by]
   }
   colnames(plot.data) <- c("Expression", "Celltypes")
+  
+  level <- levels(plot.data$Celltypes)
+  if (is.null(level)) level <- unique(plot.data$Celltypes)
+  if (!is.null(cell.order)) level <-  cell.order
+  
   ave <- plot.data %>% group_by(Celltypes) %>% summarize(mean_exp = mean(Expression), 
                                                          .groups = "drop")
   plot.data2 <- plyr::join(plot.data, ave, type = "full", by = "Celltypes")
   scorename <- genesetname
+  plot.data2$Celltypes <- factor(plot.data2$Celltypes, levels = level)
 #  p <- ggplot(plot.data2, aes(x = Celltypes, y = Expression, fill = mean_exp)) +
 #    geom_violin(trim = F, scale = "width") + 
 #    geom_boxplot(width = 0.1, fill = "white")
   p <- ggpubr::ggviolin(data = plot.data2, x = 'Celltypes', y = 'Expression',
-                        fill = 'mean_exp', trim = T, scale = "width")
+                        fill = 'mean_exp', trim = T, scale = "width",
+                        color = violin.border.color)
   if (Add.boxplot) {
-    p <- p + geom_boxplot(width = 0.1, fill = "white", outlier.size = outlier.size) 
+    p <- p + geom_boxplot(width = 0.1, fill = "white", outlier.size = outlier.size,
+                         linewidth = box.border.size, color = box.border.color) 
   }
   p <- p + theme_classic() + theme(legend.position = "right") + 
     theme(axis.text.x = element_text(size = 10, hjust = 1, 
@@ -314,7 +352,7 @@ violin_score2 <- function (object, geneset, genesetname,
   }else{
     mycol <- color.use
   }
-  p <- p + scale_fill_gradient2(low = mycol[5], mid = mycol[2], 
+  p <- p + scale_fill_gradient2(name = legend.name, low = mycol[5], mid = mycol[2], 
                                     high = mycol[1], midpoint = midpoint)
   # stat
   if (test.use == "t") {
@@ -346,6 +384,7 @@ violin_score2 <- function (object, geneset, genesetname,
 violin_score3 <- function (object, geneset, genesetname, 
                            group.by = NULL, 
                            sample.group = NULL,
+                           cell.order = NULL,
                            scale = F,
                            Add.boxplot = T,
                            Add.jitter = F,
@@ -414,10 +453,17 @@ violin_score3 <- function (object, geneset, genesetname,
  
   colnames(plot.data) <- c("Expression", "Celltypes")
   
+  level <- levels(plot.data$Celltypes)
+  if (is.null(level)) level <- unique(plot.data$Celltypes)
+  if (!is.null(cell.order)) level <-  cell.order
+  
   ave <- plot.data %>% group_by(Celltypes) %>% summarize(mean_exp = mean(Expression), 
                                                          .groups = "drop")
   plot.data2 <- plyr::join(plot.data, ave, type = "full", by = "Celltypes")
   scorename <- genesetname
+  
+  plot.data2$Celltypes <- factor(plot.data2$Celltypes, levels = level)
+  
   #  p <- ggplot(plot.data2, aes(x = Celltypes, y = Expression, fill = mean_exp)) +
   #    geom_violin(trim = F, scale = "width") + 
   #    geom_boxplot(width = 0.1, fill = "white")
@@ -851,7 +897,7 @@ boxplot_score_facetgene <- function (object, assay = "RNA", features,
                                       collapse = ", "), " were not in object."))
     features <- features[genepos]
   }
-  data <- as.data.frame(t(as.matrix(object@assays[[assay]]@data[features, 
+  data <- as.data.frame(t(as.matrix(GetAssayData(object, assay = assay)[features, 
   ])))
   if (is.null(group.by)) {
     cluster <- Idents(object)
@@ -964,7 +1010,7 @@ boxplot_score_facetgroup <- function (object, assay = "RNA", features,
                                       collapse = ", "), " were not in object."))
     features <- features[genepos]
   }
-  data <- as.data.frame(t(as.matrix(object@assays[[assay]]@data[features, 
+  data <- as.data.frame(t(as.matrix(GetAssayData(object, assay = assay)[features, 
   ])))
   if (is.null(group.by)) {
     cluster <- Idents(object)

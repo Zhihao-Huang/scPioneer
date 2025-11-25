@@ -221,7 +221,7 @@ vioplot2 <- function (object, paths, ident = Idents(object), assay = "RNA",
           axis.text.x.angle = 45, panel.spacing = 0.5, clip = "on", 
           remove.axis.x = F, remove.axis.y = F, ...) 
 {
-  data <- as.data.frame(t(as.matrix(object@assays[[assay]]@data[paths, 
+  data <- as.data.frame(t(as.matrix(GetAssayData(object, assay = assay)[paths, 
                                                                 , drop = FALSE])))
   p <- vioplot(data, paths, ident = ident, select.celltypes = select.celltypes, 
                facet.toward = facet.toward, do.log = do.log, strip.text.size = strip.text.size, 
@@ -254,7 +254,7 @@ vioplot3 <- function (object, pathlist, ident = Idents(object), assay = "RNA",
     pos <- pathlist[[i]] %in% rownames(object)
     message(paste0("Genes of ", i, " not in matrix: ", pathlist[[i]][!pos]))
     genes <- pathlist[[i]][pos]
-    data <- as.data.frame(t(as.matrix(object@assays[[assay]]@data[genes, 
+    data <- as.data.frame(t(as.matrix(GetAssayData(object, assay = assay)[genes, 
                                                                   , drop = FALSE])))
     datalist[[i]] <- apply(data, 1, mean)
   }
@@ -279,7 +279,7 @@ vioplot_one_celltype <- function (object, paths, ident = Idents(object), assay =
     remove.axis.x = F, remove.axis.y = F, ave.point.size = 1.5, 
     legend.key.size = 1, legend.text.size = 8) 
 {
-    data <- as.data.frame(t(as.matrix(object@assays[[assay]]@data[paths, 
+    data <- as.data.frame(t(as.matrix(GetAssayData(object, assay = assay)[paths, 
         , drop = FALSE])))
     sig_path <- as.data.frame(data[, paths, drop = FALSE])
     if (do.log) {
@@ -436,7 +436,7 @@ violin_facet_one_gene <- function (object, celltype, group, gene, assay = "RNA",
     hjust = 0, vjust = 0, legend.scale = NULL, legend.title.size = 8, 
     axis.text.x.angle = NULL, remove.axis.x = F, remove.axis.y = F) 
 {
-    data <- as.data.frame(t(as.matrix(object@assays[[assay]]@data[gene, 
+    data <- as.data.frame(t(as.matrix(GetAssayData(object, assay = assay)[gene, 
         , drop = FALSE])))
     data$celltype <- celltype
     data$group <- group

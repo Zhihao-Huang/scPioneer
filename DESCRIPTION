@@ -20,6 +20,7 @@ Imports: BiocParallel, clustree,
         org.Hs.eg.db,reticulate, progress, glmGamPoi,
         openai, ellmer, 
         SingleR, celldex, BiocFileCache, GSEABase,AUCell, scRNAseq, SEtools,
+        presto,
         pbapply, circlize, cowplot,dendextend, ggsci,ComplexHeatmap,
         openxlsx, S4Vectors, parallel,gridBase,BiocNeighbors,limma,
         BiocParallel,SeuratWrappers

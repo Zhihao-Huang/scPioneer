@@ -14,12 +14,19 @@ shareTCR_heatmap(
   keep.group = NULL,
   show.unique.TCR.group = NULL,
   legend.ncol = NULL,
+  xlabel = NULL,
+  ylabel = NULL,
   widths = c(1, 8, 6),
   x.size = 15,
+  angle = 0,
+  vjust = 0.5,
+  hjust = 0.5,
   legend.heatmap.size = 10,
   legend.anno.size = 10,
   legend.heatmap.title.size = 15,
   legend.anno.title.size = 15,
+  add.annolegend = T,
+  only.heatmap = F,
   return.data = F
 )
 }

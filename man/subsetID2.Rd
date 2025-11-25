@@ -29,5 +29,4 @@ Extract cells by expected number
 subsetID2(newI, expected.cell = 200, seed = 123)
 
 subsetID2(newI, expected.cell = 200, seed = 123)
-
 }

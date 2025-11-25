@@ -20,3 +20,7 @@ anno_SingleR(
 \description{
 Annotate Celltypes by SingleR
 }
+\examples{
+pbmc <- anno_SingleR(pbmc, species = 'Human') # based on individual cells
+pbmc <- anno_SingleR(pbmc, species = 'Human', raw_cluster = 'seurat_clusters') # based on seurat clusters
+}

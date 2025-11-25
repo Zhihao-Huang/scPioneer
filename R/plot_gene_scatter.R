@@ -8,7 +8,7 @@
 #' legend.position = c(0.9,0.2))
 #' 
 #' @export
-FeaturePlot2 <- function (object, features, color = NULL, pt.size = 0.1, 
+FeaturePlot2 <- function (object, features, color = NULL, pt.size = 1, 
           legend.position = c(1,0.2),
           legend.key.size = 0.3, legend.text.size = 6,
           ncols = NULL, split.by = NULL,
@@ -20,11 +20,12 @@ FeaturePlot2 <- function (object, features, color = NULL, pt.size = 0.1,
     color <- (grDevices::colorRampPalette(c("grey", color)))(5)
   }
   feature_theme <- theme(legend.text = element_text(size = legend.text.size), 
-                         legend.key.size = unit(legend.key.size, "cm"), legend.position = legend.position, 
+                         legend.key.size = unit(legend.key.size, "cm"), 
+                         legend.position = legend.position, 
                          axis.line = element_blank(), axis.text = element_blank(), 
                          axis.ticks = element_blank(), plot.margin = unit(plot.margin, 
                                                                           "cm"))
-  if (ncol(object) > 100000 | ncol(object) < 10000 | AI.friendly) pt.size = 1
+  #if (AI.friendly | dim(object)[2] > 100000) pt.size = 1
   if (!is.null(split.by)) {
     p <- FeaturePlot(object = object, features = features, pt.size = pt.size, 
                      split.by = split.by,...)
@@ -33,8 +34,7 @@ FeaturePlot2 <- function (object, features, color = NULL, pt.size = 0.1,
     
   }else{
     plist <- lapply(features, function(x) {
-      p <- FeaturePlot(object = object, features = x, pt.size = pt.size, 
-                       ...)
+      p <- FeaturePlot(object = object, features = x, pt.size = pt.size)
       p <- suppressMessages(p + scale_color_gradientn(colors = color))
       p <- p + feature_theme + xlab("") + ylab("") + ggtitle(x)
       if (AI.friendly) {

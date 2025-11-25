@@ -1,3 +1,50 @@
+#' Plot Ro/e heatmap
+#' @author Li Ziyi
+#' @export
+ROIE_plot <- function(ROIE_table, max = 2.5, font_size = 12, geom_text_size = 11){
+  ROIE_table <- melt(ROIE_table)
+  ROIE_table$text <- round(ROIE_table$value,2)
+  ROIE_table$value[ROIE_table$value > max] <- max
+  #ROIE_table$value[ROIE_table$value == 0] <- NA
+  #ROIE_table$text[ROIE_table$text == 0] <- "-"
+  p <- 
+    ggplot(data = ROIE_table, aes(Var2, Var1, fill = value)) +
+    geom_tile() + 
+    scale_fill_gradientn(name = "Ro/e", colours = colorRampPalette(brewer.pal(4, "YlOrRd"))(100), na.value = "lightgrey") +
+    geom_text(aes(label = text), size = geom_text_size  / .pt) +
+    labs(x = "", y = "") +
+    theme_cowplot(font_size = font_size) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1), 
+          axis.line = element_blank(), 
+          axis.ticks = element_blank()) +
+    guides(fill = guide_colourbar(barwidth = 1, barheight = 10))
+  return(p)
+}
+#' Plot Ro/e heatmap
+#' @export
+plot_Roe <- function(meta, colname, rowname, cluster_col = F, cluster_row = T,
+                     max.Roe = 2.5, font_size = 12,
+                     x.size = 10, y.size = 10, geom_text_size = 11) {
+  rovemat <- rove(x=meta[, rowname],
+                  y=meta[, colname],plot=F)
+  data <- pheatmap::pheatmap(rovemat, silent = T)
+  
+  if (cluster_col) {
+    g <- data$tree_col$labels[data$tree_col$order]
+    rovemat <- rovemat[,g]
+  }
+  if (cluster_row) {
+    cell.r <- data$tree_row$labels[data$tree_row$order]
+    rovemat <- rovemat[cell.r,]
+  }
+  p3_1 <- ROIE_plot(rovemat, max = max.Roe, font_size = font_size,
+                    geom_text_size = geom_text_size) + 
+    theme(axis.text.x  = element_text(size = x.size),
+          axis.text.y  = element_text(size = y.size))
+  p3_1$data$Var1 <- factor(p3_1$data$Var1, levels = rev(levels(p3_1$data$Var1)))
+  return(p3_1)
+}
+
 #' Heatmap to show result of Ro/e matrix.
 #' 
 #' @param label What type of text filled in heatmap when display_numbers is TRUE.

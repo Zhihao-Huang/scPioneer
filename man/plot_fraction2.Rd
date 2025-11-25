@@ -10,6 +10,7 @@ plot_fraction2(
   fill.bar = colnames(meta)[ncol(meta)],
   based.on = NULL,
   normailize.factor = 1,
+  scale.to.one = T,
   fraction.data = NULL,
   color.use = NULL,
   coord_flip = T,

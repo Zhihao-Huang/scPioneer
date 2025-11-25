@@ -9,6 +9,7 @@ violin_score2(
   geneset,
   genesetname,
   group.by = NULL,
+  cell.order = NULL,
   assay = "RNA",
   slot = "data",
   scale = F,
@@ -26,7 +27,11 @@ violin_score2(
   color.use = NULL,
   midpoint = NULL,
   outlier.size = 0.5,
+  violin.border.color = "black",
+  box.border.color = "black",
+  box.border.size = 0.5,
   return.stat = F,
+  legend.name = NULL,
   ...
 )
 }

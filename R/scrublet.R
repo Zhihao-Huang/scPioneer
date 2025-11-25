@@ -40,7 +40,11 @@ scrublet_R <- function (seurat_obj, python_home = system("which python", intern 
                         n_prin_comps=50, sim_doublet_ratio=2, n_neighbors=NULL) 
 {
   print(reticulate::py_config())
-  if(!reticulate::py_module_available("scrublet")) stop("python module scrublet does not seem to be installed; - try running 'py_config()'")
+  if(!reticulate::py_module_available("scrublet")) {
+    message("Python package scrublet is not be installed; - try running 'py_config()'")
+    message("install scrublet by py_install('scrublet')...")
+    py_install('scrublet')
+  }
   source_py_script <- system.file("scrublet.py", package = "scPioneer")
   if (source_py_script == '') {
     source_py_script <- paste(system.file(package = "m3addon"), 

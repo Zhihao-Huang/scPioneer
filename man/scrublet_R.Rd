@@ -7,8 +7,6 @@
 scrublet_R(
   seurat_obj,
   python_home = system("which python", intern = TRUE),
-  scrublet_script_path =
-    "/storage2/hlinglab/jasper/pipeline_development/scPioneer/scpioneer_v2.0.0/scPioneer/R/scrublet.py",
   return_results_only = FALSE,
   min_counts = 2,
   min_cells = 3,

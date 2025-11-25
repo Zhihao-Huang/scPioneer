@@ -11,7 +11,13 @@ DoHeatmapPlot(
   color.panel,
   only.heatmap = F,
   coord.flip = F,
-  font.size = 15
+  return.obj = F,
+  label.gene = NULL,
+  break.gene = NULL,
+  font.size.x = 15,
+  font.size.y = 12,
+  font.size.legend = 12,
+  legend.name = ""
 )
 }
 \arguments{

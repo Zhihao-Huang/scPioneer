@@ -131,6 +131,7 @@ plot_fraction2 <- function(meta, x = colnames(meta)[1 : (ncol(meta)-1)],
                           fill.bar = colnames(meta)[ncol(meta)],
                           based.on = NULL,
                           normailize.factor = 1,
+                          scale.to.one = T,
                           fraction.data = NULL,
                           color.use = NULL, coord_flip = T, legend.pos = 'top',
                           x.size = 8, x.angle = 0, x.label = '', y.label = '',
@@ -151,10 +152,15 @@ plot_fraction2 <- function(meta, x = colnames(meta)[1 : (ncol(meta)-1)],
           colnames(plotdata) <- c('x','based.on','fill.bar','count')
           plotdata$normalized_count <- plotdata$count/plotdata$based.on * normailize.factor
           plotdata <- plotdata[, c('x','fill.bar','normalized_count')]
-          plotdata <- plotdata %>% group_by(x,fill.bar) %>% 
-            dplyr::summarise(count = sum(normalized_count)) %>% 
-            dplyr::mutate(count/sum(count)) %>% dplyr::arrange(fill.bar)
+          if (scale.to.one) {
+            plotdata <- plotdata %>% group_by(x,fill.bar) %>% 
+              dplyr::summarise(count = sum(normalized_count)) %>% 
+              dplyr::mutate(count/sum(count)) %>% dplyr::arrange(fill.bar)
+          }else{
+            plotdata$frac <- plotdata$normalized_count
+          }
         }else{
+          message('Warning: the provided based.on argument is characters. The total number of CD45+ cells or CD45- cells will be measured based on the Seurat object. So the provided Seurat object must include all cells!')
           meta$based.on <- meta[, based.on]
           plotdata <- meta %>% group_by_(i,'based.on',fill.bar) %>% dplyr::summarise(count = n()) 
           colnames(plotdata) <- c('x','based.on','fill.bar','count')
@@ -191,6 +197,9 @@ plot_fraction2 <- function(meta, x = colnames(meta)[1 : (ncol(meta)-1)],
     # select first fill and ordered by fraction.
     pos <- p_multi$fill.bar == levels(p_multi$fill.bar)[1]
     x.order <- as.vector(p_multi[pos,]$x[order(p_multi[pos,]$frac)])
+    alltypes <- levels(p_multi$x)
+    pos <- !alltypes %in% x.order
+    if (any(pos)) x.order <- c(alltypes[pos], x.order)
     p_multi$x <- factor(p_multi$x, levels = x.order)
   }
   if (is.null(levels(p_multi$x))) {
@@ -404,4 +413,21 @@ plotbar <- function (metaf, color = NULL,
           line = element_line(size = axis.line.size)) + 
     scale_fill_manual(values = color)
   return(p)
+}
+#' plot bar with connected link
+#' 
+#' @export
+plot_connect_bar <- function(data) {
+  data$x <- factor(data$x, levels = rev(levels(data$x)))
+  ggplot(data,aes(y = frac, x = x, fill =  fill.bar)) +
+    ggalluvial::geom_flow(aes(alluvium = fill.bar), alpha= .5, color = "white",
+              curve_type = "linear", 
+              width = .5) +
+    geom_col(width = .5, color = "white") +
+    scale_fill_brewer(palette = "RdBu")+
+    scale_y_continuous(NULL, expand = c(0,0)) +
+    cowplot::theme_minimal_hgrid() +
+    theme(panel.grid.major = element_blank(),
+          legend.title = element_blank()) + 
+    xlab('')
 }

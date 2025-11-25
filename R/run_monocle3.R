@@ -62,6 +62,7 @@ run_monocle3 <- function(object,
                          close_loop = T,
                          learn_graph_control = NULL,
                          save.files = F, outdir = NULL,
+                         pt.size = 0.5,
                          return.obj = T) {
   if (!is.null(outdir)) {
     if (!dir.exists(outdir)) {
@@ -69,7 +70,7 @@ run_monocle3 <- function(object,
       stop('Not such directory.')
     }
   }
-  expression_matrix <- object@assays$RNA@counts
+  expression_matrix <- GetAssayData(object, slot = 'counts')
   cell_metadata <- object@meta.data
   gene_annotation <- data.frame(id = rownames(object),
                                 gene_short_name = rownames(object),
@@ -132,13 +133,14 @@ run_monocle3 <- function(object,
   }
   cds <- order_cells(cds, root_pr_nodes=get_earliest_principal_node(cds, annotation, initial.celltype))
   if (save.files) {
-    saveRDS(cds, file = paste0(outdir,'mono3.rds'))
-    p1 <- plot_cells(cds,
+    #saveRDS(cds, file = paste0(outdir,'mono3.rds'))
+    save(cds, file = paste0(outdir,"mono3.Rdata"))
+    p1 <- plot_cells(cds,cell_size = pt.size,
                     color_cells_by = annotation,
                     label_groups_by_cluster=FALSE,
                     label_leaves=FALSE,
                     label_branch_points=FALSE)
-    p2 <- plot_cells(cds,
+    p2 <- plot_cells(cds,cell_size = pt.size,
                     color_cells_by = "pseudotime",
                     label_cell_groups=FALSE,
                     label_leaves=FALSE,

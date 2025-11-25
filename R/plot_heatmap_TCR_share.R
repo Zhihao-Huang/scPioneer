@@ -137,10 +137,14 @@ shareTCR_heatmap <- function(meta, group, annotation, clonotype_index, typemat,
                              keep.group = NULL,
                              show.unique.TCR.group = NULL,
                              legend.ncol = NULL,
+                             xlabel = NULL, ylabel = NULL,
                              widths = c(1,8,6), x.size = 15,
+                             angle = 0,vjust = 0.5, hjust = 0.5,
                              legend.heatmap.size = 10, legend.anno.size = 10,
                              legend.heatmap.title.size = 15,
                              legend.anno.title.size = 15,
+                             add.annolegend = T,
+                             only.heatmap = F,
                              return.data = F) {
   colnames(typemat) <- c('Tissue','celltype')
   #if (!nrow(typemat) %in% c(2,3,4)) {
@@ -226,12 +230,12 @@ shareTCR_heatmap <- function(meta, group, annotation, clonotype_index, typemat,
   color <- c('lightgrey',RColorBrewer::brewer.pal(n = 9, name = "YlOrRd"))
   names(color) <- c(as.character(0:8),'>8')
   #heatmap
-  mytheme <- theme(plot.title = element_blank(), axis.title = element_blank(),
+  mytheme <- theme(plot.title = element_blank(), #axis.title = element_blank(),
                    axis.ticks = element_blank(),
                    axis.text.y = element_blank(),
                    panel.background = element_blank(),
                    panel.grid = element_blank(),
-                   axis.text.x = element_text(angle = 0,vjust = 0.5, hjust = 0.5, size = x.size),
+                   axis.text.x = element_text(angle = angle,vjust = vjust, hjust = hjust, size = x.size),
                    legend.title = element_text(family = "ArialMT", size = legend.heatmap.title.size),
                    legend.text = element_text(family = "ArialMT", size = legend.heatmap.size),
                    legend.background = element_rect(fill = "transparent"),
@@ -241,7 +245,8 @@ shareTCR_heatmap <- function(meta, group, annotation, clonotype_index, typemat,
     scale_fill_manual(values = rev(color)) +
     #scale_x_discrete(position = "top") +
     scale_x_discrete(position = "top",expand = c(0, 0)) + scale_y_discrete(expand = c(0, 0)) +
-    mytheme
+    mytheme + 
+    xlab(xlabel) + ylab(ylabel)
   if (ncol(data) > 2) {
     heatleg <- cowplot::get_legend(p)
     hp <- p + theme(legend.position = 'none')
@@ -259,15 +264,24 @@ shareTCR_heatmap <- function(meta, group, annotation, clonotype_index, typemat,
             legend.title = element_text(family = "ArialMT", size = legend.anno.title.size),
             legend.text = element_text(family = "ArialMT", size = legend.anno.size),
             plot.margin = unit(c(0,0,0,0), "cm"))
-    if (!is.null(legend.ncol)) {
-      leg <- leg + guides(fill=guide_legend(ncol=legend.ncol))
+    
+    if (add.annolegend) {
+      if (!is.null(legend.ncol)) {
+        leg <- leg + guides(fill=guide_legend(ncol=legend.ncol))
+      }
+      annoleg <- cowplot::get_legend(leg)
+      anno <- leg + theme(legend.position = 'none')
+      #merge legend
+      legends <- gridExtra::arrangeGrob(annoleg,heatleg,ncol = 1)
+      #merge anno, heatmap and legend
+      p <- anno + hp + patchwork::wrap_elements(legends) + patchwork::plot_layout(widths = widths)
+    }else{
+      #merge heatmap and legend
+      p <-  hp + heatleg + patchwork::plot_layout(widths = widths[c(2,3)])
     }
-    annoleg <- cowplot::get_legend(leg)
-    anno <- leg + theme(legend.position = 'none')
-    #merge legend
-    legends <- gridExtra::arrangeGrob(annoleg,heatleg,ncol = 1)
-    #merge anno, heatmap and legend
-    p <- anno + hp + patchwork::wrap_elements(legends) + patchwork::plot_layout(widths = widths)
+    if (only.heatmap) {
+      p <- hp 
+    }
   }
   datalist[['plot']] <- p
   if (return.data) {
@@ -279,7 +293,7 @@ shareTCR_heatmap <- function(meta, group, annotation, clonotype_index, typemat,
 #' plot TCR heatmap from pre-processed data
 #' 
 #' @export
-plot_TCR_heatmap <- function(data,
+plot_TCR_heatmap_archive <- function(data,
                              cell.order = NULL,
                              widths = c(1,8,6), x.size = 15,
                              legend.heatmap.size = 10, 

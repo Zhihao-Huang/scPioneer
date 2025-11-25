@@ -927,8 +927,10 @@ QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE",
       features1 = parameters
       plist <- plist[features1]
       num_g <- length(unique(object@meta.data$Sample))
+      height_inches <- 8 + num_g * 1.2
+      if(height_inches >= 50) height_inches <- 49
       ggsave(paste0(outdir, "QC.RidgePlot_density.pdf"), patchwork::wrap_plots(plist, ncol = 1),
-          width = 6, height = (8 + num_g * 1.2))
+          width = 6, height = height_inches)
       rawlist <- c(rawlist, plist)
     }
     message("================step2 plot density=================")
@@ -968,15 +970,29 @@ QC_raw <- function (object, outdir, species = "Human", do_cellcycle = "TRUE",
     rawlist[['QC.scatter2']] <- p
     message("================step3 plot violin================")
     num_g <- length(unique(object@meta.data$Sample)) 
+    width_inches <- 8 + num_g * 1.2
+    if(width_inches >= 50) width_inches <- 49
     plot1 <- FeatureScatter(object, feature1 = "nCount_RNA", 
                             feature2 = "percent.mt")
     plot2 <- FeatureScatter(object, feature1 = "nCount_RNA", 
                             feature2 = "nFeature_RNA")
     p <- patchwork::wrap_plots(list(plot1, plot2))
-    ggsave(paste0(outdir, "QC.violin.pdf"), p, width = (12 + num_g/5.5), 
-          height = 4)
+    ggsave(paste0(outdir, "QC.trend.umi_genes.pdf"), p, width = 10, 
+           height = 4)
+    width_inches <- 4 + num_g/5.5
+    if(width_inches >= 50) width_inches <- 49
+    pdf(paste0(outdir, "QC_violin_raw.pdf"), width_inches, 4)
+    p1 <- VlnPlot(object, features = c("nFeature_RNA", "nCount_RNA", 
+                                         "percent.mt", "percent.ribo"), ncol = 2, pt.size = 0.05)
+    print(p1)
+    if (do_cellcycle == "TRUE") {
+      p2 <- VlnPlot(object, features = c("S.Score", "G2M.Score"))
+      print(p2)
+    }
+    dev.off()
     rawlist[['Feature_mt_Scatter']] <- plot1
     rawlist[['Feature_Count_Scatter']] <- plot2
+    rawlist[['violin_qc']] <- p1
   }
   orig.metadata <- object@meta.data
   write.table(file = paste(outdir, "orig.metadata.txt", sep = ""), 

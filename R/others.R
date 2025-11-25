@@ -72,7 +72,7 @@ order_heatmap_gene <- function (object, features, assay = "RNA", slot = "data", 
     if (!is.null(cell.order)) {
         Idents(object) <- factor(ident, levels = cell.order)
     }
-    pctmat <- apply(GetAssayData(object, assay = assay, slot = slot)[features, 
+    pctmat <- apply(GetAssayData(object, assay = assay, layer = slot)[features, 
         ], 1, function(x) {
         exp <- data.frame(cluster = ident, expression = x)
         sapply(levels(ident), function(x) {
@@ -87,8 +87,9 @@ order_heatmap_gene <- function (object, features, assay = "RNA", slot = "data", 
         features <- features[pct >= min.pct]
     }
     if (method == "DEG") {
-        data <- GetAssayData(object, assay = assay, slot = slot)[features, ]
+        data <- GetAssayData(object, assay = assay, layer = slot)[features, ]
         subs <- CreateSeuratObject(counts = data, meta.data = object@meta.data)
+        subs@assays[[assay]]$data <- data
         Idents(subs) <- Idents(object)
         sDEG <- FindAllMarkers(subs, assay = assay, slot = slot, 
             only.pos = T, logfc.threshold = 0, min.pct = min.pct)
@@ -135,7 +136,7 @@ order_heatmap_gene <- function (object, features, assay = "RNA", slot = "data", 
     else if (method == "seriation") {
         orderlist <- list()
         aveobjs <- AverageExpression(object = object, assays = assay, 
-            slot = slot, features = features, return.seurat = T)
+            layer = slot, features = features, return.seurat = T)
         mat <- GetAssayData(aveobjs, assay = assay, slot = slot)
         mat <- as.matrix(mat)
         if (min(mat) < 0) {

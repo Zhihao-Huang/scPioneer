@@ -99,9 +99,9 @@ volcanoplot2 <- function (object, DEmat, annotation, ident.1, ident.2, assay = "
     }else{
       DEmat$label <- ''
     }
-    df1 <- object@assays[[assay]]@data[DEmat$gene, object@meta.data[, 
+    df1 <- GetAssayData(object, assay = assay)[DEmat$gene, object@meta.data[, 
         annotation] %in% ident.1]
-    df2 <- object@assays[[assay]]@data[DEmat$gene, object@meta.data[, 
+    df2 <- GetAssayData(object, assay = assay)[DEmat$gene, object@meta.data[, 
         annotation] %in% ident.2]
     if (do.expm1) {
         df1 <- expm1(df1)

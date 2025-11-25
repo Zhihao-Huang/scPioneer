@@ -174,7 +174,6 @@ PHASE1_run_Seurat_v3_QC_clustering <- function(param) {
     message("Running scrublet...")
     scrublet_res <- scrublet_R(SeuratS4, python_home = param[['python_home']], 
                                return_results_only = T,
-                               scrublet_script_path = param[['scrublet_script_path']],
                                min_cells = param[['min.cells']],
                                expected_doublet_rate = param[['expected.doublet.rate']])
     message("Scrublet done.")
@@ -567,7 +566,6 @@ PHASE1_run_Seurat_v3_QC_clustering_param_template <- function() {
   param[['scdblFinder_dbr.sd']] <- 'NULL'
   param[['filter.doublet']] <- F
   param[['python_home']] <- '/home/jasper/.conda/envs/easylook/bin/python'
-  param[['scrublet_script_path']] <- '/storage2/hlinglab/jasper/pipeline_development/easylook/scrublet.py'
   param[['expected.doublet.rate']] <- 0.05
   param[['max.doublet.rate']] <- 0.2
   param[['is_multidata']] <- 'TRUE'

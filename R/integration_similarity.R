@@ -23,7 +23,7 @@
 #' 
 #' @export
 Find_similar <- function (integrated.object = NULL, Annotation = "Annotation", 
-    var.genes.method = c("var", "pca"), pca.dims = NULL, pca.top.var = 50, 
+    var.genes.method = c("var", "pca","integrated.cca"), pca.dims = NULL, pca.top.var = 50, 
     assay = "integrated", clustering.method = "complete", clustering_distance = c("cormat", 
         "pearson"), clustering_distance_cols = c("correlation", 
         "euclidean", "binary"), clustering_distance_rows = c("correlation", 
@@ -35,13 +35,13 @@ Find_similar <- function (integrated.object = NULL, Annotation = "Annotation",
 {
     var.genes.method <- match.arg(var.genes.method)
     if (var.genes.method == "var") {
-        var.genes <- integrated.object@assays[[assay]]@var.features
+        var.genes <- VariableFeatures(integrated.object)
         if (is.null(var.genes)) stop("var.features doesn't exist.")
     }
-    if (var.genes.method == "pca") {
-        pca_gene <- integrated.object@reductions$pca@feature.loadings
+    if (var.genes.method %in% c("pca",'integrated.cca')) {
+        pca_gene <- integrated.object@reductions[[var.genes.method]]@feature.loadings
         if (is.null(pca.dims)) {
-            pca.dims <- integrated.object@commands$FindNeighbors.integrated.pca$dims
+            pca.dims <- integrated.object@commands[[paste0('FindNeighbors.',assay,'.integrated.cca')]]$dims
         }
         pca_gene <- pca_gene[, pca.dims]
         pca_gene <- abs(pca_gene)
@@ -50,7 +50,7 @@ Find_similar <- function (integrated.object = NULL, Annotation = "Annotation",
         var.genes <- as.character(genemat)
         if (is.null(var.genes)) stop("PCA doesn't exist.")
     }
-    data_vargene <- as.data.frame(Matrix::t(integrated.object@assays[[assay]]@data[var.genes, 
+    data_vargene <- as.data.frame(Matrix::t(GetAssayData(integrated.object, assay = assay, layer = 'data')[var.genes, 
         ]))
     data_vargene$groups <- as.vector(integrated.object@meta.data[, 
         Annotation])
@@ -64,7 +64,7 @@ Find_similar <- function (integrated.object = NULL, Annotation = "Annotation",
     # remove genes with zero standard deviation.
     sd0_gene <- apply(ave, 2, function(x) length(unique(x)) == 1)
     if (any(sd0_gene)) {
-      message(paste0('Warning: remove genes that have same average expression among clusters (the standard deviation is zero): ', colnames(ave)[sd0_gene]))
+      message(paste0('Warning: remove genes that have same average expression among clusters (the standard deviation is zero): ', paste(colnames(ave)[sd0_gene], collapse = ',')))
       ave <- ave[,-which(sd0_gene)]
     }
     matdata <- as.matrix(ave)

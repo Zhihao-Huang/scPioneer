@@ -4,7 +4,15 @@
 \alias{violin_score}
 \title{Violin plot of gene score.}
 \usage{
-violin_score(object, geneset, genesetname, cellpos, AddModuleScore = F)
+violin_score(
+  object,
+  geneset,
+  genesetname,
+  cellpos,
+  AddModuleScore = F,
+  border.color = "black",
+  border.size = 1
+)
 }
 \description{
 Violin plot of gene score.

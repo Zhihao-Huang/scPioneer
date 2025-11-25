@@ -10,6 +10,7 @@ violin_score3(
   genesetname,
   group.by = NULL,
   sample.group = NULL,
+  cell.order = NULL,
   scale = F,
   Add.boxplot = T,
   Add.jitter = F,

@@ -11,8 +11,10 @@
 #' @export
 DoHeatmapPlot <- function(plot.data, genes, group.by, color.panel, 
                           only.heatmap = F,
-                          coord.flip = F,
-                          font.size = 15){
+                          coord.flip = F, return.obj = F,
+                          label.gene = NULL, break.gene = NULL,
+                          font.size.x = 15, font.size.y = 12, 
+                          font.size.legend = 12, legend.name = ''){
   if(length(genes) > 1){
     expression.matrix <- t(plot.data[, genes])
     genes <- genes[rowSums(expression.matrix) != 0]
@@ -29,9 +31,7 @@ DoHeatmapPlot <- function(plot.data, genes, group.by, color.panel,
                      outlier.colour = "black", outlier.shape = 1) + 
         theme_bw() +
         theme(legend.position = "NULL",
-              axis.text.y = element_text(size = font.size * 0.8),
-              axis.text.x = element_text(size = font.size),
-              axis.title = element_blank()) +
+              ) +
         scale_x_discrete(limits = rev(levels(as.factor(groupid)))) +
         coord_flip()
       dat <- ggplot_build(p_boxplot)$data[[1]]
@@ -57,24 +57,32 @@ DoHeatmapPlot <- function(plot.data, genes, group.by, color.panel,
       heatmap.data$Group <- factor(heatmap.data$Group, levels = rev(levels(heatmap.data$Group)))
       max_value <- round(max(abs(heatmap.data$value)) + 0.05, 1)
       scale_breaks <- round(max_value * c(-4/5, -2/5, 0, 2/5, 4/5), 1)
+      if (is.null(break.gene)) break.gene <- unique(heatmap.data$variable)
+      if (is.null(label.gene)) label.gene <- unique(heatmap.data$variable)
+      
       p_heatmap <- ggplot(heatmap.data, aes(x = factor(variable), y = Group)) +
         geom_tile(aes(fill = value), colour = "white") + 
         theme_bw() + 
         theme(panel.border = element_blank(),
-              legend.title = element_blank(),
               axis.line = element_blank(),
-              #axis.text.y = element_blank(),
+              axis.text.y = element_text(size = font.size.y),
+             # legend.title = element_blank(),
               axis.text.x = element_text(angle = 90, vjust = 0.5, 
-                                         hjust = 1, size = font.size * 0.8),
+                                         hjust = 1, size = font.size.x),
               axis.title = element_blank(),
               axis.ticks = element_blank()) +
-        scale_fill_gradientn(limits = c(-max_value, max_value), breaks = scale_breaks, expand = c(0,0), colours = myColorPalette(100), guide = guide_colourbar(label.theme = element_text(size = font.size * 0.5))) +
-        scale_x_discrete(breaks = unique(heatmap.data$variable), labels = unique(heatmap.data$variable)) + 
+        scale_fill_gradientn(limits = c(-max_value, max_value), 
+                             breaks = scale_breaks, expand = c(0,0),
+                             colours = myColorPalette(100),
+                             name = legend.name,
+                             guide = guide_colourbar(label.theme = element_text(size = font.size.legend * 0.5))) +
+        scale_x_discrete(breaks = break.gene, labels = label.gene) + 
         scale_y_discrete(expand = c(0,0))
       if (coord.flip) {
         p_heatmap <- p_heatmap + coord_flip()
       }
       if (!only.heatmap) {p_heatmap <- p_heatmap + theme(axis.text.y = element_blank())}
+      if (return.obj) return(p_heatmap)
       gt = ggplotGrob(p_heatmap)
       leg = gtable::gtable_filter(gt, "guide-box")
       leg[[1]][[1]][[1]][[1]][[1]][[2]]$height = unit(1, "npc")

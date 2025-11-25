@@ -634,3 +634,102 @@ DEG_group_per_celltype <- function (object, celltype, group, test.use = "wilcox"
   names(DEG_cell_G4) <- allcelltype
   return(DEG_cell_G4)
 }
+
+#' Pairwise DEG using MAST to account for random effect.
+#' 
+#' Firstly provide log2(x + 1) transformed values (either raw counts or TPMs)
+#' directly to MAST without doing normalization (just transformation). 
+#' The "ngeneson" parameter in the model will account for "cell size" and act as a sort of normalization. 
+#' Refer to https://github.com/kdzimm/PseudoreplicationPaper/issues/2
+#' 
+#' @examples 
+#' pbmc$batch <- c(rep('sample1',1000), rep('sample2',1000),rep('sample3',638))
+#' subs4 <- subset(pbmc, Annotation %in% c('CD14+ Mono','FCGR3A+ Mono'))
+#' MASTdf <- DEG_MAST(subs4, 'Annotation', ident.1 = 'CD14+ Mono', ident.2 = 'FCGR3A+ Mono', covariates = 'batch',freq_expressed = 0.2)
+#' MASTdf <- MASTdf[MASTdf$FDR < 0.05 & MASTdf$avg_logFC > 0.15,]
+#' @export
+DEG_MAST_RE2 <- function(object, group.colname, ident.1, ident.2,  
+                     assay = 'RNA',
+                     covariates = NULL, freq_expressed = 0.1,
+                     method='glmer',
+                     ebayes = F,
+                     adjust.p.method = 'fdr',
+                     Adaptive_thres = F) {
+  object <- subset(object, cells = colnames(object)[object@meta.data[,group.colname] %in% c(ident.1, ident.2)])
+  data <- as.matrix(GetAssayData(object, layer = 'data', assay = assay))
+  coldata <- object@meta.data
+  fData <- data.frame(gene=rownames(data))
+  sca <- suppressMessages(MAST::FromMatrix(exprsArray=data, cData=coldata, fData=fData))
+  sca <- sca[MAST::freq(sca)>0,]
+  if (Adaptive_thres) {
+    message('Filter genes using adaptive thersholding.')
+    thres <- MAST::thresholdSCRNACountMatrix(assay(sca), nbins = 20, min_per_bin = 30)
+    assays(sca, withDimnames = FALSE) <- list(thresh=thres$counts_threshold, tpm=assay(sca))
+  }
+  expressed_genes <- MAST::freq(sca) > freq_expressed
+  sca <- sca[expressed_genes,]
+  message(paste0(ident.1, ' vs ', ident.2, ' remains ',dim(sca)[1],' genes.'))
+  # running zlm
+  #cdr2 <- colSums(SummarizedExperiment::assay(sca)>0)
+  #SummarizedExperiment::colData(sca)$ngeneson <- scale(cdr2)
+  
+  group <- as.vector(SummarizedExperiment::colData(sca)[,group.colname])
+  group[group == ident.1] <- "Group1"
+  group[group == ident.2] <- 'Group2'
+  cond <- factor(group)
+  cond <- relevel(x = cond, ref = "Group1")
+  SummarizedExperiment::colData(sca)$condition <- cond
+  emptydf <- data.frame(gene = NA, avg_logFC = NA, ci.hi = NA, ci.lo = NA, 
+                        z = NA, p_val = NA, p_val_adj = NA, 
+                        stringsAsFactors = F, check.names = F)
+  zlmCond <- tryCatch(
+    {
+      fml <- '~ condition'
+      if (!is.null(covariates)) {
+        for (i in covariates) {
+          fml <- paste0(fml, ' + (1 | ', i,')')
+        }
+      }
+      fmls <- as.formula(fml)
+      zlmCond <- zlm(fmls, sca = sca,
+                     method=method,ebayes = ebayes,
+                     strictConvergence = FALSE)
+    },
+    error=function(cond) {
+      message(paste("Error occurred when running zlm: ", ident.1, ' vs ', ident.2))
+      message("Here's the original error message:")
+      message(cond)
+      message("Return an empty data frame instead of error message.")
+      # Choose a return value in case of error
+      return(emptydf)
+    },
+    finally={
+      message(paste0("Processed zlm: ", ident.1, ' vs ', ident.2, ' (',dim(sca)[1],' genes).'))
+    }
+  )    
+  if (class(zlmCond) == 'data.frame') {
+    return(zlmCond)
+  }
+
+  summaryCond <- suppressMessages(MAST::summary(zlmCond, doLRT = 'conditionGroup2'))
+  summaryDt <- summaryCond$datatable
+  fcHurdle <- merge(summaryDt[summaryDt$contrast==contrast_name
+                              & summaryDt$component=='logFC', c(1,7,5,6,8)],
+                    summaryDt[summaryDt$contrast==contrast_name
+                              & summaryDt$component=='H', c(1,4)],
+                    by = 'primerid')
+  
+  fcHurdle <- stats::na.omit(as.data.frame(fcHurdle))
+  colnames(fcHurdle)[1] <- 'gene'
+  colnames(fcHurdle)[2] <- 'avg_logFC'
+  colnames(fcHurdle)[6] <- 'p_val'
+  
+  #fcHurdle[, FDR := p.adjust(`P.Value`,'fdr')]
+  if (nrow(fcHurdle) > 1) fcHurdle$p_val_adj <- p.adjust(fcHurdle$p_val, adjust.p.method)
+  fcHurdle <- fcHurdle[order(fcHurdle$avg_logFC, decreasing = T), ]
+
+  return(fcHurdle)
+}
+
+
+

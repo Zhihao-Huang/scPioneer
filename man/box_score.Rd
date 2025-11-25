@@ -4,7 +4,15 @@
 \alias{box_score}
 \title{Box plot of gene score.}
 \usage{
-box_score(object, geneset, genesetname, cellpos, AddModuleScore = F)
+box_score(
+  object,
+  geneset,
+  genesetname,
+  cellpos,
+  AddModuleScore = F,
+  border.color = "black",
+  border.size = 1
+)
 }
 \description{
 Box plot of gene score.

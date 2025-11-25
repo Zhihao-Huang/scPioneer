@@ -7,7 +7,7 @@
 Find_similar(
   integrated.object = NULL,
   Annotation = "Annotation",
-  var.genes.method = c("var", "pca"),
+  var.genes.method = c("var", "pca", "integrated.cca"),
   pca.dims = NULL,
   pca.top.var = 50,
   assay = "integrated",

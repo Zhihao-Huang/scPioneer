@@ -19,5 +19,4 @@ subsetID(pbmc@meta.data[,c('Annotation','Cellname')], num = 100)
 
 pbmc$Cellname <- colnames(pbmc)
 subsetID(pbmc@meta.data[,c('Annotation','Cellname')], num = 100)
-
 }

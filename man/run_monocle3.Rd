@@ -31,6 +31,7 @@ run_monocle3(
   learn_graph_control = NULL,
   save.files = F,
   outdir = NULL,
+  pt.size = 0.5,
   return.obj = T
 )
 }

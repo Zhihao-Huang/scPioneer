@@ -9,15 +9,59 @@ annocell(
   species,
   assay = "RNA",
   raw_cluster = NULL,
-  method = c("SingleR"),
+  method = c("SingleR", "AUCell", "llm", "topgene", "angrycell"),
+  llm_function = c("openai", "deepseek", "ollama"),
   ensembl_version = 98,
-  label_colname = "SingleR_label_cell",
-  label_raw_cluster_colname = "SingleR_label_raw_cluster",
+  label_colname = NULL,
+  label_raw_cluster_colname = NULL,
   ref = NULL,
   ref.label = c("label.main", "label.fine", "label.ont"),
+  scsig = NULL,
+  scsig.subset = c("_", "Cord_Blood", "Esophagus", "Stomach", "Small_Intestine",
+    "Large_Intestine", "PFC", "Embryonic", "Midbrain", "Bone_Marrow", "Liver",
+    "Fetal_Kidney", "Adult_Kidney", "Pancreas"),
+  markerdf = NULL,
+  DE = NULL,
+  min.pct = 0.3,
+  db = NULL,
+  n.cores = 4,
   ...
 )
 }
 \description{
 Annotate Celltypes in one function
+}
+\examples{
+### SingleR
+pbmc <- FindClusters(pbmc, resolution = 3)
+obj <- annocell(pbmc, species = 'Human', method = 'SingleR')
+obj <- annocell(pbmc, species = 'Human', method = 'SingleR', raw_cluster = 'seurat_clusters')
+DimPlot(obj, label = T)
+
+### AUCell
+obj <- annocell(pbmc, species = 'Human', method = 'AUCell', scsig.subset = 'Bone_Marrow')
+obj <- annocell(pbmc, species = 'Human', method = 'AUCell', scsig.subset = 'Bone_Marrow', raw_cluster = 'seurat_clusters')
+DimPlot(obj, label = T)
+
+### top_gene
+markerdf <- data.frame(celltypes = c('T','T','NK','NK','Mono', 'Mono','DC','DC','B','B','Platelet'), 
+markers = c('CD3D','CD3E','NCAM1','NKG7','CD14','FCGR3A','CST3','CD1C','CD79A','MS4A1','PPBP'))
+colnames(markerdf)
+# "celltypes" "markers"
+obj <- annocell(pbmc, species = 'Human', method = 'topgene', markerdf = markerdf, raw_cluster = 'seurat_clusters')
+DimPlot(obj, label = T)
+
+### angrycell
+obj <- annocell(pbmc, species = 'Human', method = 'angrycell', raw_cluster = 'seurat_clusters')
+DimPlot(obj, label = T)
+
+### angrycell & OpenAI
+Idents(pbmc) <- pbmc$seurat_clusters
+markers <- FindAllMarkers(pbmc, logfc.threshold = 0.5, test.use = 'MAST', only.pos = T)
+top10 <- markers \%>\% group_by(cluster) \%>\% top_n(10, avg_log2FC)
+obj <- annocell(pbmc, species = 'Human', method = 'angrycell', db = 'openai', DE = top10, raw_cluster = 'seurat_clusters',
+ model = "gpt-3.5-turbo", seed = 123,
+ base_url = "http://chatapi.littlewheat.com/v1",
+ api_key = 'sk-HgtySiUAhSLiZTlDRhNE7aEbERJOuSumUveDxYfAUy8YvDfM')
+DimPlot(obj, label = T)
 }
