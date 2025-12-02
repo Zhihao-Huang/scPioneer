@@ -431,3 +431,43 @@ plot_connect_bar <- function(data) {
           legend.title = element_blank()) + 
     xlab('')
 }
+
+#' plot boxplot of averaged samples 
+#' 
+#' @export
+plot_box_sample <- function(obj, x = 'Group', facet.by = 'subGroup',
+                            color.use = c("#E41A1C", "#377EB8", "#4DAF4A"),
+                            y.position = c(0.76, 0.84, 0.92),
+                            ncol = 4, ylim = c(0, 1),
+                            label = "p") {
+  obj$Group <- obj@meta.data[,x]
+  obj$facet.by <- obj@meta.data[,facet.by]
+  p <- plot_fraction(obj@meta.data, x = 'Sample', fill.bar = facet.by)
+  df <- p$data
+  df$Group <- gsub('_.*$','', df$x)
+  library(rstatix)
+  library(ggpubr)
+  stat <- df %>% group_by(fill.bar) %>%  t_test(frac ~ Group, p.adjust.method = 'fdr')
+  # one sided
+  stat.test <- df %>% group_by(fill.bar) %>% 
+    t_test(frac ~ Group, paired = F, alternative = 'less')  %>%
+    adjust_pvalue(method = 'fdr') %>%
+    add_significance("p.adj") 
+  stat.test$p.adj <- round(stat.test$p.adj, 4)
+  stat.test2 <- df %>% group_by(fill.bar) %>% 
+    t_test(frac ~ Group,paired = F, alternative = 'greater')  %>%
+    adjust_pvalue(method = 'fdr') %>%
+    add_significance("p.adj") 
+  stat.test2$p.adj <- round(stat.test2$p.adj, 4)
+  stat.test3 <- df %>% group_by(fill.bar) %>% 
+    t_test(frac ~ Group)
+  stat.test <- rbind(stat.test[stat.test3$statistic < 0, ],
+                     stat.test2[stat.test3$statistic >= 0, ])
+  p <- ggboxplot(
+    df, x = "Group", y = "frac", facet.by = 'fill.bar', add = 'jitter',
+    color = "Group",ncol = ncol, ylim = ylim
+  ) + ylab('Fraction') + scale_color_manual(values = color.use)
+  # Add the p-value manually
+  p <- p + stat_pvalue_manual(stat, label = label, y.position = y.position)
+  return(p)
+}
